@@ -12,8 +12,27 @@ export default class AuthService {
     localStorage.removeItem("token");
   }
 
-  static async fetchUser(token) {
-    const response = await adminApiBackend.get("/api/v1/users/me")
-    return response.data;
+  static async authWithAdminApiToken(token) {
+    console.log('auth service', token);
+    const response = await api.post("users/login/admin_api", {token: token})
+    console.log(response)
+    return {
+      access: response.data.access_token,
+      refresh: response.data.refresh_token
+    };
   }
+
+  static async refreshTokens(tokens) {
+    const response = await api.post("users/login/renew", {
+      access_token: tokens.access,
+      refresh_token: tokens.refresh,
+    });
+
+    return {
+      access: response.data.access_token,
+      refresh: response.data.refresh_token
+    }
+  }
+
+
 }

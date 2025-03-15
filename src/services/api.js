@@ -20,10 +20,14 @@ const adminApiBackend = axios.create({
 })
 
 api.interceptors.request.use(
-  (config) => {
-    const token = AuthService.getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    const authStore = useAuthStore();
+
+    if (authStore.isAuthenticated) {
+        if (authStore.isTokenExpired()) {
+            await authStore.refreshTokens()
+        }
+      config.headers.Authorization = `Bearer ${authStore.tokens.access}`;
     }
     return config;
   },
