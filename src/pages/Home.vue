@@ -4,11 +4,9 @@ import Button from "primevue/button";
 
 import { useAuthStore } from "../store/authStore.js";
 const authStore = useAuthStore();
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
-
-
 </script>
 
 <template>
@@ -17,8 +15,6 @@ const router = useRouter();
     <Button label="send dickpick" @click="AuthService.redirectToLogin()" />
     <Button label="logout" @click="authStore.logout()" />
     <Button label="Check perm1" @click="router.push('/perm1')" />
-    <p>{{ authStore.admin_api_token }}</p>
-    <p>{{ authStore.tokens }}</p>
     <p v-if="authStore.isAuthenticated">{{ authStore.permissions }}</p>
   </div>
 </template>

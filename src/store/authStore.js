@@ -39,14 +39,17 @@ export const useAuthStore = defineStore("auth", {
         },
 
         async refreshTokens() {
+            console.log("AuthStore: Refreshing tokens");
             this.tokens = await AuthService.refreshTokens(this.tokens);
             localStorage.setItem("tokens", JSON.stringify(this.tokens));
         },
 
         checkPermissions(required) {
+            console.log("Permissions check", {own: this.permissions, required});
             if (required.length === 0) {
                 return this.isAuthenticated
             }
+            console.log("Permissions granted: ", required.every(permission => this.permissions.includes(permission)))
             return required.every(permission => this.permissions.includes(permission));
         },
 

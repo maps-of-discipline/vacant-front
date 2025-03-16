@@ -23,6 +23,7 @@ export default class AuthService {
   }
 
   static async refreshTokens(tokens) {
+    console.log('AuthService: refreshing tokens')
     const response = await api.post("users/login/renew", {
       access_token: tokens.access,
       refresh_token: tokens.refresh,

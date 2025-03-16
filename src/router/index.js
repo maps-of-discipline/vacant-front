@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
 import {useAuthStore} from "../store/authStore.js";
+import CreateUser from "../pages/CreateUser.vue";
+import SelfApplications from "../pages/SelfApplications.vue";
+import CreateApplication from "../pages/CreateApplication.vue";
 
 const routes = [
   {
@@ -13,6 +16,33 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+    meta: {
+      notForAuthenticated: true
+    }
+  },
+  {
+    path: "/sign-up",
+    name: "Create User",
+    component: CreateUser,
+    // meta: {
+    //   notForAuthenticated: true,
+    // }
+  },
+  {
+    path: "/applications",
+    name: "SelfApplications",
+    component: SelfApplications,
+    meta: {
+      permissions: ['canViewOwnApplications']
+    },
+  },
+  {
+    path: '/applications/create',
+    name: "Create Application",
+    component: CreateApplication,
+    meta: {
+      permissions: ['canCreateSelfApplication']
+    }
   },
 ];
 
@@ -33,7 +63,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if (to.path === '/login' && authStore.isAuthenticated) {
+  if (to.matched.some(record => record.meta?.notForAuthenticated) && authStore.isAuthenticated) {
     return next({name: "Home"})
   }
 

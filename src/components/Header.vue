@@ -1,32 +1,63 @@
 <script setup>
-import {ref} from 'vue'
-import {Menubar} from "primevue";
+import { ref, computed } from "vue";
+import { Menubar, Image } from "primevue";
 import { useAuthStore } from "../store/authStore.js";
+import ToggleSwitch from "primevue/toggleswitch";
+import { useRouter } from "vue-router";
+import { useAppStore } from "../store/appStore.js";
 
 const authStore = useAuthStore();
+const appStore = useAppStore();
+const router = useRouter();
 
 const items = ref([
   {
-    label: "Подать заявление",
-  },
-  {
-    label: "Список поднанных заявлений",
+    label: "Список поданных заявлений",
+    command: () => {
+      router.push("/applications");
+    },
   },
   {
     label: "Профиль",
   },
-])
+]);
+
+// Use a computed property with getter and setter to bind to the store
+const isDarkMode = computed({
+  get: () => appStore.isDarkMode,
+  set: (value) => appStore.toggleDarkMode(value)
+});
 
 </script>
 
 <template>
-  <div class="flex flex-row justify-content-start align-items-center w-12 p-2 shadow-2" v-if="authStore.isAuthenticated">
+  <div
+    class="flex flex-row justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font"
+    v-if="authStore.isAuthenticated"
+  >
+    <Image
+      width="192"
+      src="/logo-white.png"
+      alt="logo"
+      :class="{ 'logo-light-mode': !isDarkMode }"
+      @click="router.push('/')"
+    />
+    <Menubar :model="items" class="surface-0 border-0" />
 
-
-      <Menubar :model="items"/>
+    <!-- Надпись и ToggleSwitch -->
+    <div class="flex align-items-center ml-auto">
+      <span class="mr-2">Темная тема</span>
+      <ToggleSwitch
+        v-model="isDarkMode"
+        :onLabel="'🌙'"
+        :offLabel="'☀️'"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
-
+.logo-light-mode {
+  filter: invert(1);
+}
 </style>
