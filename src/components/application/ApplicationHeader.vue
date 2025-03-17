@@ -20,21 +20,21 @@
         </div>
 
         <div class="flex flex-row gap-2 mb-2">
-            <DatePicker v-model="modelValue.beginYear" class="w-full" view="year" placeholder="Год поступления" />
-            <DatePicker v-model="modelValue.endYear" class="w-full" view="year" placeholder="Год отчисления" />
+            <DatePicker v-model="modelValue.begin_year" class="w-full" view="year" placeholder="Год поступления" />
+            <DatePicker v-model="modelValue.end_year" class="w-full" view="year" placeholder="Год отчисления" />
             <InputText v-model="modelValue.studyGroup" placeholder="Учебная группа" />
         </div>
     </Panel>
 
-    <Panel v-if="type === 'change'"
-        header="Прошу изменить мне условия обучения в связи с: ">
+    <Panel v-if="type === 'change'" header="Прошу изменить мне условия обучения в связи с: ">
         <Textarea v-model="modelValue.reason" id="purpose" autoResize class="w-full" rows="3" />
     </Panel>
 
     <Panel v-if="type === 'transfer'" header="Для аспирантов: ">
         <div class="flex flex-row gap-3 align-items-center">
             <label>Номер курса для продолжения обучения: </label>
-            <Select v-model="modelValue.course" class="w-min" :options="courseOptions" placeholder="Курс" optionLabel="title" optionValue="value"/>
+            <Select v-model="modelValue.continue_year" class="w-min" :options="courseOptions" placeholder="Курс"
+                optionLabel="title" optionValue="value" />
         </div>
     </Panel>
 </template>
@@ -74,10 +74,10 @@ const emit = defineEmits(['update:modelValue']);
 
 // Create default objects based on the type
 const getDefaultObject = (type) => {
-    switch(type) {
+    switch (type) {
         case 'reinstatement':
             return {
-                isVacationNeeded: false,
+                is_vacation_need: false,
                 begin_year: null,
                 end_year: null,
                 group: "",
@@ -91,7 +91,7 @@ const getDefaultObject = (type) => {
             };
         case 'transfer':
             return {
-                course: null,
+                continue_year: null,
                 type: 'transfer'
             };
         default:
@@ -100,8 +100,8 @@ const getDefaultObject = (type) => {
 };
 
 const courseOptions = [
-    {title: "1 курс", value: 1},
-    {title: "2 курс", value: 2},
+    { title: "1 курс", value: 1 },
+    { title: "2 курс", value: 2 },
 ];
 
 // Initialize model when component mounts

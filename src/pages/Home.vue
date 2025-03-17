@@ -1,12 +1,17 @@
 <script setup>
+import { onMounted } from "vue";
 import AuthService from "../services/authService.js";
 import Button from "primevue/button";
 
 import { useAuthStore } from "../store/authStore.js";
 const authStore = useAuthStore();
 import { useRouter } from "vue-router";
+import { on } from "@primeuix/themes/aura/floatlabel";
 
 const router = useRouter();
+onMounted(() => {
+  router.replace({name: "SelfApplications"});
+});
 </script>
 
 <template>

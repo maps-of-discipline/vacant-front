@@ -56,7 +56,7 @@ const emit = defineEmits(['update:modelValue']);
 
 // Determine if paid policy checkbox should be shown
 const needsPaidPolicy = computed(() => 
-  props.type === 'reinstatement' || props.type === 'change'
+  props.type === 'reinstatement' || props.type === 'change' || props.type === 'transfer' 
 );
 
 // Create default objects based on the type
@@ -70,7 +70,7 @@ const getDefaultObject = (type) => {
   };
 
   // Add type-specific properties
-  if (type === 'reinstatement' || type === 'change') {
+  if (type === 'reinstatement' || type === 'change' || type === 'transfer') {
     baseObject.paid_policy_accepted = false;
   }
 

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { Menubar, Image } from "primevue";
+import { Menubar, Image, Button } from "primevue";
 import { useAuthStore } from "../store/authStore.js";
 import ToggleSwitch from "primevue/toggleswitch";
 import { useRouter } from "vue-router";
@@ -49,8 +49,16 @@ const isDarkMode = computed({
       <span class="mr-2">Темная тема</span>
       <ToggleSwitch
         v-model="isDarkMode"
+        class="mr-3"
         :onLabel="'🌙'"
         :offLabel="'☀️'"
+      />
+      <Button 
+        icon="pi pi-sign-out" 
+        size="small" 
+        rounded 
+        aria-label="Filter" 
+        @click="authStore.logout()"  
       />
     </div>
   </div>

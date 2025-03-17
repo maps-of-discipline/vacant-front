@@ -70,6 +70,19 @@ const fetchApplications = async () => {
 onMounted(() => {
   fetchApplications()
 })
+
+  
+const isCreateButtonShown = () => {
+  if (authStore.checkPermissions(['canCreateManySelfApplications'])) {
+    return true
+  }
+  if (authStore.checkPermissions(['canCreateSelfApplication']) && (applications.value.length === 0 || !applications.value.some(app => app.status === 'new'))) {
+    return true
+  }
+  return false
+}
+
+
 </script>
 
 <template>
@@ -127,7 +140,7 @@ onMounted(() => {
     
     <div
         class="flex flex-column align-items-center mt-4 mb-4"
-        v-if="authStore.checkPermissions(['canCreateSelfApplication'])"
+        v-if="isCreateButtonShown()"
         @click="router.push({name: 'Create Application'})"
     >
       <Button label="Подать заявление" icon="pi pi-plus"/>

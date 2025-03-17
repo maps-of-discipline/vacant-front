@@ -8,6 +8,7 @@ export default class ApplicationService {
     }
 
     static async saveApplication(application) {
+        console.log("Saving application", application);
         try {
             // Check if we have a valid application type
             if (!application || !application.type) {

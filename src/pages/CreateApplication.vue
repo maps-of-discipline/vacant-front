@@ -8,7 +8,7 @@ import ApplicationFooter from "../components/application/ApplicationFooter.vue";
 import ApplicationFiles from "../components/application/ApplicationFiles.vue";
 import ApplicationService from '../services/applicationService.js';
 
-const applicationType = "change"
+const applicationType = "transfer"
 const toast = useToast();
 const router = useRouter();
 
@@ -18,12 +18,22 @@ const formData = ref({
   footer: {}
 })
 
+const prepareFormData = (formData) => {
+    if (formData.type === 'reinstatement') return {
+        ...formData,
+        begin_year: formData.begin_year ? formData.begin_year.getFullYear() : formData.begin_year,
+        end_year: formData.end_year ?  formData.begin_year.getFullYear() : formData.end_year,
+    };
+
+    return formData;
+};
+
 const application = computed({
   get: () => {
     return {
       type: applicationType,
       date: new Date().toISOString(),
-      ...formData.value.header,
+      ...prepareFormData(formData.value.header),
       ...formData.value.footer, 
       programs: formData.value.programs,
     }
@@ -52,7 +62,7 @@ const saveApplication = async () => {
     // Handle the error, e.g., show an error message to the user
   }
 };
-  
+
 </script>
 
 <template>
