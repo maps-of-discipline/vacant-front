@@ -1,54 +1,88 @@
 <template>
   <Panel :header="getPanelHeader">
     <div class="flex flex-row gap-2 mb-2">
-      <Select class="w-full" v-model="program.okso" filter :options="selectOptions.directions"
-        placeholder="Направление обучния" />
-      <InputText class="w-full" v-model="program.profile" placeholder="Профиль" v-if="anotherUniversity" />
-      <Select v-else class="w-full" v-model="program.profile" :options="selectOptions.profiles" placeholder="Профиль" />
+      <div class="flex flex-column flex-1">
+        <Select class="w-full" v-model="program.okso" filter :options="selectOptions.directions"
+          placeholder="Направление обучния" :class="{'p-invalid': showValidationErrors && oksoErrorMessage}" />
+        <Message v-if="showValidationErrors && oksoErrorMessage" severity="error" variant="simple" size="small">
+          {{ oksoErrorMessage }}
+        </Message>
+      </div>
+      
+      <div class="flex flex-column flex-1">
+        <InputText v-if="anotherUniversity" class="w-full" v-model="program.profile" placeholder="Профиль" 
+          :class="{'p-invalid': showValidationErrors && profileErrorMessage}" />
+        <Select v-else class="w-full" v-model="program.profile" :options="selectOptions.profiles" placeholder="Профиль"
+          :class="{'p-invalid': showValidationErrors && profileErrorMessage}" />
+        <Message v-if="showValidationErrors && profileErrorMessage" severity="error" variant="simple" size="small">
+          {{ profileErrorMessage }}
+        </Message>
+      </div>
     </div>
 
-    <div class="flex flex-row gap-2 align-items-center">
-      <p class="mr-2">Основа обучния:</p>
-      <div class="flex items-center gap-2">
-        <RadioButton v-model="program.base" :inputId="`base-paid-${props.type}`" :name="`base-${props.type}`" value="Платная" />
-        <label :for="`base-paid-${props.type}`">Платная</label>
+    <div class="mb-2">
+      <div class="flex flex-row gap-2 align-items-center">
+        <span class="mr-2">Основа обучния:</span>
+        <div class="flex items-center gap-2">
+          <RadioButton v-model="program.base" :inputId="`base-paid-${props.type}`" :name="`base-${props.type}`" value="Платная" />
+          <label :for="`base-paid-${props.type}`">Платная</label>
+        </div>
+        <div class="flex items-center gap-2">
+          <RadioButton v-model="program.base" :inputId="`base-free-${props.type}`" :name="`base-${props.type}`" value="Бюджетная" />
+          <label :for="`base-free-${props.type}`">Бюджетная</label>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
-        <RadioButton v-model="program.base" :inputId="`base-free-${props.type}`" :name="`base-${props.type}`" value="Бюджетная" />
-        <label :for="`base-free-${props.type}`">Бюджетная</label>
-      </div>
+      <Message v-if="showValidationErrors && baseErrorMessage" severity="error" variant="simple" size="small" class="ml-2">
+        {{ baseErrorMessage }}
+      </Message>
     </div>
 
-    <div class="flex flex-row gap-2 align-items-center">
-      <p class="mr-2">Форма обучния:</p>
-      <div class="flex items-center gap-2">
-        <RadioButton v-model="program.form" :inputId="`form-full-${props.type}`" :name="`form-${props.type}`" value="Очная" />
-        <label :for="`form-full-${props.type}`">Очная</label>
+    <div class="mb-2">
+      <div class="flex flex-row gap-2 align-items-center">
+        <span class="mr-2">Форма обучния:</span>
+        <div class="flex items-center gap-2">
+          <RadioButton v-model="program.form" :inputId="`form-full-${props.type}`" :name="`form-${props.type}`" value="Очная" />
+          <label :for="`form-full-${props.type}`">Очная</label>
+        </div>
+        <div class="flex items-center gap-2">
+          <RadioButton v-model="program.form" :inputId="`form-evening-${props.type}`" :name="`form-${props.type}`" value="Очно-заочная" />
+          <label :for="`form-evening-${props.type}`">Очно-заочная</label>
+        </div>
+        <div class="flex items-center gap-2">
+          <RadioButton v-model="program.form" :inputId="`form-distant-${props.type}`" :name="`form-${props.type}`" value="Заочная" />
+          <label :for="`form-distant-${props.type}`">Заочная</label>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
-        <RadioButton v-model="program.form" :inputId="`form-evening-${props.type}`" :name="`form-${props.type}`" value="Очно-заочная" />
-        <label :for="`form-evening-${props.type}`">Очно-заочная</label>
-      </div>
-      <div class="flex items-center gap-2">
-        <RadioButton v-model="program.form" :inputId="`form-distant-${props.type}`" :name="`form-${props.type}`" value="Заочная" />
-        <label :for="`form-distant-${props.type}`">Заочная</label>
-      </div>
+      <Message v-if="showValidationErrors && formErrorMessage" severity="error" variant="simple" size="small" class="ml-2">
+        {{ formErrorMessage }}
+      </Message>
     </div>
 
     <div class="flex flex-column gap-3">
-      <InputText v-if="anotherUniversity" class="w-full" v-model="program.university"
-        placeholder="Университет / Филлиал" />
-      <Select v-else class="w-full" v-model="program.university" :options="selectOptions.universities"
-        placeholder="Университет / Филлиал" />
-      <Select class="w-min" v-model="program.sem_num" placeholder="Семестр" :options="selectOptions.semesters"
-        optionLabel="title" optionValue="value" />
+      <div class="flex flex-column">
+        <InputText v-if="anotherUniversity" class="w-full" v-model="program.university"
+          placeholder="Университет / Филлиал" :class="{'p-invalid': showValidationErrors && universityErrorMessage}" />
+        <Select v-else class="w-full" v-model="program.university" :options="selectOptions.universities"
+          placeholder="Университет / Филлиал" :class="{'p-invalid': showValidationErrors && universityErrorMessage}" />
+        <Message v-if="showValidationErrors && universityErrorMessage" severity="error" variant="simple" size="small">
+          {{ universityErrorMessage }}
+        </Message>
+      </div>
+      
+      <div class="flex flex-column">
+        <Select class="w-min" v-model="program.sem_num" placeholder="Семестр" :options="selectOptions.semesters"
+          optionLabel="title" optionValue="value" :class="{'p-invalid': showValidationErrors && semNumErrorMessage}" />
+        <Message v-if="showValidationErrors && semNumErrorMessage" severity="error" variant="simple" size="small">
+          {{ semNumErrorMessage }}
+        </Message>
+      </div>
     </div>
   </Panel>
 </template>
 
 <script setup>
-import { Select, InputText, RadioButton, Panel } from "primevue";
-import { defineModel, computed, onMounted, ref} from "vue";
+import { Select, InputText, RadioButton, Panel, Message } from "primevue";
+import { defineModel, computed, onMounted, ref, watch } from "vue";
 
 const program = defineModel("modelValue", {
   default: () => ({
@@ -100,11 +134,19 @@ const props = defineProps({
         { title: "9 семестр", value: 9 },
         { title: "10 семестр", value: 10 },
       ]
-
     })
-
   },
+  showValidationErrors: {
+    type: Boolean,
+    default: false
+  },
+  isValid: {
+    type: Boolean,
+    default: false
+  }
 })
+
+const emit = defineEmits(['update:isValid']);
 
 // Add the header based on type
 const getPanelHeader = computed(() => {
@@ -122,8 +164,75 @@ const getPanelHeader = computed(() => {
   }
 })
 
+// Validation error messages
+const oksoErrorMessage = computed(() => {
+  if (!program.value.okso) {
+    return "Выберите направление обучения";
+  }
+  return "";
+});
+
+const profileErrorMessage = computed(() => {
+  if (!program.value.profile) {
+    return "Укажите профиль обучения";
+  }
+  return "";
+});
+
+const baseErrorMessage = computed(() => {
+  if (!program.value.base) {
+    return "Выберите основу обучения";
+  }
+  return "";
+});
+
+const formErrorMessage = computed(() => {
+  if (!program.value.form) {
+    return "Выберите форму обучения";
+  }
+  return "";
+});
+
+const universityErrorMessage = computed(() => {
+  if (!program.value.university) {
+    return "Укажите университет";
+  }
+  return "";
+});
+
+const semNumErrorMessage = computed(() => {
+  if (!program.value.sem_num) {
+    return "Выберите семестр";
+  }
+  return "";
+});
+
+// Overall validation status
+const isValid = computed(() => {
+  return !oksoErrorMessage.value &&
+         !profileErrorMessage.value &&
+         !baseErrorMessage.value &&
+         !formErrorMessage.value &&
+         !universityErrorMessage.value &&
+         !semNumErrorMessage.value;
+});
+
+// Update parent component about validation status
+watch(isValid, (valid) => {
+  emit('update:isValid', valid);
+}, { immediate: true });
+
 </script>
 
 <style scoped>
 /* Add any necessary styling */
+:deep(.p-message) {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+:deep(.p-message-wrapper) {
+  padding: 0.25rem 0;
+}
 </style>
