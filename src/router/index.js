@@ -5,6 +5,7 @@ import {useAuthStore} from "../store/authStore.js";
 import CreateUser from "../pages/CreateUser.vue";
 import SelfApplications from "../pages/SelfApplications.vue";
 import CreateApplication from "../pages/CreateApplication.vue";
+import ExternalLogin from "../pages/ExternalLogin.vue";
 
 const routes = [
   {
@@ -21,13 +22,19 @@ const routes = [
     }
   },
   {
-    path: "/sign-up",
+    path: "/external/login",
+    name: "External Login",
+    component: ExternalLogin,
+  },
+  {
+    path: "/external/sign-up",
     name: "Create User",
     component: CreateUser,
     // meta: {
     //   notForAuthenticated: true,
     // }
   },
+  
   {
     path: "/applications",
     name: "SelfApplications",
