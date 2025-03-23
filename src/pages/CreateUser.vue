@@ -4,10 +4,11 @@
       <template #header>
         <h2>Регистрация</h2>
       </template>
+      <pre>{{ user }}</pre>
       <Panel class="flex flex-column mb-4" header="Данные студента">
         <div class="flex flex-column">
           <div class="mb-3 w-full">
-            <InputText class="w-full" v-model="fullname" placeholder="ФИО" :invalid="showValidation && fullNameErrorMessage"/>
+            <InputText class="w-full" v-model="fullname" placeholder="ФИО" :invalid="showValidation && !!fullNameErrorMessage"/>
             <Message v-if="showValidation && fullNameErrorMessage" severity="error" variant="simple" size="small">{{
               fullNameErrorMessage }}</Message>
           </div>
@@ -58,13 +59,13 @@
         <div class="flex flex-column gap-3">
           <div class="flex flex-row gap-3">
             <InputMask mask="99 99" class="w-full" placeholder="Серия" 
-              v-model="user.passport_data.series" 
-              :invalid="showValidation && !user.passport_data.series"/>
+              v-model="user.passport_series" 
+              :invalid="showValidation && !user.passport_series"/>
             <InputMask mask="999999" class="w-full" placeholder="Номер" 
-              v-model="user.passport_data.number"
-              :invalid="showValidation && !user.passport_data.number"/>
+              v-model="user.passport_number"
+              :invalid="showValidation && !user.passport_number"/>
           </div>
-          <Message v-if="showValidation && (!user.passport_data.series || !user.passport_data.number)" 
+          <Message v-if="showValidation && (!user.passport_series || !user.passport_number)" 
             severity="error" variant="simple" size="small">Серия и номер паспорта обязательны</Message>
 
           <div class="flex flex-wrap gap-4">
@@ -80,27 +81,27 @@
           </div>
           <Message v-if="showValidation && !user.sex" severity="error" variant="simple" size="small">Укажите пол</Message>
 
-          <DatePicker placeholder="Дата рождения" v-model="user.passport_data.birthdate" 
-            :invalid="showValidation && !user.passport_data.birthdate"/>
-          <Message v-if="showValidation && !user.passport_data.birthdate" severity="error" variant="simple" size="small">Укажите дату рождения</Message>
+          <DatePicker placeholder="Дата рождения" v-model="user.birthdate" 
+            :invalid="showValidation && !user.birthdate"/>
+          <Message v-if="showValidation && !user.birthdate" severity="error" variant="simple" size="small">Укажите дату рождения</Message>
 
-          <InputText placeholder="Место рождения" v-model="user.passport_data.birthplace"
-            :invalid="showValidation && !user.passport_data.birthplace"/>
-          <Message v-if="showValidation && !user.passport_data.birthplace" severity="error" variant="simple" size="small">Укажите место рождения</Message>
+          <InputText placeholder="Место рождения" v-model="user.passport_birthplace"
+            :invalid="showValidation && !user.passport_birthplace"/>
+          <Message v-if="showValidation && !user.passport_birthplace" severity="error" variant="simple" size="small">Укажите место рождения</Message>
 
-          <InputText placeholder="Кем выдан" v-model="user.passport_data.issued_by"
-            :invalid="showValidation && !user.passport_data.issued_by"/>
-          <Message v-if="showValidation && !user.passport_data.issued_by" severity="error" variant="simple" size="small">Укажите кем выдан паспорт</Message>
+          <InputText placeholder="Кем выдан" v-model="user.passport_issued_by"
+            :invalid="showValidation && !user.passport_issued_by"/>
+          <Message v-if="showValidation && !user.passport_issued_by" severity="error" variant="simple" size="small">Укажите кем выдан паспорт</Message>
 
           <div class="flex flex-row gap-3">
             <InputMask mask="999-999" class="w-full" placeholder="Код подразделения" 
-              v-model="user.passport_data.issued_code"
-              :invalid="showValidation && !user.passport_data.issued_code"/>
+              v-model="user.passport_issued_code"
+              :invalid="showValidation && !user.passport_issued_code"/>
             <DatePicker class="w-full" placeholder="Дата выдачи" 
-              v-model="user.passport_data.issued_date"
-              :invalid="showValidation && !user.passport_data.issued_date"/>
+              v-model="user.passport_issued_date"
+              :invalid="showValidation && !user.passport_issued_date"/>
           </div>
-          <Message v-if="showValidation && (!user.passport_data.issued_code || !user.passport_data.issued_date)" 
+          <Message v-if="showValidation && (!user.passport_issued_code || !user.passport_issued_date)" 
             severity="error" variant="simple" size="small">Укажите код подразделения и дату выдачи</Message>
         </div>
       </Panel>
@@ -124,6 +125,11 @@ import {
   Message
 } from "primevue";
 import { useToast } from "primevue";
+import { useAuthStore } from "../store/authStore";
+import { useRouter } from "vue-router";
+
+const authStore = useAuthStore();
+const router = useRouter();
 
 const fullname = ref('');
 const showValidation = ref(false);
@@ -146,15 +152,14 @@ const user = reactive({
   snils: null,
   course: null,
   sex: null,
-  passport_data: {
-    series: null,
-    sex: null,
-    birthdate: null,
-    birthplace: null,
-    issued_by: null,
-    issued_code: null,
-    issued_date: null,
-  },
+  birthdate: null,
+   
+  passport_series: null,
+  passport_birthplace: null,
+  passport_issued_by: null,
+  passport_issued_code: null,
+  passport_issued_date: null,
+  
 });
 
 
@@ -195,22 +200,41 @@ const isValid = computed(() => {
   if (!user.phone || !user.snils || !user.course || !user.sex) return false;
   
   // Passport data validation
-  const passport = user.passport_data;
-  if (!passport.series || !passport.number) return false;
-  if (!passport.birthdate || !passport.birthplace) return false;
-  if (!passport.issued_by || !passport.issued_code || !passport.issued_date) return false;
+  
+  if (!user.passport_series || !user.passport_number) return false;
+  if (!user.birthdate || !user.passport_birthplace) return false;
+  if (!user.passport_issued_by || !user.passport_issued_code || !user.passport_issued_date) return false;
   
   return true;
 });
 
-const onSubmit = () => {
+const onSubmit = async () => {
   showValidation.value = true;
   
   if (isValid.value) {
-    // Proceed with form submission
-    // TODO: save user using api
-    console.log('Form is valid, submitting...', user);
-    // Here you would call your API to register the user
+    try {
+      await authStore.signUp(user)
+      toast.add({
+        severity: "success",
+        summary: "Успех",
+        detail: "Пользователь успешно зарегистрирован",
+        life: 3000,
+      });
+
+      router.push({
+        name: "SelfApplications",
+      });
+      
+    }
+    catch (error) {
+      toast.add({
+        severity: "error",
+        summary: "Ошибка",
+        detail: "Не удалось зарегистрировать пользователя",
+        life: 3000,
+      });
+      console.log(error)
+    }
   } else {
     toast.add({
       severity: "warn",

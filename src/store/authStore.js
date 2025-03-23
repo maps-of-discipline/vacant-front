@@ -20,8 +20,44 @@ export const useAuthStore = defineStore("auth", {
 
             this.admin_api_token = `Bearer ${token}`;
             localStorage.setItem('admin_api_token', token)
+            try {
 
+            
             this.tokens = await AuthService.authWithAdminApiToken(token);
+            localStorage.setItem("tokens", JSON.stringify(this.tokens));
+
+            this.isAuthenticated = true;
+            localStorage.setItem("isAuthenticated", JSON.stringify(this.isAuthenticated))
+
+            const payload = jwtDecode(this.tokens.access);
+            this.permissions = payload.permissions.map(perm => perm.title)
+            localStorage.setItem("permissions", JSON.stringify(this.permissions));
+            }
+            catch (error) {
+                console.error("Error during authentication:", error);
+                this.logout();
+            }
+        },
+
+        async signUp(user) {
+            
+            const tokens = await AuthService.signUp(user);
+            console.log(tokens)
+            this.tokens = tokens;
+            localStorage.setItem("tokens", JSON.stringify(this.tokens));
+
+            this.isAuthenticated = true;
+            localStorage.setItem("isAuthenticated", JSON.stringify(this.isAuthenticated))
+
+            const payload = jwtDecode(this.tokens.access);
+            this.permissions = payload.permissions.map(perm => perm.title)
+            localStorage.setItem("permissions", JSON.stringify(this.permissions));
+        },
+
+        async signInWithEmail(email) {
+            const tokens = await AuthService.signInWithEmail(email);
+            console.log("tokens: ", tokens)
+            this.tokens = tokens;
             localStorage.setItem("tokens", JSON.stringify(this.tokens));
 
             this.isAuthenticated = true;

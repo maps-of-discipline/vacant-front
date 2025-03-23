@@ -63,9 +63,12 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
 import { Panel, InputText, Message, Button, FloatLabel} from 'primevue'
+import AuthService from "../services/authService";
+import { useAuthStore } from "../store/authStore";
  
 const router = useRouter();
 const toast = useToast();
+const authStore = useAuthStore();
 
 const credentials = reactive({
   email: "",
@@ -83,24 +86,16 @@ const login = async () => {
   
   try {
     loading.value = true;
-    // Replace this with your actual login API call
-    // await authService.loginWithEmail(credentials.email, credentials.password);
+    await authStore.signInWithEmail(credentials.email)
+    toast.add({
+      severity: 'success',
+      summary: 'Успешный вход',
+      detail: 'Вы успешно вошли в систему',
+      life: 3000
+    });
     
-    console.log('Login attempt with:', credentials.email);
-    
-    setTimeout(() => {
-      loading.value = false;
-      toast.add({
-        severity: 'success',
-        summary: 'Успешный вход',
-        detail: 'Добро пожаловать в систему',
-        life: 3000
-      });
-      
-      // Navigate to home or dashboard page after successful login
-      router.push('/');
-    }, 1000);
-    
+    router.push({name: "SelfApplications"});
+        
   } catch (error) {
     loading.value = false;
     toast.add({
@@ -120,13 +115,6 @@ const login = async () => {
   font-style: normal;
 }
 
-:deep(.p-password input) {
-  width: 100%;
-}
-
-:deep(.p-password) {
-  width: 100%;
-}
 
 .logo-light-mode {
   filter: invert(1);

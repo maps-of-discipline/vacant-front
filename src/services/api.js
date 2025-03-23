@@ -16,6 +16,11 @@ const adminApiBackend = axios.create({
   timeout: 10000,
 });
 
+const mapsApi = axios.create({
+  baseURL: config.maps_api_base,
+  timeout: 10000, 
+})
+
 // Move interceptors to this setup function
 export function setupInterceptors(authStore) {
   // Add a flag to track ongoing refresh operations
@@ -64,4 +69,4 @@ export function setupInterceptors(authStore) {
   );
 }
 
-export { api, adminApi, adminApiBackend };
+export { api, adminApi, adminApiBackend, mapsApi};

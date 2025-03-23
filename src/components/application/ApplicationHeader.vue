@@ -72,7 +72,7 @@
         <div class="flex flex-column">
             <div class="flex flex-row gap-3 align-items-center">
                 <label>Номер курса для продолжения обучения: </label>
-                <Select v-model="modelValue.continueYear" class="w-min" :options="courseOptions" placeholder="Курс"
+                <Select v-model="modelValue.continue_year" class="w-min" :options="courseOptions" placeholder="Курс"
                     optionLabel="title" optionValue="value"/>
             </div>
         </div>
@@ -135,7 +135,7 @@ const getDefaultObject = (type) => {
             };
         case 'transfer':
             return {
-                continueYear: null,
+                continue_year: null,
                 type: 'transfer'
             };
         default:

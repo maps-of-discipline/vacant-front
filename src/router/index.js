@@ -6,6 +6,7 @@ import CreateUser from "../pages/CreateUser.vue";
 import SelfApplications from "../pages/SelfApplications.vue";
 import CreateApplication from "../pages/CreateApplication.vue";
 import ExternalLogin from "../pages/ExternalLogin.vue";
+import Rups from "../pages/Rups.vue";
 
 const routes = [
   {
@@ -51,6 +52,12 @@ const routes = [
       permissions: ['canCreateSelfApplication']
     }
   },
+
+  {
+    path: "/rups",
+    name: "Rups",
+    component: Rups,
+  }
 ];
 
 const router = createRouter({
