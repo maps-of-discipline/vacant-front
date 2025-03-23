@@ -37,13 +37,12 @@
                 optionValue="value"
             />
         </Panel>
+        
         <Panel header="Расхождения">
             <div class="flex flex-column gap-3 w-full">
-                
-
                 <ProgressSpinner v-if="isRupsLoading" class="m-auto"/>
                 <SelectButton :options="['method1', 'method2']" v-model="rupsMethod" class="m-auto"/>
-                <DataTable v-if="!isRupsLoading" :value="chosedMethodTableData" size="small" stripedRows`` showGridlines>
+                <DataTable v-if="!isRupsLoading && chosedMethodTableData.length > 0" :value="chosedMethodTableData" size="small" stripedRows showGridlines>
                     <Column field="aup1" header="АУП1"></Column> 
                     <Column field="zet1" header="ЗЕТ1"></Column> 
                     <Column field="zet2" header="ЗЕТ2"></Column> 
@@ -88,7 +87,7 @@ const semesterOptions = [
     {label: '8 семестр', value: 8},
 ]
 
-const rups = ref([])
+const rups = ref({})
 
 
 const program1 = ref(null)
@@ -110,6 +109,7 @@ const yearFilteredPrograms = (year) => {
 
 
 const fetchMaps = async () => {
+    console.log('fetchMaps')
     isProgramsLoading.value = true
     let maps = await MapsService.getProgramOptions()
     console.log('maps', maps);
@@ -160,10 +160,8 @@ watch([program1, program2, semester], async ([program1, program2, semester]) => 
 })
 
 const chosedMethodTableData = computed(() => {
-    console.log(rups.value)
-    return rups.value[rupsMethod.value]
+    return (rups.value && rups.value[rupsMethod.value]) ? rups.value[rupsMethod.value] : [];
 })
-
 </script>
 
 <style></style>

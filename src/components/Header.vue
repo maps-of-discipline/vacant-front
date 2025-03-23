@@ -20,6 +20,12 @@ const items = ref([
   {
     label: "Профиль",
   },
+  {
+    label: "РУПЫ",
+    command: () => {
+      router.push({name: "Rups"})
+    }
+  },
 ]);
 
 // Use a computed property with getter and setter to bind to the store
