@@ -94,7 +94,7 @@ const program1 = ref(null)
 const program2 = ref(null)
 const year1 = ref(null)
 const year2 = ref(null)
-const semester = ref(null)
+const semester = ref(8)
 
 const isProgramsLoading = ref(false)
 const isRupsLoading = ref(false)
