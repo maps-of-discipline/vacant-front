@@ -4,7 +4,6 @@
       <template #header>
         <h2>Регистрация</h2>
       </template>
-      <pre>{{ user }}</pre>
       <Panel class="flex flex-column mb-4" header="Данные студента">
         <div class="flex flex-column">
           <div class="mb-3 w-full">

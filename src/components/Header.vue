@@ -34,6 +34,13 @@ const isDarkMode = computed({
   set: (value) => appStore.toggleDarkMode(value)
 });
 
+
+const onLogout = () => {
+  authStore.logout()
+  router.push({name: "Login"})
+  
+}
+
 </script>
 
 <template>
@@ -64,7 +71,7 @@ const isDarkMode = computed({
         size="small" 
         rounded 
         aria-label="Filter" 
-        @click="authStore.logout()"  
+        @click="onLogout()"  
       />
     </div>
   </div>

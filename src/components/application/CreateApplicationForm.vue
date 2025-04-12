@@ -2,6 +2,7 @@
   <div class="content application-panel flex flex-column gap-3 justify-content-center m-auto mb-4 montserrat-font">
     <Panel>
       <template #header>
+        
         <h3 v-if="applicationType === 'change'">
           Зявление на смену условий обучения
         </h3>
@@ -147,7 +148,7 @@ const isFormValid = computed(() => {
 
 const onSubmit = () => {
   showValidationErrors.value = true;
-
+  console.log(application.value)
   if (isFormValid.value) {
     emit('valid-submit', application.value)
   }
@@ -218,21 +219,15 @@ const initializeFormData = () => {
 // Define which fields belong to which section based on application type
 const getHeaderFields = (type) => {
   const commonFields = ['type'];
-  const commonFields1 = [...commonFields,
-    'is_vacation_need', 'begin_year', 'end_year', 'group', 'purpose',
-    'reason',
-    'continue_year',
-  ];
 
   if (type === 'reinstatement') {
     return [...commonFields, 'is_vacation_need', 'begin_year', 'end_year', 'group', 'purpose'];
   } else if (type === 'change') {
-    return [...commonFields, 'reason'];
+    return [...commonFields, 'purpose'];
   } else if (type === 'transfer') {
     return [...commonFields, 'continue_year'];
   }
 
-  return commonFields1;
 };
 
 const getFooterFields = () => {

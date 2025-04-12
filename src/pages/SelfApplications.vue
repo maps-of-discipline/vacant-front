@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router';
 import {Column, DataTable, Button} from 'primevue';
 import {useAuthStore} from '../store/authStore.js'
 import { useAppStore } from '../store/appStore.js';
-import AuthService from '../services/authService.js';
 import ApplicationService from '../services/applicationService.js';
 
 const applications = ref([])
@@ -53,12 +52,12 @@ const getTypeTranslation = (type) => {
 }
 
 const fetchApplications = async () => {
+  console.log("fetching applications")
   loading.value = true
   error.value = null
   
   try {
     applications.value = await ApplicationService.fetchUserApplications()
-    console.log('asdfasdf', applications.value)
   } catch (err) {
     console.error('Error fetching applications:', err)
     error.value = 'Не удалось загрузить заявления. Пожалуйста, попробуйте позже.'

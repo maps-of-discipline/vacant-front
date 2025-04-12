@@ -9,7 +9,6 @@ import router from "./router";
 import App from "./App.vue";
 import ThemePreset from "./Theme.js";
 import ToastService from 'primevue/toastservice';
-import { setupInterceptors } from './services/api';
 import { useAuthStore } from './store/authStore';
 import { useAppStore } from './store/appStore.js';
 
@@ -27,10 +26,6 @@ app.use(PrimeVue, {
 });
 app.use(router);
 app.use(ToastService);
-
-// After pinia is installed, set up the interceptors with the auth store
-const authStore = useAuthStore();
-setupInterceptors(authStore);
 
 const appStore = useAppStore();
 appStore.init();

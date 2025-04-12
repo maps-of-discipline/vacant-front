@@ -18,9 +18,9 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
-    meta: {
-      notForAuthenticated: true
-    }
+    // meta: {
+    //   notForAuthenticated: true
+    // }
   },
   {
     path: "/external/login",
@@ -40,17 +40,17 @@ const routes = [
     path: "/applications",
     name: "SelfApplications",
     component: SelfApplications,
-    meta: {
-      permissions: ['canViewOwnApplications']
-    },
+    // meta: {
+    //   permissions: ['canViewOwnApplications']
+    // },
   },
   {
     path: '/applications/create',
     name: "Create Application",
     component: CreateApplication,
-    meta: {
-      permissions: ['canCreateSelfApplication']
-    }
+    // meta: {
+    //   permissions: ['canCreateSelfApplication']
+    // }
   },
 
   {

@@ -60,10 +60,10 @@
 
     <Panel v-if="type === 'change'" header="Прошу изменить мне условия обучения в связи с: ">
         <div class="flex flex-column">
-            <Textarea v-model="modelValue.reason" id="purpose" autoResize class="w-full" rows="3" 
-                :class="{'p-invalid': showValidationErrors && reasonErrorMessage}" />
-            <Message v-if="showValidationErrors && reasonErrorMessage" severity="error" variant="simple" size="small">
-                {{ reasonErrorMessage }}
+            <Textarea v-model="modelValue.purpose" id="purpose" autoResize class="w-full" rows="3" 
+                :class="{'p-invalid': showValidationErrors && purposeErrorMessage}" />
+            <Message v-if="showValidationErrors && purposeErrorMessage" severity="error" variant="simple" size="small">
+                {{ purposeErrorMessage }}
             </Message>
         </div>
     </Panel>
@@ -130,7 +130,7 @@ const getDefaultObject = (type) => {
             };
         case 'change':
             return {
-                reason: "",
+                purpose: "",
                 type: 'change'
             };
         case 'transfer':
@@ -239,8 +239,8 @@ const groupErrorMessage = computed(() => {
     return ""; // Valid
 });
 
-const reasonErrorMessage = computed(() => {
-    if (!props.modelValue.reason || props.modelValue.reason.trim().length === 0) {
+const purposeErrorMessage = computed(() => {
+    if (!props.modelValue.purpose || props.modelValue.purpose.trim().length === 0) {
         return "Поле не должно быть пустым";
     }
     return ""; // Valid
@@ -254,7 +254,7 @@ const isValid = computed(() => {
                    !endYearErrorMessage.value && 
                    !groupErrorMessage.value;
         case 'change':
-            return !reasonErrorMessage.value;
+            return !purposeErrorMessage.value;
         case 'transfer':
             return true;
         default:

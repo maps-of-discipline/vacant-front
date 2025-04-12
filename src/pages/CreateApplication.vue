@@ -15,6 +15,7 @@
             v-model="applicationType"
             :options="['change', 'reinstatement', 'transfer']"
           />
+        <pre>{{application}}</pre>
         </div>
       </Panel>
     <CreateApplicationForm 
@@ -26,16 +27,18 @@
 
 <script setup>
 import { ref, computed, watch, reactive } from 'vue'
-import { Panel, SelectButton } from 'primevue'
+import {useRouter} from 'vue-router'
+import { Panel, SelectButton, useToast } from 'primevue'
 import { useAppStore } from '../store/appStore.js';
 import CreateApplicationForm from '../components/application/CreateApplicationForm.vue';
+import ApplicationService from '../services/applicationService.js';
 
 const appStore = useAppStore();
-
+const toast = useToast();
+const router = useRouter();
 
 const applicationType = ref('change');
 const applicationData = ref({ type: 'change' });
-
 watch(applicationType, (newType) => {
   applicationData.value = {type: newType}
 });
@@ -45,7 +48,7 @@ const onValidSubmit = async (application) => {
 
   try {
     const response = await ApplicationService.saveApplication(
-      application.value,
+      application,
     );
     toast.add({
       severity: "success",
@@ -55,6 +58,7 @@ const onValidSubmit = async (application) => {
     });
     await router.push({ name: "SelfApplications" });
   } catch (error) {
+    console.log(error)
     toast.add({
       severity: "error",
       summary: "Ошибка",

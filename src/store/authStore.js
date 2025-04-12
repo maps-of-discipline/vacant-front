@@ -1,109 +1,80 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import AuthService from "../services/authService.js";
-import {jwtDecode} from "jwt-decode";
-
+import { jwtDecode } from "jwt-decode";
+import {setLocalStorage} from './utils.js'
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
-        admin_api_token: localStorage.getItem("admin_api_token") || null,
-        tokens: JSON.parse(localStorage.getItem("tokens")) || {
+        auth_data: JSON.parse(localStorage.getItem("auth_data")) || {
             access: null,
             refresh: null,
         },
 
         permissions: JSON.parse(localStorage.getItem("permissions")) || [],
-        isAuthenticated: (localStorage.getItem("isAuthenticated") === "true")  || false,
+        isAuthenticated: (localStorage.getItem("isAuthenticated") === "true") || false,
     }),
 
     actions: {
-        async authWithAdminApiToken(token) {
-
-            this.admin_api_token = `Bearer ${token}`;
-            localStorage.setItem('admin_api_token', token)
-            try {
-
-            
-            this.tokens = await AuthService.authWithAdminApiToken(token);
-            localStorage.setItem("tokens", JSON.stringify(this.tokens));
+        async setAuthData(access, refresh) {
+            this.logout();
+            this.auth_data = {
+                access: access, 
+                refresh: refresh
+            }
+            console.log("setting auth data. this.auth_data = ", this.auth_data)
+            setLocalStorage('auth_data', this.auth_data);
 
             this.isAuthenticated = true;
-            localStorage.setItem("isAuthenticated", JSON.stringify(this.isAuthenticated))
+            setLocalStorage('isAuthenticated', this.isAuthenticated)
 
-            const payload = jwtDecode(this.tokens.access);
-            this.permissions = payload.permissions.map(perm => perm.title)
-            localStorage.setItem("permissions", JSON.stringify(this.permissions));
-            }
-            catch (error) {
-                console.error("Error during authentication:", error);
-                this.logout();
-            }
+            const payload = jwtDecode(this.auth_data.access);
+            this.permissions = payload.permissions
+            setLocalStorage("permissions", this.permissions)
         },
 
         async signUp(user) {
-            
-            const tokens = await AuthService.signUp(user);
-            console.log(tokens)
-            this.tokens = tokens;
-            localStorage.setItem("tokens", JSON.stringify(this.tokens));
-
-            this.isAuthenticated = true;
-            localStorage.setItem("isAuthenticated", JSON.stringify(this.isAuthenticated))
-
-            const payload = jwtDecode(this.tokens.access);
-            this.permissions = payload.permissions.map(perm => perm.title)
-            localStorage.setItem("permissions", JSON.stringify(this.permissions));
+            //TODO: implement
+            this.logout()
         },
 
         async signInWithEmail(email) {
-            const tokens = await AuthService.signInWithEmail(email);
-            console.log("tokens: ", tokens)
-            this.tokens = tokens;
-            localStorage.setItem("tokens", JSON.stringify(this.tokens));
+            this.logout();
+            const auth_data = await AuthService.signInWithEmail(email);
+            
+            this.auth_data = auth_data;
+            setLocalStorage('auth_data', this.auth_data)
 
             this.isAuthenticated = true;
-            localStorage.setItem("isAuthenticated", JSON.stringify(this.isAuthenticated))
+            setLocalStorage('isAuthenticated', this.isAuthenticated)
 
-            const payload = jwtDecode(this.tokens.access);
-            this.permissions = payload.permissions.map(perm => perm.title)
-            localStorage.setItem("permissions", JSON.stringify(this.permissions));
+            const payload = jwtDecode(this.auth_data.access);
+            this.permissions = payload.permissions
+            setLocalStorage("permissions", this.permissions)
         },
 
         isTokenExpired() {
-            if (!this.tokens.access) return true;
-            const payload = jwtDecode(this.tokens.access);
+            if (!this.auth_data.access) return true;
+            const payload = jwtDecode(this.auth_data.access);
             return payload.exp <= Date.now() / 1000;
         },
 
-        async refreshTokens() {
-            console.log("AuthStore: Refreshing tokens");
-            this.tokens = await AuthService.refreshTokens(this.tokens);
-            localStorage.setItem("tokens", JSON.stringify(this.tokens));
-        },
-
         checkPermissions(required) {
-            console.log("Permissions check", {own: this.permissions, required});
             if (required.length === 0) {
                 return this.isAuthenticated
             }
-            console.log("Permissions granted: ", required.every(permission => this.permissions.includes(permission)))
             return required.every(permission => this.permissions.includes(permission));
         },
 
         logout() {
             this.admin_api_token = null;
-            this.tokens = { access: null, refresh: null };
+            this.auth_data = { access: null, refresh: null };
             this.permissions = [];
             this.isAuthenticated = false;
 
             // Remove stored authentication data
-            localStorage.removeItem("admin_api_token");
-            localStorage.removeItem("tokens");
+            localStorage.removeItem("auth_data");
             localStorage.removeItem("permissions");
             localStorage.removeItem("isAuthenticated");
-
-            window.location.href='/login';
         }
     },
-
-
 });
