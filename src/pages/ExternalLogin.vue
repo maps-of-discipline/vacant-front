@@ -1,45 +1,36 @@
 <template>
-  <div class="flex h-screen align-items-center justify-content-center surface-50">
-    <Panel class="w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0">
+  <div
+    class="flex h-screen align-items-center justify-content-center surface-50"
+  >
+    <Panel
+      class="w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0"
+    >
       <template #header>
-        <div class="text-center w-full pt-4 pb-3 flex flex-column align-items-center">
+        <div
+          class="text-center w-full pt-4 pb-3 flex flex-column align-items-center"
+        >
           <div class="mb-3">
-            <img 
-              :src="'/logo-white.png'" 
-              alt="Московский Политех" 
-              height="70" 
+            <img
+              :src="'/logo-white.png'"
+              alt="Московский Политех"
+              height="70"
               class="mb-3"
+              :class="{ 'logo-light-mode': !appStore.isDarkMode }"
             />
           </div>
           <h2 class="text-2xl font-bold m-0 text-900">Вход в систему</h2>
         </div>
       </template>
-      
+
       <div class="px-4 py-5">
-        <h4 class="text-lg text-600 text-center mb-5 mt-0 font-medium">Вход для студентов других ВУЗов</h4>
-        
-        <div class="flex flex-column gap-3 mb-4">
-          <div class="w-full">
-            <FloatLabel variant="on">
-                <InputText 
-                    id="email"
-                    class="w-full p-inputtext"
-                    size="large" 
-                    v-model="credentials.email" 
-                    :class="{'p-invalid': showValidation && !credentials.email}"
-                />
-                <label for="email" class="text-md">Email</label>
-            </FloatLabel> 
-            <Message v-if="showValidation && !credentials.email" severity="error" size="small" variant="simple">
-              Введите email
-            </Message>
-        </div>  
-        </div>
-        
+        <h4 class="text-lg text-600 text-center mb-5 mt-0 font-medium">
+          Вход для студентов других ВУЗов
+        </h4>
+
         <div class="flex flex-column gap-3 mb-2">
-          <Button 
-            label="Войти" 
-            @click="login" 
+          <Button
+            label="Войти"
+            @click="AuthService.redirectToLoginViaEmail()"
             :loading="loading"
             class="p-3 font-medium text-base"
             icon="pi pi-sign-in"
@@ -47,10 +38,18 @@
             raised
           />
           
+          <Button
+            label="Регистрация"
+            @click="router.push({name: 'Create User'})"
+            :loading="loading"
+            severity='secondary'
+            class="p-3 font-medium text-base"
+            icon="pi pi-sign-in"
+            iconPos="right"
+          />
+
           <div class="text-center mt-2">
-            <router-link to="/external/sign-up" class="text-primary font-medium text-sm">Регистрация</router-link>
-            <span class="text-500 px-2">|</span>
-            <router-link to="/login" class="text-primary font-medium text-sm">Назад</router-link>
+            <router-link to="/login" class="text-primary font-medium text-md">Назад</router-link>
           </div>
         </div>
       </div>
@@ -62,13 +61,15 @@
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
-import { Panel, InputText, Message, Button, FloatLabel} from 'primevue'
+import { Panel, InputText, Message, Button, FloatLabel } from "primevue";
 import AuthService from "../services/authService";
 import { useAuthStore } from "../store/authStore";
- 
+import { useAppStore } from "../store/appStore";
+
 const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
+const appStore = useAppStore();
 
 const credentials = reactive({
   email: "",
@@ -79,30 +80,29 @@ const loading = ref(false);
 
 const login = async () => {
   showValidation.value = true;
-  
+
   if (!credentials.email) {
     return;
   }
-  
+
   try {
     loading.value = true;
-    await authStore.signInWithEmail(credentials.email)
+    await authStore.signInWithEmail(credentials.email);
     toast.add({
-      severity: 'success',
-      summary: 'Успешный вход',
-      detail: 'Вы успешно вошли в систему',
-      life: 3000
+      severity: "success",
+      summary: "Успешный вход",
+      detail: "Вы успешно вошли в систему",
+      life: 3000,
     });
-    
-    router.push({name: "SelfApplications"});
-        
+
+    router.push({ name: "SelfApplications" });
   } catch (error) {
     loading.value = false;
     toast.add({
-      severity: 'error',
-      summary: 'Ошибка входа',
-      detail: error.message || 'Неверные данные входа',
-      life: 3000
+      severity: "error",
+      summary: "Ошибка входа",
+      detail: error.message || "Неверные данные входа",
+      life: 3000,
     });
   }
 };
@@ -114,7 +114,6 @@ const login = async () => {
   font-optical-sizing: auto;
   font-style: normal;
 }
-
 
 .logo-light-mode {
   filter: invert(1);

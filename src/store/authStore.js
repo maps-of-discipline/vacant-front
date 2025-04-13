@@ -33,8 +33,8 @@ export const useAuthStore = defineStore("auth", {
         },
 
         async signUp(user) {
-            //TODO: implement
             this.logout()
+            await AuthService.signUp(user)
         },
 
         async signInWithEmail(email) {
