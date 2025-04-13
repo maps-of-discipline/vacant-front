@@ -1,6 +1,7 @@
 <template>
   <div class="flex h-screen align-items-center justify-content-center surface-50">
-    <Panel class="w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0">
+    <Panel
+      class="login-form w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0">
       <template #header>
         <div class="text-center w-full pt-4 pb-3 flex flex-column align-items-center">
           <div class="mb-3">
@@ -18,8 +19,8 @@
         <div class="buttons w-full flex flex-column gap-3">
           <Button class="p-3 font-medium text-base" @click="AuthService.redirectToLogin()" label="Войти через ЛК"
             icon="pi pi-sign-in" iconPos="right" raised />
-          <Button class="p-3 font-medium text-base" @click="AuthService.redirectToLoginViaEmail()" label="Войти с помощью Email"
-            icon="pi pi-sign-in" iconPos="right" raised />
+          <Button class="p-3 font-medium text-base" @click="AuthService.redirectToLoginViaEmail()"
+            label="Войти с помощью Email" icon="pi pi-sign-in" iconPos="right" raised />
           <Button severity="secondary" class="p-3 font-medium" @click="router.push({ name: 'External Login' })"
             label="Я студент из другого ВУЗа" icon="pi pi-external-link" iconPos="right" outlined />
         </div>
@@ -41,9 +42,8 @@ const route = useRoute();
 const authStore = useAuthStore();
 const appStore = useAppStore();
 
-
 async function handleTokens(access, refresh) {
-  console.log("setting access and refresh after redirecting")
+  console.log("setting access and refresh after redirecting");
   await authStore.setAuthData(access, refresh); // Set token in authStore
   await router.push("/"); // Redirect to homepage
 }
@@ -56,6 +56,13 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="css">
+.login-form {
+  width: 100%;
+  max-width: 470px;
+  min-width: 370px;
+  margin: 0 auto;
+}
+
 .p-card {
   border-radius: 12px;
 }

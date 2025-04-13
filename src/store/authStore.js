@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import AuthService from "../services/authService.js";
 import { jwtDecode } from "jwt-decode";
-import {setLocalStorage} from './utils.js'
+import { setLocalStorage } from './utils.js'
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -18,7 +18,7 @@ export const useAuthStore = defineStore("auth", {
         async setAuthData(access, refresh) {
             this.logout();
             this.auth_data = {
-                access: access, 
+                access: access,
                 refresh: refresh
             }
             console.log("setting auth data. this.auth_data = ", this.auth_data)
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
         async signInWithEmail(email) {
             this.logout();
             const auth_data = await AuthService.signInWithEmail(email);
-            
+
             this.auth_data = auth_data;
             setLocalStorage('auth_data', this.auth_data)
 
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore("auth", {
         isTokenExpired() {
             if (!this.auth_data.access) return true;
             const payload = jwtDecode(this.auth_data.access);
-            return payload.exp <= Date.now() / 1000;
+            return new Date(payload.expires_at).getTime() <= Date.now();
         },
 
         checkPermissions(required) {

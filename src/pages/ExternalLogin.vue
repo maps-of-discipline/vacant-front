@@ -1,22 +1,11 @@
 <template>
-  <div
-    class="flex h-screen align-items-center justify-content-center surface-50"
-  >
-    <Panel
-      class="w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0"
-    >
+  <div class="flex h-screen align-items-center justify-content-center surface-50">
+    <Panel class="login-form w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0">
       <template #header>
-        <div
-          class="text-center w-full pt-4 pb-3 flex flex-column align-items-center"
-        >
+        <div class="text-center w-full pt-4 pb-3 flex flex-column align-items-center">
           <div class="mb-3">
-            <img
-              :src="'/logo-white.png'"
-              alt="Московский Политех"
-              height="70"
-              class="mb-3"
-              :class="{ 'logo-light-mode': !appStore.isDarkMode }"
-            />
+            <img :src="'/logo-white.png'" alt="Московский Политех" height="70" class="mb-3"
+              :class="{ 'logo-light-mode': !appStore.isDarkMode }" />
           </div>
           <h2 class="text-2xl font-bold m-0 text-900">Вход в систему</h2>
         </div>
@@ -28,25 +17,11 @@
         </h4>
 
         <div class="flex flex-column gap-3 mb-2">
-          <Button
-            label="Войти"
-            @click="AuthService.redirectToLoginViaEmail()"
-            :loading="loading"
-            class="p-3 font-medium text-base"
-            icon="pi pi-sign-in"
-            iconPos="right"
-            raised
-          />
-          
-          <Button
-            label="Регистрация"
-            @click="router.push({name: 'Create User'})"
-            :loading="loading"
-            severity='secondary'
-            class="p-3 font-medium text-base"
-            icon="pi pi-sign-in"
-            iconPos="right"
-          />
+          <Button label="Войти" @click="AuthService.redirectToLoginViaEmail()" :loading="loading"
+            class="p-3 font-medium text-base" icon="pi pi-sign-in" iconPos="right" raised />
+
+          <Button label="Регистрация" @click="router.push({ name: 'Create User' })" :loading="loading"
+            severity="secondary" class="p-3 font-medium text-base" icon="pi pi-sign-in" iconPos="right" />
 
           <div class="text-center mt-2">
             <router-link to="/login" class="text-primary font-medium text-md">Назад</router-link>
@@ -109,6 +84,13 @@ const login = async () => {
 </script>
 
 <style scoped>
+.login-form {
+  width: 100%;
+  max-width: 470px;
+  min-width: 370px;
+  margin: 0 auto;
+}
+
 .montserrat-font {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;

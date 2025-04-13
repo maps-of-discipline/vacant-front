@@ -15,7 +15,6 @@ export default class AuthService {
   }
 
   static async refreshTokens(access, refresh) {
-    console.log('refreshing tokens', access, refresh)
     const user_id = jwtDecode(access).user_id
     const response = await axios.post(`${config.admin_api_backend_base}/api/v1/users/refresh`, {
       UserID: user_id,
@@ -32,7 +31,7 @@ export default class AuthService {
   static async signUp(user) {
     try {
       await api.post("/users/create", user)
-    } 
+    }
     catch (error) {
       if (error?.response.status === 400 && error?.response.data?.detail.includes('already exists')) {
         throw new UserAlreadyExistsError(`User with email ${user.email} already exists`)
@@ -41,7 +40,6 @@ export default class AuthService {
       if (error?.response.status === 400) {
         throw new BadRequestError("Error occured during user creation")
       }
-      console.error('qwerqwer', error)
     }
     // this.redirectToLoginViaEmail()
   }
