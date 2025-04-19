@@ -19,60 +19,43 @@ const items = ref([
   },
   {
     label: "Профиль",
+    command: () => {
+      router.push({ name: "Profile" });
+    },
   },
   {
     label: "РУПЫ",
     command: () => {
-      router.push({name: "Rups"})
-    }
+      router.push({ name: "Rups" });
+    },
   },
 ]);
 
 // Use a computed property with getter and setter to bind to the store
 const isDarkMode = computed({
   get: () => appStore.isDarkMode,
-  set: (value) => appStore.toggleDarkMode(value)
+  set: (value) => appStore.toggleDarkMode(value),
 });
 
-
 const onLogout = () => {
-  authStore.logout()
-  router.push({name: "Login"})
-  
-}
-
+  authStore.logout();
+  router.push({ name: "Login" });
+};
 </script>
 
 <template>
   <div
     class="flex flex-row justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font"
-    v-if="authStore.isAuthenticated"
-  >
-    <Image
-      width="192"
-      src="/logo-white.png"
-      alt="logo"
-      :class="{ 'logo-light-mode': !isDarkMode }"
-      @click="router.push('/')"
-    />
+    v-if="authStore.isAuthenticated">
+    <Image width="192" src="/logo-white.png" alt="logo" :class="{ 'logo-light-mode': !isDarkMode }"
+      @click="router.push('/')" />
     <Menubar :model="items" class="surface-0 border-0" />
 
     <!-- Надпись и ToggleSwitch -->
     <div class="flex align-items-center ml-auto">
       <span class="mr-2">Темная тема</span>
-      <ToggleSwitch
-        v-model="isDarkMode"
-        class="mr-3"
-        :onLabel="'🌙'"
-        :offLabel="'☀️'"
-      />
-      <Button 
-        icon="pi pi-sign-out" 
-        size="small" 
-        rounded 
-        aria-label="Filter" 
-        @click="onLogout()"  
-      />
+      <ToggleSwitch v-model="isDarkMode" class="mr-3" :onLabel="'🌙'" :offLabel="'☀️'" />
+      <Button icon="pi pi-sign-out" size="small" rounded aria-label="Filter" @click="onLogout()" />
     </div>
   </div>
 </template>

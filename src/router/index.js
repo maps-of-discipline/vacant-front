@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
-import {useAuthStore} from "../store/authStore.js";
+import { useAuthStore } from "../store/authStore.js";
 import CreateUser from "../pages/CreateUser.vue";
 import SelfApplications from "../pages/SelfApplications.vue";
 import CreateApplication from "../pages/CreateApplication.vue";
 import ExternalLogin from "../pages/ExternalLogin.vue";
 import Rups from "../pages/Rups.vue";
+import Profile from "../pages/Profile.vue";
 
 const routes = [
   {
@@ -35,7 +36,7 @@ const routes = [
     //   notForAuthenticated: true,
     // }
   },
-  
+
   {
     path: "/applications",
     name: "SelfApplications",
@@ -43,6 +44,11 @@ const routes = [
     // meta: {
     //   permissions: ['canViewOwnApplications']
     // },
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
   },
   {
     path: '/applications/create',
@@ -69,16 +75,16 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   if (to.matched.some(record => record.meta?.permissions)) {
     if (!authStore.isAuthenticated) {
-      return next({name: "Login"});
+      return next({ name: "Login" });
     }
 
     if (!to.matched.some(record => authStore.checkPermissions(record.meta?.permissions))) {
-      return next({name: "Login"});
+      return next({ name: "Login" });
     }
   }
 
   if (to.matched.some(record => record.meta?.notForAuthenticated) && authStore.isAuthenticated) {
-    return next({name: "Home"})
+    return next({ name: "Home" })
   }
 
   next();

@@ -1,55 +1,26 @@
 <template>
   <div class="content application-page flex flex-column gap-4">
-    <Panel
-        header="Тип Заявления (временно)"
-        class="flex flex-column border-2 border-red-100"
-        :class="{
-          'bg-red-100': !appStore.isDarkMode,
-          'bg-red-900 opacity-50': appStore.isDarkMode,
-        }"
-      >
-        <p>Пока не будет готово авто-определение типа заявления</p>
-        <div class="m-auto w-fit">
-          <SelectButton
-            size="large"
-            v-model="applicationType"
-            :options="['change', 'reinstatement', 'transfer']"
-          />
-        <pre>{{application}}</pre>
-        </div>
-      </Panel>
-    <CreateApplicationForm 
-      v-model="applicationData" 
-      @valid-submit="onValidSubmit"
-    />
+    <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, reactive } from 'vue'
-import {useRouter} from 'vue-router'
-import { Panel, SelectButton, useToast } from 'primevue'
-import { useAppStore } from '../store/appStore.js';
-import CreateApplicationForm from '../components/application/CreateApplicationForm.vue';
-import ApplicationService from '../services/applicationService.js';
+import { reactive, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "primevue";
+import CreateApplicationForm from "../components/application/CreateApplicationForm.vue";
+import ApplicationService from "../services/applicationService.js";
+import { useApplicationsStore } from "../store/applicationsStore.js";
 
-const appStore = useAppStore();
 const toast = useToast();
 const router = useRouter();
+const applicationsStore = useApplicationsStore();
 
-const applicationType = ref('change');
-const applicationData = ref({ type: 'change' });
-watch(applicationType, (newType) => {
-  applicationData.value = {type: newType}
-});
-
+const applicationData = reactive({ type: applicationsStore.applicationType });
 
 const onValidSubmit = async (application) => {
-
   try {
-    const response = await ApplicationService.saveApplication(
-      application,
-    );
+    const response = await ApplicationService.saveApplication(application);
     toast.add({
       severity: "success",
       summary: "Успех",
@@ -58,7 +29,7 @@ const onValidSubmit = async (application) => {
     });
     await router.push({ name: "SelfApplications" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     toast.add({
       severity: "error",
       summary: "Ошибка",
@@ -66,7 +37,12 @@ const onValidSubmit = async (application) => {
       life: 3000,
     });
   }
-}
+};
+
+watch(applicationData, (n, o) => {
+  applicationsStore.setDraftApplication(n);
+  console.log("application changed");
+});
 </script>
 
 <style scoped>
@@ -77,4 +53,3 @@ const onValidSubmit = async (application) => {
   margin: 0 auto;
 }
 </style>
-

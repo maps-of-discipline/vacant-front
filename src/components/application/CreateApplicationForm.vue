@@ -2,7 +2,6 @@
   <div class="content application-panel flex flex-column gap-3 justify-content-center m-auto mb-4 montserrat-font">
     <Panel>
       <template #header>
-        
         <h3 v-if="applicationType === 'change'">
           Зявление на смену условий обучения
         </h3>
@@ -13,7 +12,7 @@
           Зявление на перевод из другого ВУЗа
         </h3>
       </template>
-
+      <pre>{{ application }}</pre>
       <div class="programs flex flex-column gap-4 mb-3">
         <ApplicationHeader :type="applicationType" v-model="formData.header" :showValidationErrors
           v-model:isValid="formValidation.header" />
@@ -36,7 +35,15 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onBeforeMount, defineEmits, isVNode } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  onBeforeMount,
+  defineEmits,
+  isVNode,
+  reactive,
+} from "vue";
 import { Panel, Button, useToast } from "primevue";
 import { useRouter } from "vue-router";
 import Program from "./Program.vue";
@@ -44,6 +51,7 @@ import ApplicationHeader from "./ApplicationHeader.vue";
 import ApplicationFooter from "./ApplicationFooter.vue";
 import ApplicationFiles from "./ApplicationFiles.vue";
 import ApplicationService from "../../services/applicationService.js";
+import { useApplicationsStore } from "../../store/applicationsStore.js";
 
 const applicationType = computed(() => {
   return model.value.type;
@@ -51,16 +59,17 @@ const applicationType = computed(() => {
 
 const toast = useToast();
 const router = useRouter();
-
+const applicationsStore = useApplicationsStore();
 
 const showValidationErrors = ref(false);
-const emit = defineEmits(['valid-submit'])
+const isApplicationNew = ref(false);
+const emit = defineEmits(["valid-submit"]);
 
 const model = defineModel({
   type: Object,
   required: true,
   default: () => ({ type: "change" }),
-})
+});
 
 const formValidation = ref({
   header: false,
@@ -69,7 +78,7 @@ const formValidation = ref({
   files: false,
 });
 
-const formData = ref({
+const formData = reactive({
   header: {},
   programs: [{}, {}, {}],
   footer: {},
@@ -112,27 +121,29 @@ const prepareFormData = (formData) => {
 
 const application = computed({
   get: () => {
-    return {
+    const appl = {
       type: applicationType,
       date: new Date().toISOString(),
-      ...prepareFormData(formData.value.header),
-      ...formData.value.footer,
-      programs: formData.value.programs,
+      ...prepareFormData(formData.header),
+      ...formData.footer,
+      programs: formData.programs,
     };
+    console.log(appl);
+    return appl;
   },
 });
 
 watch(application, (newValue) => {
-  model.value = { ...newValue, type: applicationType }
+  model.value = { ...newValue, type: applicationType };
 });
 
 const isChangeToBudget = computed({
   get: () => {
     if (applicationType !== "change") return false;
-    const currentBase = formData.value.programs[0].base;
+    const currentBase = formData.programs[0].base;
     const newBases = [
-      formData.value.programs[1].base,
-      formData.value.programs[2].base,
+      formData.programs[1].base,
+      formData.programs[2].base,
     ];
     return newBases.includes("Бюджетная") && currentBase !== "Бюджетная";
   },
@@ -148,20 +159,18 @@ const isFormValid = computed(() => {
 
 const onSubmit = () => {
   showValidationErrors.value = true;
-  console.log(application.value)
+  console.log(application.value);
   if (isFormValid.value) {
-    emit('valid-submit', application.value)
-  }
-  else {
-  
+    emit("valid-submit", application.value);
+  } else {
     toast.add({
       severity: "warn",
       summary: "Ошибка",
       detail: "Пожалуйста, заполните все необходимые поля",
       life: 3000,
-    });}
+    });
+  }
 };
-
 
 watch(applicationType, (newValue) => {
   showValidationErrors.value = false;
@@ -169,16 +178,15 @@ watch(applicationType, (newValue) => {
   formValidation.value.programs = [false, false, false];
   formValidation.value.footer = false;
 
-  formData.value = {
-    header: {type: newValue},
+  formData = {
+    header: { type: newValue },
     programs: [{}, {}, {}],
-    footer: {type: newValue},
-  }
-
+    footer: { type: newValue },
+  };
 });
 
-
 const initializeFormData = () => {
+  console.log("Initializing form data");
   const newFormData = {
     header: { type: applicationType.value },
     programs: [{}, {}, {}],
@@ -189,7 +197,7 @@ const initializeFormData = () => {
   if (Object.keys(model.value).length > 1) {
     // Extract header fields based on application type
     const headerFields = getHeaderFields(applicationType.value);
-    headerFields.forEach(field => {
+    headerFields.forEach((field) => {
       if (model.value[field] !== undefined) {
         newFormData.header[field] = model.value[field];
       }
@@ -206,44 +214,51 @@ const initializeFormData = () => {
 
     // Extract footer fields
     const footerFields = getFooterFields();
-    footerFields.forEach(field => {
+    footerFields.forEach((field) => {
       if (model.value[field] !== undefined) {
         newFormData.footer[field] = model.value[field];
       }
     });
+  } else {
+    isApplicationNew.value = true;
   }
 
-  formData.value = newFormData;
+  Object.assign(formData, newFormData)
 };
 
 // Define which fields belong to which section based on application type
 const getHeaderFields = (type) => {
-  const commonFields = ['type'];
+  const commonFields = ["type"];
 
-  if (type === 'reinstatement') {
-    return [...commonFields, 'is_vacation_need', 'begin_year', 'end_year', 'group', 'purpose'];
-  } else if (type === 'change') {
-    return [...commonFields, 'purpose'];
-  } else if (type === 'transfer') {
-    return [...commonFields, 'continue_year'];
+  if (type === "reinstatement") {
+    return [
+      ...commonFields,
+      "is_vacation_need",
+      "begin_year",
+      "end_year",
+      "group",
+      "purpose",
+    ];
+  } else if (type === "change") {
+    return [...commonFields, "purpose"];
+  } else if (type === "transfer") {
+    return [...commonFields, "continue_year"];
   }
-
 };
 
 const getFooterFields = () => {
   return [
-    'hostel_policy_accepted',
-    'paid_policy_accepted',
-    'vacation_policy_viewed',
-    'no_restrictions_policy_accepted',
-    'reliable_information_policy_accepted'
+    "hostel_policy_accepted",
+    "paid_policy_accepted",
+    "vacation_policy_viewed",
+    "no_restrictions_policy_accepted",
+    "reliable_information_policy_accepted",
   ];
 };
 
 onBeforeMount(() => {
-  initializeFormData()
+  initializeFormData();
 });
-
 </script>
 
 <style scoped>
