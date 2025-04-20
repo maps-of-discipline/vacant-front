@@ -9,7 +9,7 @@ COPY . .
 
 RUN --mount=type=secret,id=env_file \
   if [ -f "/run/secrets/env_file" ]; then \
-  cp /run/secrets/env_file .env.production; \
+  cp /run/secrets/env_file .env; \
   fi
 
 RUN npm run build
