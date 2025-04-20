@@ -134,12 +134,12 @@ watch(() => filteredCategories.value, (newCategories) => {
     categoryValidations.value = newValidations;
 }, { immediate: true });
 
-// Calculate overall validation status
 const isValid = computed(() => {
-    // Check if all required categories have valid files
-    return filteredCategories.value
+    const valid = filteredCategories.value
         .filter(category => category.required)
         .every(category => categoryValidations.value[category.id]);
+    console.debug("form files validation check result: ", valid)
+    return valid
 });
 
 // Method to expose files for parent component

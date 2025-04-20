@@ -1,89 +1,3 @@
-<script setup>
-import {ref, onMounted} from 'vue';
-import { useRouter } from 'vue-router';
-import {Column, DataTable, Button} from 'primevue';
-import {useAuthStore} from '../store/authStore.js'
-import { useAppStore } from '../store/appStore.js';
-import ApplicationService from '../services/applicationService.js';
-
-const applications = ref([])
-const loading = ref(true)
-const error = ref(null)
-
-const authStore = useAuthStore()
-const appStore = useAppStore()
-const router = useRouter()
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ru-RU');
-}
-
-const getStatusClass = (status) => {
-  switch(status) {
-    case 'new': 
-      return appStore.isDarkMode ? 'new-status-color text-blue-300' : 'bg-blue-100 text-blue-900';
-    case 'approved': 
-      return appStore.isDarkMode ? 'approved-status-color text-green-300' : 'bg-green-100 text-green-900';
-    case 'rejected': 
-      return appStore.isDarkMode ? 'rejected-status-color text-red-300' : 'bg-red-100 text-red-900';
-    default: 
-      return appStore.isDarkMode ? 'text-gray-100' : 'bg-gray-100 text-gray-900';
-  }
-}
-
-const getStatusTranslation = (status) => {
-  switch(status) {
-    case 'new': return 'Новое';
-    case 'approved': return 'Одобрено';
-    case 'rejected': return 'Отклонено';
-    default: return status;
-  }
-}
-
-const getTypeTranslation = (type) => {
-  switch(type) {
-    case 'reinstatement': return 'Заявление на восстановление';
-    case 'change': return 'Заявление на изменение условий обучния';
-    case 'transfer': return 'Заявление на перевод из другого ВУЗа';
-    // Add more type translations as needed
-    default: return type;
-  }
-}
-
-const fetchApplications = async () => {
-  console.log("fetching applications")
-  loading.value = true
-  error.value = null
-  
-  try {
-    applications.value = await ApplicationService.fetchUserApplications()
-  } catch (err) {
-    console.error('Error fetching applications:', err)
-    error.value = 'Не удалось загрузить заявления. Пожалуйста, попробуйте позже.'
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  fetchApplications()
-})
-
-  
-const isCreateButtonShown = () => {
-  if (authStore.checkPermissions(['canCreateManySelfApplications'])) {
-    return true
-  }
-  if (authStore.checkPermissions(['canCreateSelfApplication']) && (applications.value.length === 0 || !applications.value.some(app => app.status === 'new'))) {
-    return true
-  }
-  return false
-}
-
-
-</script>
-
 <template>
   <div class="content w-10 surface-0 m-auto p-3 flex flex-column border-round">
     <!-- Loading state -->
@@ -105,6 +19,7 @@ const isCreateButtonShown = () => {
         paginator
         :rows="5"
         class="p-datatable-sm custom-table"
+
     >
       <Column field="type" header="Тип заявления">
         <template #body="slotProps">
@@ -130,6 +45,14 @@ const isCreateButtonShown = () => {
           </span>
         </template>
       </Column>
+      <Column>
+        <template #body="slotProps" class="">
+          <div class="w-full flex justify-content-end gap-3">
+            <Button rounded severity="secondary" icon="pi pi-pencil m-auto" @click="editApplication(slotProps.data)" />
+            <Button rounded severity="danger" icon="pi pi-trash m-auto" @click="deleteApplication(slotProps.data)"/>
+          </div>
+        </template>
+      </Column>
     </DataTable>
     
     <!-- Empty state -->
@@ -142,10 +65,128 @@ const isCreateButtonShown = () => {
         v-if="isCreateButtonShown()"
         @click="router.push({name: 'Create Application'})"
     >
-      <Button label="Подать заявление" icon="pi pi-plus"/>
+      <Button label="Подать заявление" icon="pi pi-plus" v-if='!applicationStore.draftApplication'/>
     </div>
   </div>
 </template>
+
+
+<script setup>
+import {ref, onMounted} from 'vue';
+import { useRouter } from 'vue-router';
+import {Column, DataTable, Button} from 'primevue';
+import {useAuthStore} from '../store/authStore.js'
+import { useAppStore } from '../store/appStore.js';
+import ApplicationService from '../services/applicationService.js';
+import { useApplicationsStore } from '../store/applicationsStore.js';
+
+const applications = ref([])
+const loading = ref(true)
+const error = ref(null)
+
+const authStore = useAuthStore()
+const appStore = useAppStore()
+const router = useRouter()
+const applicationStore = useApplicationsStore()
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU');
+}
+
+const getStatusClass = (status) => {
+  switch(status) {
+    case 'new': 
+      return appStore.isDarkMode ? 'new-status-color text-blue-300' : 'bg-blue-100 text-blue-900';
+    case 'approved': 
+      return appStore.isDarkMode ? 'approved-status-color text-green-300' : 'bg-green-100 text-green-900';
+    case 'rejected': 
+      return appStore.isDarkMode ? 'rejected-status-color text-red-300' : 'bg-red-100 text-red-900';
+    case 'draft': 
+      return appStore.isDarkMode ? 'draft-status-color text-gray-300' : 'bg-gray-100 text-gray-900';
+    default: 
+      return appStore.isDarkMode ? 'text-gray-100' : 'bg-gray-100 text-gray-900';
+  }
+}
+
+const getStatusTranslation = (status) => {
+  switch(status) {
+    case 'new': return 'Новое';
+    case 'approved': return 'Одобрено';
+    case 'rejected': return 'Отклонено';
+    case 'draft': return 'Черновик';
+    default: return status;
+  }
+}
+
+const getTypeTranslation = (type) => {
+  switch(type) {
+    case 'reinstatement': return 'Заявление на восстановление';
+    case 'change': return 'Заявление на изменение условий обучния';
+    case 'transfer': return 'Заявление на перевод из другого ВУЗа';
+    default: return type;
+  }
+}
+
+const deleteApplication = (data) => {
+  applications.value = applications.value.filter((item) => item.id != data.id)
+  if (data.status === 'draft')
+    applicationStore.setDraftApplication(null)
+  else 
+    ApplicationService.deleteApplication(id)
+}
+
+
+const editApplication = (data) => {
+  router.push({name: "Edit application", params: {id: data.id}, query: {type: data.type}})
+}
+
+
+const fetchApplications = async () => {
+  console.log("fetching applications")
+  loading.value = true
+  error.value = null
+  let res; 
+  try {
+    res = await ApplicationService.fetchUserApplications()
+  } catch (err) {
+    console.error('Error fetching applications:', err)
+    error.value = 'Не удалось загрузить заявления. Пожалуйста, попробуйте позже.'
+  } finally {
+    loading.value = false
+  }
+
+  applications.value = [...applications.value, ...res]
+}
+
+onMounted(() => {
+  const draft = applicationStore.draftApplication;
+  console.log(draft)
+  if (draft){
+    applications.value = [{
+      id: 0, 
+      date: draft.date,
+      type: draft.type,
+      status: "draft", 
+    }];
+  }
+  fetchApplications()
+})
+
+  
+const isCreateButtonShown = () => {
+  if (authStore.checkPermissions(['canCreateManySelfApplications'])) {
+    return true
+  }
+  if (authStore.checkPermissions(['canCreateSelfApplication']) && (applications.value.length === 0 || !applications.value.some(app => app.status === 'new'))) {
+    return true
+  }
+  return false
+}
+
+
+</script>
+
 
 <style scoped>
 .content {
@@ -173,5 +214,9 @@ const isCreateButtonShown = () => {
 
 .rejected-status-color {
   background-color: rgba(from var(--p-red-500) r g b / 0.2);
+}
+
+.draft-status-color {
+  background-color: rgba(from var(--p-gray-500) r g b / 0.2);
 }
 </style>

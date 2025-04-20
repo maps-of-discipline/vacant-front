@@ -5,6 +5,7 @@ import { useAuthStore } from "../store/authStore.js";
 import CreateUser from "../pages/CreateUser.vue";
 import SelfApplications from "../pages/SelfApplications.vue";
 import CreateApplication from "../pages/CreateApplication.vue";
+import EditApplication from "../pages/EditApplication.vue";
 import ExternalLogin from "../pages/ExternalLogin.vue";
 import Rups from "../pages/Rups.vue";
 import Profile from "../pages/Profile.vue";
@@ -57,6 +58,12 @@ const routes = [
     // meta: {
     //   permissions: ['canCreateSelfApplication']
     // }
+  },
+  {
+    path:"/applications/edit/:id", 
+    name: "Edit application",
+    component: EditApplication,
+    props: true,
   },
 
   {

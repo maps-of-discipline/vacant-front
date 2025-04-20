@@ -1,13 +1,15 @@
 <template>
   <div class="content application-page flex flex-column gap-4">
-    <Panel><pre> {{applicationData}} </pre></Panel>
-    <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" />
+    <!-- <Panel> -->
+    <!--   <pre> {{ applicationData }} </pre> -->
+    <!-- </Panel> -->
+    <CreateApplicationForm v-model="applicationData" :isEdit="isEdit" @valid-submit="onValidSubmit" />
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, watch, onBeforeMount } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useToast, Panel } from "primevue";
 import CreateApplicationForm from "../components/application/CreateApplicationForm.vue";
 import ApplicationService from "../services/applicationService.js";
@@ -15,11 +17,14 @@ import { useApplicationsStore } from "../store/applicationsStore.js";
 
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
 const applicationsStore = useApplicationsStore();
 
 const props = defineProps({
-  application: Object
-})
+  id: Number,
+});
+
+const isEdit = ref(false)
 
 const applicationData = reactive({
   header: {},
@@ -50,14 +55,39 @@ const onValidSubmit = async (application) => {
 };
 
 watch(applicationData, (application, o) => {
-  applicationsStore.setDraftApplication({...application, date: new Date().toISOString()});
+  applicationsStore.setDraftApplication({
+    ...application,
+    date: new Date().toISOString(),
+  });
   console.log("application changed");
 });
 
-onBeforeMount(() => {
-  if (props.application)
-    Object.assign(applicationData, props.application)
-})
+
+onBeforeMount(async () => {
+  if (props.id == 0) {
+    Object.assign(applicationData, applicationsStore.draftApplication);
+  } else if (route.query.type) {
+    let app;
+
+    try {
+      app = await ApplicationService.getApplication(props.id, route.query.type);
+      isEdit.value = true
+    } catch (error) {
+      toast.add({
+        severity: "error",
+        summary: "Ошибка",
+        detail: "Не удаось загрузить заявление.",
+        life: 3000,
+      });
+      console.error(error);
+      router.push({ name: "SelfApplications" });
+    }
+
+    Object.assign(applicationData, app);
+  } else {
+    router.push({ name: "SelfApplications" });
+  }
+});
 </script>
 
 <style scoped>
