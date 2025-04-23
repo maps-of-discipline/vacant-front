@@ -7,6 +7,7 @@
           v-model="modelValue.hostel_policy_accepted" 
           binary 
           :invalid="props.showValidationErrors && !props.modelValue.hostel_policy_accepted"
+          :readonly="!props.editable"
         />
         <label for="hostel_policy_accepted">Ознакомлен, что общежитие предоставляется при наличии свободного жилого фонда после
           подачи заявки в личном кабинете обучающегося в соответствии с очередностью</label>
@@ -17,6 +18,7 @@
           v-model="modelValue.paid_policy_accepted" 
           binary 
           :invalid="props.showValidationErrors && !props.modelValue.paid_policy_accepted"
+          :readonly="!props.editable"
         />
         <label for="paid_policy_accepted">В случае невозможности перевода на бюджетную основу прошу рассмотреть возможность
           перевода на платную договорную основу</label>
@@ -27,6 +29,7 @@
           v-model="modelValue.vacation_policy_viewed" 
           binary
           :invalid="props.showValidationErrors && !props.modelValue.vacation_policy_viewed"
+          :readonly="!props.editable"
         />
         <label for="vacation_policy_viewed">С положением о заполнении вакантных мест ознакомлен</label>
       </div>
@@ -36,6 +39,7 @@
           v-model="modelValue.no_restrictions_policy_accepted" 
           binary 
           :invalid="props.showValidationErrors && !props.modelValue.no_restrictions_policy_accepted"
+          :readonly="!props.editable"
         />
         <label for="no_restrictions_policy_accepted">Подтверждаю отсутствие ограничений, предусмотренных для освоения образовательной
           программы за счет бюджетный оссигнований</label>
@@ -46,6 +50,7 @@
           v-model="modelValue.reliable_information_policy_accepted" 
           binary 
           :invalid="props.showValidationErrors && !props.modelValue.reliable_information_policy_accepted"
+          :readonly="!props.editable"
         />
         <label for="reliable_information_policy_accepted"> Ознакомлен с необходимостью в заявлении достовреный сведений и представления подлинных
           документов</label>
@@ -80,6 +85,9 @@ const props = defineProps({
   isValid: {
     type: Boolean,
     default: false
+  },
+  editable: {
+    type: Boolean,
   }
 });
 

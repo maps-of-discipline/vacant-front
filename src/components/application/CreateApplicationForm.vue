@@ -1,5 +1,5 @@
 <template>
-  <div class="content application-panel flex flex-column gap-3 justify-content-center m-auto mb-4 montserrat-font">
+  <div class="application-panel flex flex-column gap-3 justify-content-center m-auto montserrat-font">
     <Panel>
       <template #header>
         <h3 v-if="applicationType === 'change'">
@@ -15,21 +15,21 @@
       <pre>{{ application }}</pre>
       <div class="programs flex flex-column gap-4 mb-3">
         <ApplicationHeader :type="applicationType" v-model="model.header" :showValidationErrors
-          v-model:isValid="formValidation.header" />
+          v-model:isValid="formValidation.header" :editable='props.editable'/>
 
         <Program v-for="(programConfig, index) in programConfigs" :key="`program-${index}`"
           v-model="model.programs[index]" 
           :type="programConfig.type"
           :anotherUniversity="programConfig.anotherUniversity" 
           :showValidationErrors="showValidationErrors"
-          v-model:isValid="formValidation.programs[index]" />
+          v-model:isValid="formValidation.programs[index]" :editable='props.editable'/>
 
         <ApplicationFooter :showValidationErrors :type="applicationType" v-model="model.footer"
-          v-model:isValid="formValidation.footer" />
+          v-model:isValid="formValidation.footer" :editable='props.editable'/>
         <ApplicationFiles :type="applicationType" :isTransferToBudget="isChangeToBudget"
-          v-model:isValid="formValidation.files" :showValidationErrors />
+          v-model:isValid="formValidation.files" :showValidationErrors :editable='props.editable'/>
       </div>
-      <div class="flex flex-column w-full align-items-center">
+      <div class="flex flex-column w-full align-items-center" v-if='props.editable'>
         <Button :label="submitLabel" :icon='submitIcon' @click="onSubmit" />
       </div>
     </Panel>
@@ -64,6 +64,10 @@ const props = defineProps({
   isEdit: {
     type: Boolean,
     default: false,
+  }, 
+  editable: {
+    type: Boolean, 
+    default: true,
   }
 })
 
@@ -148,4 +152,5 @@ const onSubmit = () => {
     padding: 0.5rem;
   }
 }
+
 </style>

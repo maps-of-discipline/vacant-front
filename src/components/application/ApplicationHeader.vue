@@ -4,18 +4,18 @@
             <label class="mb-2">Цель восстановления: </label>
             <div class="flex flex-row gap-2 align-items-center">
                 <div class="flex items-center gap-2">
-                    <RadioButton v-model="modelValue.purpose" inputId="10" name="purpose" value="continue_study" />
+                    <RadioButton v-model="modelValue.purpose" inputId="10" name="purpose" value="continue_study" :readonly='!props.editable'/>
                     <label for="male">Продолжение обучения</label>
                 </div>
                 <div class="flex items-center gap-2">
-                    <RadioButton v-model="modelValue.purpose" inputId="20" name="purpose" value="gia" />
+                    <RadioButton v-model="modelValue.purpose" inputId="20" name="purpose" value="gia" :readonly='!props.editable'/>
                     <label for="male">Подготовка и прохождение ГИА</label>
                 </div>
             </div>
         </div>
 
         <div class="flex flex-row gap-2 mb-3">
-            <Checkbox v-model="modelValue.is_vacation_need" binary />
+            <Checkbox v-model="modelValue.is_vacation_need" binary :readonly='!props.editable'/>
             <label for="male">Предоставление каникул в пределах срока освоения образовательной программы</label>
         </div>
 
@@ -28,8 +28,9 @@
                         view="year" 
                         dateFormat="yy"
                         placeholder="Год поступления" 
+                        :readonly='!props.editable'
                         :class="{'p-invalid': showValidationErrors && beginYearErrorMessage}" />
-                    <Message v-if="showValidationErrors && beginYearErrorMessage" severity="error" variant="simple" size="small">
+                    <Message v-if="showValidationErrors && beginYearErrorMessage" severity="error" variant="simple" size="small" >
                         {{ beginYearErrorMessage }}
                     </Message>
                 </div>
@@ -41,6 +42,7 @@
                         view="year" 
                         dateFormat='yy' 
                         placeholder="Год отчисления"
+                        :readonly='!props.editable'
                         :class="{'p-invalid': showValidationErrors && endYearErrorMessage}" />
                     <Message v-if="showValidationErrors && endYearErrorMessage" severity="error" variant="simple" size="small">
                         {{ endYearErrorMessage }}
@@ -49,7 +51,7 @@
                 
                 <div class="flex flex-column flex-1">
                     <InputText v-model="modelValue.group" placeholder="Учебная группа (например: 12-34)"
-                        :class="{'p-invalid': showValidationErrors && groupErrorMessage}" />
+                        :class="{'p-invalid': showValidationErrors && groupErrorMessage}" :readonly='!props.editable'/>
                     <Message v-if="showValidationErrors && groupErrorMessage" severity="error" variant="simple" size="small">
                         {{ groupErrorMessage }}
                     </Message>
@@ -109,6 +111,9 @@ const props = defineProps({
     isValid: {
         type: Boolean,
         default: false
+    },
+    editable: {
+        type: Boolean,
     }
 });
 const emit = defineEmits(['update:modelValue', 'update:isValid']);

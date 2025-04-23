@@ -9,6 +9,8 @@ import EditApplication from "../pages/EditApplication.vue";
 import ExternalLogin from "../pages/ExternalLogin.vue";
 import Rups from "../pages/Rups.vue";
 import Profile from "../pages/Profile.vue";
+import Applications from "../pages/Applications.vue";
+import ProcessApplication from "../pages/ProcessApplication.vue";
 
 const routes = [
   {
@@ -37,7 +39,23 @@ const routes = [
     //   notForAuthenticated: true,
     // }
   },
-
+  {
+    path: "/applications/all",
+    name: "Applications",
+    component: Applications,
+    // meta: {
+    //   permissions: ['canViewOwnApplications']
+    // },
+  },
+  {
+    path: "/applications/process/:id",
+    name: "Process application",
+    component: ProcessApplication,
+    props: true,
+    // meta: {
+    //   permissions: ['canViewOwnApplications']
+    // },
+  },
   {
     path: "/applications",
     name: "SelfApplications",
@@ -60,7 +78,7 @@ const routes = [
     // }
   },
   {
-    path:"/applications/edit/:id", 
+    path: "/applications/edit/:id",
     name: "Edit application",
     component: EditApplication,
     props: true,

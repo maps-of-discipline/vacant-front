@@ -1,0 +1,180 @@
+:root {
+    /* Light theme status colors */
+    --status-success-bg: #c8e6c9;
+    --status-success-text: #2e7d32;
+    --status-success-border: rgba(76, 175, 80, 0);
+
+    --status-warning-bg: #ffedd9;
+    --status-warning-text: #b56f24;
+    --status-warning-border: rgba(255, 167, 38, 0);
+
+    --status-error-bg: #ffd9dd;
+    --status-error-text: #c75050;
+    --status-error-border: rgba(239, 83, 80, 0);
+
+    --status-info-bg: #bbdefb;
+    --status-info-text: #4f76b0;
+    --status-info-border: rgba(33, 150, 243, 0);
+    
+    --status-secondary-bg: #bfbfbf;
+    --status-secondary-text: #383838;
+    --status-secondary-border: rgba(33, 150, 243, 0);
+
+    /* -- Hover -- */
+    --status-hover-success-bg: #b1e6b2;
+    --status-hover-success-text: #2e7d32;
+    --status-hover-success-border: rgba(76, 175, 80, 0.25);
+
+    --status-hover-warning-bg: #ffe1bf;
+    --status-hover-warning-text: #b56f24;
+    --status-hover-warning-border: rgba(255, 167, 38, 0.25);
+
+    --status-hover-error-bg: #ffbfc5;
+    --status-hover-error-text: #c75050;
+    --status-hover-error-border: rgba(239, 83, 80, 0.25);
+
+    --status-hover-info-bg: #a2d3fa;
+    --status-hover-info-text: #4f76b0;
+    --status-hover-info-border: rgba(33, 150, 243, 0.25);
+
+    --status-hover-secondary-bg: #bfbfbf;
+    --status-hover-secondary-text: #383838;
+    --status-hover-secondary-border: rgba(51, 51, 51, 0.25);
+}
+
+/* Dark theme variables */
+.my-app-dark {
+    --status-success-bg: rgba(76, 175, 80, 0.16);
+    --status-success-text: #81c784;
+    --status-success-border: rgba(56, 142, 60, 0);
+
+    --status-warning-bg: rgba(255, 167, 38, 0.1);
+    --status-warning-text: #e69b50;
+    --status-warning-border: rgba(245, 124, 0, 0);
+
+    --status-error-bg: rgba(244, 54, 54, 0.16);
+    --status-error-text: #e57373;
+    --status-error-border: rgba(211, 47, 47, 0);
+
+    --status-info-bg: rgba(59, 130, 246, 0.2);
+    --status-info-text: rgba(100, 181, 246, 0.88);
+    --status-info-border: rgba(25, 118, 210, 0);
+    
+    --status-secondary-bg: rgba(71, 71, 71, 0.38);
+    --status-secondary-text: #7c7c7c;
+    --status-secondary-border: rgba(33, 150, 243, 0);
+
+    /* -- Hover -- */
+    --status-hover-success-bg: rgba(76, 175, 80, 0.25);
+    --status-hover-success-text: #81c784;
+    --status-hover-success-border: rgba(56, 142, 60, 0.25);
+
+    --status-hover-warning-bg: rgba(255, 167, 38, 0.25);
+    --status-hover-warning-text: #ffb74d;
+    --status-hover-warning-border: rgba(245, 124, 0, 0.25);
+
+    --status-hover-error-bg: rgba(244, 54, 54, 0.25);
+    --status-hover-error-text: #e57373;
+    --status-hover-error-border: rgba(211, 47, 47, 0.25);
+
+    --status-hover-info-bg: rgba(59, 130, 246, 0.25);
+    --status-hover-info-text: rgba(100, 181, 246, 0.88);
+    --status-hover-info-border: rgba(25, 118, 210, 0.25);
+
+    --status-hover-secondary-bg: rgba(71, 71, 71, 0.25);
+    --status-hover-secondary-text: #7c7c7c;
+    --status-hover-secondary-border: rgba(33, 150, 243, 0.25);
+}
+
+.status-success {
+    background-color: var(--status-success-bg) !important;
+    color: var(--status-success-text) !important;
+    border: 1px solid var(--status-success-border) !important;
+}
+
+.status-warning {
+    background-color: var(--status-warning-bg) !important;
+    color: var(--status-warning-text) !important;
+    border: 1px solid var(--status-warning-border) !important;
+}
+
+.status-error {
+    background-color: var(--status-error-bg) !important;
+    color: var(--status-error-text) !important;
+    border: 1px solid var(--status-error-border) !important;
+}
+
+.status-info {
+    background-color: var(--status-info-bg) !important;
+    color: var(--status-info-text) !important;
+    border: 1px solid var(--status-info-border) !important;
+}
+
+.status-secondary {
+    background-color: var(--status-secondary-bg) !important;
+    color: var(--status-secondary-text) !important;
+    border: 1px solid var(--status-secondary-border) !important;
+}
+
+
+.status-success:hover {
+    background-color: var(--status-hover-success-bg) !important;
+    color: var(--status-hover-success-text) !important;
+    border: 1px solid var(--status-hover-success-border) !important;
+}
+
+.status-warning:hover {
+    background-color: var(--status-hover-warning-bg) !important;
+    color: var(--status-hover-warning-text) !important;
+    border: 1px solid var(--status-hover-warning-border) !important;
+}
+
+.status-error:hover {
+    background-color: var(--status-hover-error-bg) !important;
+    color: var(--status-hover-error-text) !important;
+    border: 1px solid var(--status-hover-error-border) !important;
+}
+
+.status-info:hover {
+    background-color: var(--status-hover-info-bg) !important;
+    color: var(--status-hover-info-text) !important;
+    border: 1px solid var(--status-hover-info-border) !important;
+}
+
+.status-secondary:hover {
+    background-color: var(--status-hover-secondary-bg) !important;
+    color: var(--status-hover-secondary-text) !important;
+    border: 1px solid var(--status-hover-secondary-border) !important;
+}
+
+/* Reset hover effects for all status types */
+.status-label.status-success:hover {
+    background-color: var(--status-success-bg) !important;
+    color: var(--status-success-text) !important;
+    border: 1px solid var(--status-success-border) !important;
+}
+
+.status-label.status-warning:hover {
+    background-color: var(--status-warning-bg) !important;
+    color: var(--status-warning-text) !important;
+    border: 1px solid var(--status-warning-border) !important;
+}
+
+.status-label.status-error:hover {
+    background-color: var(--status-error-bg) !important;
+    color: var(--status-error-text) !important;
+    border: 1px solid var(--status-error-border) !important;
+}
+
+.status-label.status-info:hover {
+    background-color: var(--status-info-bg) !important;
+    color: var(--status-info-text) !important;
+    border: 1px solid var(--status-info-border) !important;
+}
+
+.status-label.status-secondary:hover {
+    background-color: var(--status-secondary-bg) !important;
+    color: var(--status-secondary-text) !important;
+    border: 1px solid var(--status-secondary-border) !important;
+}
+

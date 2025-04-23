@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 
 import "primeicons/primeicons.css"; // Иконки
 import "primeflex/primeflex.css"; // Стили для верстки
+import "./status-colors.css"
 
 import PrimeVue from "primevue/config";
 import router from "./router";

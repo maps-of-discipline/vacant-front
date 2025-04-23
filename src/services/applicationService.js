@@ -2,10 +2,6 @@ import { api } from "./api.js";
 import config from "../config.js";
 
 export default class ApplicationService {
-    static getUserApplications() {
-        return api.get("applications/user");
-    }
-
     static async saveApplication(data) {
         let application = {
             date: data.date,
@@ -18,7 +14,6 @@ export default class ApplicationService {
         application.begin_year = new Date(application.begin_year).getFullYear();
         application.end_year = new Date(application.end_year).getFullYear();
 
-        console.log("Saving application", application);
         try {
             if (!application || !application.type) {
                 throw new Error("Invalid application: missing type");
@@ -28,13 +23,13 @@ export default class ApplicationService {
 
             switch (application.type) {
                 case "change":
-                    response = await api.post("applications/change", application);
+                    response = await api.post("/applications/change", application);
                     break;
                 case "reinstatement":
-                    response = await api.post("applications/reinstatement", application);
+                    response = await api.post("/applications/reinstatement", application);
                     break;
                 case "transfer":
-                    response = await api.post("applications/transfer", application);
+                    response = await api.post("/applications/transfer", application);
                     break;
                 default:
                     throw new Error(`Unknown application type: ${application.type}`);
@@ -47,9 +42,14 @@ export default class ApplicationService {
         }
     }
 
+    static async fetchApplications() {
+        const response = await api.get('/applications/all')
+        return response.data
+    }
+
     static async fetchUserApplications() {
         try {
-            const response = await api.get("/applications/applications");
+            const response = await api.get("/applications/user");
             return response.data;
         } catch (error) {
             // Handle API errors
@@ -121,6 +121,17 @@ export default class ApplicationService {
             programs: application.programs || [],
             footer,
             date: application.date,
+            status: application.status,
         };
+    }
+
+    static async delete(id) {
+        const application = await api.delete(`/applications/${id}`)
+        return application
+    }
+
+    static async getCommnets(application_id, scope) {
+        const response = await api.get(`/applications/comments`, {params: {application_id: application_id, scope: scope}})
+        return response.data
     }
 }

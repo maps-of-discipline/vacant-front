@@ -17,6 +17,11 @@
       :rows="5"
       class="p-datatable-sm custom-table"
     >
+      <Column field='fio' header="ФИО">
+        <template #body="slotProps">
+          {{ getShortFullName(slotProps.data.fio) }}
+        </template>
+      </Column>
       <Column field="type" header="Тип заявления">
         <template #body="slotProps">
           {{ getTypeTranslation(slotProps.data.type) }}
@@ -62,17 +67,8 @@
             <Button
               rounded
               severity="secondary"
-              icon="pi pi-pencil m-auto"
+              icon="pi pi-eye m-auto"
               @click="editApplication(slotProps.data)"
-              v-if="isEditShown(slotProps.data)"
-              size="small"
-            />
-            <Button
-              rounded
-              severity="danger"
-              icon="pi pi-trash m-auto"
-              @click="deleteApplication(slotProps.data)"
-              v-if="isDeleteShown(slotProps.data)"
               size="small"
             />
           </div>
@@ -107,7 +103,6 @@ import { useAuthStore } from "../store/authStore.js";
 import { useAppStore } from "../store/appStore.js";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
-import AppService from "../services/appService.js";
 
 const applications = ref([]);
 const loading = ref(true);
@@ -167,67 +162,37 @@ const getStatusTranslation = (status) => {
 const getTypeTranslation = (type) => {
   switch (type) {
     case "reinstatement":
-      return "Заявление на восстановление";
+      return "Восстановление";
     case "change":
-      return "Заявление на изменение условий обучния";
+      return "Изменение условий обучния";
     case "transfer":
-      return "Заявление на перевод из другого ВУЗа";
+      return "Перевод из другого ВУЗа";
     default:
       return type;
   }
 };
 
-const deleteApplication = async (data) => {
-  applications.value = applications.value.filter((item) => item.id != data.id);
-  if (data.status === "draft") applicationStore.setDraftApplication(null);
-  else
-    try {
-      await ApplicationService.delete(data.id);
-    } catch (error) {
-      toast.add({
-        severity: "error",
-        summary: "Ошибка",
-        detail: "При удалении заявления произошла ошибка",
-        life: 3000,
-      });
-      throw error
-    }
-  toast.add({
-    severity: "success",
-    summary: "Заявление удалено",
-    life: 3000,
-  });
-};
-
-const isEditShown = (data) => {
-  const statuses = ["draft"];
-  return statuses.some((el) => el == data.status);
-};
-
-const isDeleteShown = (data) => {
-  const statuses = ["draft", "new"];
-  return statuses.some((el) => el == data.status);
-};
+const getShortFullName = (fullname) => {
+  const [surname, name, patronimyc] = fullname.split(' ')
+  return `${surname} ${name[0]}.${patronimyc[0]}.`
+}
 
 const editApplication = (data) => {
   router.push({
-    name: "Edit application",
+    name: "Process application",
     params: { id: data.id },
     query: { type: data.type },
   });
 };
 
 const fetchApplications = async () => {
-  console.log("fetching applications");
   loading.value = true;
   error.value = null;
   let res;
   try {
-    res = await ApplicationService.fetchUserApplications();
+    res = await ApplicationService.fetchApplications();
   } catch (err) {
-    console.error("Error fetching applications:", err);
-    error.value =
-      "Не удалось загрузить заявления. Пожалуйста, попробуйте позже.";
+    error.value = "Не удалось загрузить заявления. Пожалуйста, попробуйте позже.";
   } finally {
     loading.value = false;
   }
@@ -236,18 +201,6 @@ const fetchApplications = async () => {
 };
 
 onMounted(() => {
-  const draft = applicationStore.draftApplication;
-  console.log(draft);
-  if (draft) {
-    applications.value = [
-      {
-        id: 0,
-        date: draft.date,
-        type: draft.type,
-        status: "draft",
-      },
-    ];
-  }
   fetchApplications();
 });
 

@@ -1,6 +1,5 @@
 <template>
   <div class="content application-page flex flex-column gap-4">
-    <Panel><pre> {{applicationData}} </pre></Panel>
     <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" />
   </div>
 </template>
@@ -55,8 +54,6 @@ watch(applicationData, (application, o) => {
 });
 
 onBeforeMount(() => {
-  if (props.application)
-    Object.assign(applicationData, props.application)
 })
 </script>
 
