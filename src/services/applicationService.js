@@ -3,28 +3,21 @@ import config from "../config.js";
 
 export default class ApplicationService {
     static async updateApplication(data) {
-        let application = {
-            date: data.date,
-            type: data.type,
-            programs: data.programs,
-            status: data.status,
-            ...data.header,
-            ...data.footer,
-        };
+        let application = this.unpackApplication(data)
 
         application.begin_year = new Date(application.begin_year).getFullYear();
         application.end_year = new Date(application.end_year).getFullYear();
 
-        let response; 
+        let response;
         switch (application.type) {
             case "change":
-                response = await api.post("/applications/change", application);
+                response = await api.put("/applications/change", application);
                 break;
             case "reinstatement":
-                response = await api.post("/applications/reinstatement", application);
+                response = await api.put("/applications/reinstatement", application);
                 break;
             case "transfer":
-                response = await api.post("/applications/transfer", application);
+                response = await api.put("/applications/transfer", application);
                 break;
             default:
                 throw new Error(`Unknown application type: ${application.type}`);
@@ -33,13 +26,7 @@ export default class ApplicationService {
     }
 
     static async saveApplication(data) {
-        let application = {
-            date: data.date,
-            type: data.type,
-            programs: data.programs,
-            ...data.header,
-            ...data.footer,
-        };
+        let application = this.unpackApplication(data)
 
         application.begin_year = new Date(application.begin_year).getFullYear();
         application.end_year = new Date(application.end_year).getFullYear();
@@ -78,31 +65,28 @@ export default class ApplicationService {
     }
 
     static async fetchUserApplications() {
-        try {
-            const response = await api.get("/applications/user");
-            return response.data;
-        } catch (error) {
-            // Handle API errors
-            if (error.response) {
-                // The server responded with an error status
-                console.error("Failed to fetch applications:", error.response.data);
-                throw new Error(
-                    error.response.data.message || "Failed to fetch applications",
-                );
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.error("No response received:", error.request);
-                throw new Error("Server did not respond. Please try again later.");
-            } else {
-                // Something happened in setting up the request
-                console.error("Request error:", error.message);
-                throw error;
-            }
-        }
+        const response = await api.get("/applications/user");
+        return response.data;
     }
+
     static async getApplication(id, type) {
         const response = await api.get(`/applications/${type}/${id}`);
         return this.parseApplication(response.data);
+    }
+    
+    static async delete(id) {
+        const application = await api.delete(`/applications/${id}`)
+        return application
+    }
+
+    static async getCommnets(application_id, scope) {
+        const response = await api.get(`/applications/comments`, { params: { application_id: application_id, scope: scope } })
+        return response.data
+    }
+
+    static async addQuickComment(application_id, message_id) {
+        const response = await api.post(`/applications/${application_id}/quickcomment`, { message_id: message_id })
+        return response.data
     }
 
     static parseApplication(application) {
@@ -146,28 +130,29 @@ export default class ApplicationService {
         };
 
         return {
-            header,
+            id: application.id,
+            user_id: application.user_id,
             type: application.type,
-            programs: application.programs || [],
-            footer,
             date: application.date,
             status: application.status,
+            header,
+            footer,
+            programs: application.programs || [],
         };
     }
 
-    static async delete(id) {
-        const application = await api.delete(`/applications/${id}`)
-        return application
+    static unpackApplication(data) {
+        return {
+            id: data.id, 
+            user_id: data.user_id,
+            date: data.date,
+            type: data.type,
+            status: data.status,
+            programs: data.programs,
+            ...data.header,
+            ...data.footer,
+        }
     }
 
-    static async getCommnets(application_id, scope) {
-        const response = await api.get(`/applications/comments`, { params: { application_id: application_id, scope: scope } })
-        return response.data
-    }
-
-    static async addQuickComment(application_id, message_id) {
-        const response = await api.post(`/applications/${application_id}/quickcomment`, { message_id: message_id })
-        return response.data
-    }
 }
 
