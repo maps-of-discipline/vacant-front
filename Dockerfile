@@ -12,7 +12,7 @@ RUN --mount=type=secret,id=env_file \
   cp /run/secrets/env_file /app/.env; \
   fi
 
-RUN npm run build
+RUN . /app/.env && npm run build
 
 # Production stage
 FROM nginx:stable-alpine AS production-stage
