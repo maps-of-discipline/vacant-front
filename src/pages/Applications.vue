@@ -152,6 +152,8 @@ const getStatusTranslation = (status) => {
       return "Одобрено";
     case "rejected":
       return "Отклонено";
+    case "needs correction":
+      return "Требует уточнения";
     case "draft":
       return "Черновик";
     default:

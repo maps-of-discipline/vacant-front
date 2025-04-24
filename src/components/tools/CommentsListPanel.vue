@@ -5,7 +5,7 @@
         <CommentList :comments="comments" @remove="onCommentRemove" />
         <FloatLabel variant="on" class="pb-3 w-full">
           <Textarea id="over_label" rows="3" class="w-full" v-model="newComment" />
-          <label for="on_label">Комментарий</label>
+          <label for="on_label">Оставить комментарий</label>
         </FloatLabel>
         <SplitButton size="small" label="Сохранить" icon="pi pi-eye" @click="onAddComment('user')"
           :model="saveCommentConfig" />
@@ -16,10 +16,11 @@
 
 <script setup>
 import { Panel, FloatLabel, Textarea, SplitButton, useToast } from "primevue";
-import { onBeforeMount, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import CommentList from "../UI/CommentList.vue";
 import ApplicationService from "../../services/applicationService";
 import CommentService from "../../services/commentService.js";
+import emitter from "../../eventBus.js"
 
 const props = defineProps({
   application_id: Number,
@@ -89,7 +90,17 @@ const onAddComment = async (scope) => {
   comments.value.push(created_comment);
 };
 
-onBeforeMount(async () => {
+const onAddCommentGlovalEvent = (newComment) => {
+  comments.value.push(newComment)
+}
+
+
+onMounted(async () => {
   await fetchComments();
-});
+  emitter.on('comment-added', onAddCommentGlovalEvent)
+})
+
+onUnmounted(() => {
+  emitter.off('comment-added', onAddCommentGlovalEvent)
+})
 </script>

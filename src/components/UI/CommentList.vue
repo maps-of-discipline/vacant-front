@@ -1,4 +1,5 @@
 <template>
+  <div v-if='props.comments.length > 0' class="flex flex-column w-full">
   <ScrollPanel class="mb-4 p-2" style="width: 100%; height: 300px">
     <Comment 
       v-for='comment in orderedComments' 
@@ -7,6 +8,7 @@
       @remove='emit("remove", comment.id)'
     />
   </ScrollPanel>
+  </div>
 </template>
 
 <script setup>
@@ -33,21 +35,5 @@ const orderedComments = computed(() => {
   const ordered = props.comments.sort((a, b) => priority[a.scope] < priority[b.scope])
   return ordered
 })
-
-// const onCommentRemove = async (comment_id) => {
-//   try {
-//     await CommentService.removeComment(comment_id)
-//   } catch (error) {
-//     toast.add({
-//       severity: "error",
-//       summary: "Ошибка",
-//       detail: "Не удалось удалить комментарий",
-//       life: 3000,
-//     })
-//     return 
-//   } 
-//
-//   props.comments = props.comments.filter((el) => el.id != comment_id)
-// }
 
 </script>
