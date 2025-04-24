@@ -7,12 +7,8 @@ RUN npm ci
 
 COPY . .
 
-RUN --mount=type=secret,id=env_file \
-  if [ -f "/run/secrets/env_file" ]; then \
-  cp /run/secrets/env_file /app/.env; \
-  fi
-
-RUN . /app/.env && npm run build
+RUN --mount=type=secret,id=env_file,target=/.env \
+  . /.env && npm run build
 
 # Production stage
 FROM nginx:stable-alpine AS production-stage
