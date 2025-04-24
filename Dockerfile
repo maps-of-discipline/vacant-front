@@ -7,7 +7,7 @@ RUN npm ci
 
 COPY . .
 
-RUN --mount=type=secret,id=env_file,target=/.env set -o allexport && . ./.env && set +o allexport && npm run build
+RUN --mount=type=secret,id=env_file,target=/.env set -o allexport && . /.env && set +o allexport && npm run build
 
 # Production stage
 FROM nginx:stable-alpine AS production-stage
