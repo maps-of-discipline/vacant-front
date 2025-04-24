@@ -9,6 +9,7 @@ COPY . .
 
 RUN --mount=type=secret,id=env_file,target=/.env \
   . /.env && npm run build
+RUN printenv
 
 # Production stage
 FROM nginx:stable-alpine AS production-stage
