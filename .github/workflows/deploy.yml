@@ -28,7 +28,7 @@ jobs:
           context: .
           push: true
           tags: localhost:5050/vacancy-front:main
-          secrets: |
+          secret-files: |
             "env_file=/home/kdadmin/apps/vacancy/.front.env"
           cache-from: type=registry,ref=localhost:5050/vacancy-front:cache
           cache-to: type=registry,ref=localhost:5050/vacancy-front:cache,mode=max
