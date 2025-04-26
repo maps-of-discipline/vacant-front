@@ -12,25 +12,36 @@ const router = useRouter();
 
 const items = ref([
   {
+    label: "Дашборд",
+    icon: "pi pi-chart-bar",
+    command: () => {
+      router.push({name: "Dashboard"});
+    },
+  },
+  {
     label: "Список поданных заявлений",
+    icon: "pi pi-file",
     command: () => {
       router.push({name: "SelfApplications"});
     },
   },
   {
     label: "Профиль",
+    icon: "pi pi-user",
     command: () => {
       router.push({ name: "Profile" });
     },
   },
   {
     label: "РУПЫ",
+    icon: "pi pi-book",
     command: () => {
       router.push({ name: "Rups" });
     },
   },
   {
     label: "Список заявлений (Stuff)",
+    icon: "pi pi-list",
     command: () => {
       router.push({ name: "Applications" });
     },

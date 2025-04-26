@@ -4,7 +4,7 @@
       <div class="application-page flex flex-row gap-4">
         <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" :editable="false" />
       </div>
-      <div class="tools flex flex-column gap-3 w-auto">
+      <div class="tools flex flex-column gap-4 w-auto">
         <StatusChangePanel 
           :status="applicationData.status" 
           :application_id='props.id' 

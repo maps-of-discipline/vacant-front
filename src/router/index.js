@@ -11,12 +11,18 @@ import Rups from "../pages/Rups.vue";
 import Profile from "../pages/Profile.vue";
 import Applications from "../pages/Applications.vue";
 import ProcessApplication from "../pages/ProcessApplication.vue";
+import Dashboard from "../pages/Dashboard.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
   },
   {
     path: "/login",
