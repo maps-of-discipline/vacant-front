@@ -119,7 +119,7 @@ export default class ApplicationService {
             ...headerFields.reduce((acc, field) => {
                 if (application[field] !== undefined) {
                     if (field == "end_year" || field == "begin_year") {
-                        acc[field] = new Date(application[field], 0, 1).toISOString()
+                        acc[field] = new Date(application[field], 0, 1)
                     }
                     else
                         acc[field] = application[field];

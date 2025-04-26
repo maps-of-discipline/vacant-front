@@ -92,7 +92,7 @@
       <Button
         label="Подать заявление"
         icon="pi pi-plus"
-        v-if="!applicationStore.draftApplication"
+        v-if="isCreateButtonShown"
       />
     </div>
   </div>
@@ -227,14 +227,14 @@ const statusVerboseName = (title) => {
 };
 
 const isCreateButtonShown = () => {
-  const inProgressStatuses = ["draft", "new", "needs correction"];
+  const inProgressStatuses = ["draft", "new", "needs correction", "in progress"];
   if (!authStore.checkPermissions(["canCreateSelfApplication"])) {
     return false;
   }
-  if (!applications.length || applications.some((el) => inProgressStatuses.includes(el.status))) {
+  if (applications.value.length > 0 && applications.value.some((el) => inProgressStatuses.includes(el.status))) {
     return false;
   }
-  return false;
+  return true;
 };
 </script>
 

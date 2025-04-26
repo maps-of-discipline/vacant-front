@@ -64,14 +64,6 @@ const onValidSubmit = async (application) => {
   }
 };
 
-watch(applicationData, (application, o) => {
-  applicationsStore.setDraftApplication({
-    ...application,
-    date: new Date().toISOString(),
-  });
-  console.log("application changed");
-});
-
 const fetchApplication = async () => {
   if (route.query.type) {
     let app;
