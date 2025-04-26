@@ -10,11 +10,13 @@
 
     <DataTable
       :value="applications"
-      tableStyle="min-width: 50rem"
+      dataKey="id"
+      :loading="loading"
+      tableStyle="min-width: 60rem"
       v-else-if="applications.length > 0"
       stripedRows
       paginator
-      :rows="5"
+      :rows="10"
       class="p-datatable-sm custom-table"
     >
       <Column field='fio' header="ФИО">
@@ -51,14 +53,10 @@
           <span class="m-auto font-bold">Статус</span>
         </template>
         <template #body="slotProps">
-          <span
-            :class="[
-              'status-badge w-full py-1 px-2 border-round',
-              getStatusClass(slotProps.data.status),
-            ]"
-          >
-            {{ getStatusTranslation(slotProps.data.status) }}
-          </span>
+          <Tag 
+            :value="statusVerboseName(slotProps.data.status)"
+            :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
+          />
         </template>
       </Column>
       <Column>
@@ -98,15 +96,19 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Column, DataTable, Button, useToast } from "primevue";
+import { Column, DataTable, Button, Tag, useToast } from "primevue";
 import { useAuthStore } from "../store/authStore.js";
 import { useAppStore } from "../store/appStore.js";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
+import AppService from "../services/appService.js";
+import StatusService from "../services/statusService.js";
 
 const applications = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const statuses = ref({});
+
 
 const authStore = useAuthStore();
 const appStore = useAppStore();
@@ -119,60 +121,6 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString("ru-RU");
 };
 
-const getStatusClass = (status) => {
-  switch (status) {
-    case "new":
-      return appStore.isDarkMode
-        ? "new-status-color text-blue-300"
-        : "bg-blue-100 text-blue-900";
-    case "approved":
-      return appStore.isDarkMode
-        ? "approved-status-color text-green-300"
-        : "bg-green-100 text-green-900";
-    case "rejected":
-      return appStore.isDarkMode
-        ? "rejected-status-color text-red-300"
-        : "bg-red-100 text-red-900";
-    case "draft":
-      return appStore.isDarkMode
-        ? "draft-status-color text-gray-300"
-        : "bg-gray-100 text-gray-900";
-    default:
-      return appStore.isDarkMode
-        ? "text-gray-100"
-        : "bg-gray-100 text-gray-900";
-  }
-};
-
-const getStatusTranslation = (status) => {
-  switch (status) {
-    case "new":
-      return "Новое";
-    case "approved":
-      return "Одобрено";
-    case "rejected":
-      return "Отклонено";
-    case "needs correction":
-      return "Требует уточнения";
-    case "draft":
-      return "Черновик";
-    default:
-      return status;
-  }
-};
-
-const getTypeTranslation = (type) => {
-  switch (type) {
-    case "reinstatement":
-      return "Восстановление";
-    case "change":
-      return "Изменение условий обучния";
-    case "transfer":
-      return "Перевод из другого ВУЗа";
-    default:
-      return type;
-  }
-};
 
 const getShortFullName = (fullname) => {
   const [surname, name, patronimyc] = fullname.split(' ')
@@ -185,6 +133,19 @@ const editApplication = (data) => {
     params: { id: data.id },
     query: { type: data.type },
   });
+};
+
+const getTypeTranslation = (type) => {
+  switch (type) {
+    case "reinstatement":
+      return "Заявление на восстановление";
+    case "change":
+      return "Заявление на изменение условий обучния";
+    case "transfer":
+      return "Заявление на перевод из другого ВУЗа";
+    default:
+      return type;
+  }
 };
 
 const fetchApplications = async () => {
@@ -202,9 +163,27 @@ const fetchApplications = async () => {
   applications.value = [...applications.value, ...res];
 };
 
-onMounted(() => {
-  fetchApplications();
+
+const fetchStatuses = async () => {
+  const res = await StatusService.fetchAll()
+  const mapper = res.reduce((acc, obj) => {
+    acc[obj.title] = obj;
+    return acc;
+  }, {})
+  mapper.draft = {title: 'draft', verbose_name: "Черновик"}
+  statuses.value = mapper
+}
+
+onMounted(async () => {
+  await fetchApplications();
+  await fetchStatuses();
 });
+
+
+const statusVerboseName = (title) => {
+  if (!statuses.value[title]) return title; 
+  return String(statuses.value[title].verbose_name);
+}
 
 const isCreateButtonShown = () => {
   if (authStore.checkPermissions(["canCreateManySelfApplications"])) {
@@ -223,7 +202,7 @@ const isCreateButtonShown = () => {
 
 <style scoped>
 .content {
-  max-width: 1100px;
+  max-width: 1200px;
   min-width: 840px;
 }
 
@@ -234,22 +213,7 @@ const isCreateButtonShown = () => {
 
 /* Add these styles to increase row height */
 .custom-table :deep(tr) {
-  height: 5.5rem;
+  height: 2rem;
 }
 
-.new-status-color {
-  background-color: rgba(from var(--p-blue-500) r g b / 0.2);
-}
-
-.approved-status-color {
-  background-color: rgba(from var(--p-green-500) r g b / 0.2);
-}
-
-.rejected-status-color {
-  background-color: rgba(from var(--p-red-500) r g b / 0.2);
-}
-
-.draft-status-color {
-  background-color: rgba(from var(--p-gray-500) r g b / 0.2);
-}
 </style>

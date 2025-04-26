@@ -46,14 +46,10 @@
           <span class="m-auto font-bold">Статус</span>
         </template>
         <template #body="slotProps">
-          <span
-            :class="[
-              'status-badge w-full py-1 px-2 border-round',
-              getStatusClass(slotProps.data.status),
-            ]"
-          >
-            {{ getStatusTranslation(slotProps.data.status) }}
-          </span>
+          <Tag 
+            :value="statusVerboseName(slotProps.data.status)"
+            :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
+          />
         </template>
       </Column>
       <Column>
@@ -102,16 +98,18 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Column, DataTable, Button, useToast } from "primevue";
+import { Column, DataTable, Button, Tag, useToast } from "primevue";
 import { useAuthStore } from "../store/authStore.js";
 import { useAppStore } from "../store/appStore.js";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
+import StatusService from "../services/statusService.js";
 import AppService from "../services/appService.js";
 
 const applications = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const statuses = ref({})
 
 const authStore = useAuthStore();
 const appStore = useAppStore();
@@ -122,46 +120,6 @@ const toast = useToast();
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("ru-RU");
-};
-
-const getStatusClass = (status) => {
-  switch (status) {
-    case "new":
-      return appStore.isDarkMode
-        ? "new-status-color text-blue-300"
-        : "bg-blue-100 text-blue-900";
-    case "approved":
-      return appStore.isDarkMode
-        ? "approved-status-color text-green-300"
-        : "bg-green-100 text-green-900";
-    case "rejected":
-      return appStore.isDarkMode
-        ? "rejected-status-color text-red-300"
-        : "bg-red-100 text-red-900";
-    case "draft":
-      return appStore.isDarkMode
-        ? "draft-status-color text-gray-300"
-        : "bg-gray-100 text-gray-900";
-    default:
-      return appStore.isDarkMode
-        ? "text-gray-100"
-        : "bg-gray-100 text-gray-900";
-  }
-};
-
-const getStatusTranslation = (status) => {
-  switch (status) {
-    case "new":
-      return "Новое";
-    case "approved":
-      return "Одобрено";
-    case "rejected":
-      return "Отклонено";
-    case "draft":
-      return "Черновик";
-    default:
-      return status;
-  }
 };
 
 const getTypeTranslation = (type) => {
@@ -232,35 +190,49 @@ const fetchApplications = async () => {
     loading.value = false;
   }
 
-  applications.value = [...applications.value, ...res];
-};
-
-onMounted(() => {
-  const draft = applicationStore.draftApplication;
-  console.log(draft);
+  let draft = applicationStore.draftApplication;
   if (draft) {
-    applications.value = [
-      {
+    draft ={
         id: 0,
         date: draft.date,
         type: draft.type,
         status: "draft",
-      },
-    ];
+      };
   }
-  fetchApplications();
+
+  applications.value = draft ? [draft, ...res] : [...res];
+};
+
+
+const fetchStatuses = async () => {
+  const res = await StatusService.fetchAll()
+  const mapper = res.reduce((acc, obj) => {
+    acc[obj.title] = obj;
+    return acc;
+  }, {})
+  mapper.draft = {title: 'draft', verbose_name: "Черновик"}
+  statuses.value = mapper
+}
+
+onMounted(async () => {
+  await fetchApplications();
+  await fetchStatuses();
 });
 
+
+const statusVerboseName = (title) => {
+  if (!statuses.value[title]) return title; 
+  return String(statuses.value[title].verbose_name);
+}
+
+
 const isCreateButtonShown = () => {
-  if (authStore.checkPermissions(["canCreateManySelfApplications"])) {
-    return true;
+  const inProgressStatuses = ['draft', 'new', 'needs correction']
+  if (!authStore.checkPermissions(["canCreateSelfApplication"])) {
+    return false;
   }
-  if (
-    authStore.checkPermissions(["canCreateSelfApplication"]) &&
-    (applications.value.length === 0 ||
-      !applications.value.some((app) => app.status === "new"))
-  ) {
-    return true;
+  if (applications.some((el) => inProgressStatuses.includes(el.status))) {
+    return false;
   }
   return false;
 };

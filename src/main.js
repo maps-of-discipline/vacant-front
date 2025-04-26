@@ -12,9 +12,13 @@ import ThemePreset from "./Theme.js";
 import ToastService from 'primevue/toastservice';
 import { useAuthStore } from './store/authStore';
 import { useAppStore } from './store/appStore.js';
+import Tooltip from 'primevue/tooltip';
 
 const app = createApp(App);
 const pinia = createPinia();
+
+
+
 
 app.use(pinia);
 app.use(PrimeVue, {
@@ -27,6 +31,7 @@ app.use(PrimeVue, {
 });
 app.use(router);
 app.use(ToastService);
+app.directive('tooltip', Tooltip);
 
 const appStore = useAppStore();
 appStore.init();

@@ -29,13 +29,15 @@ const applicationData = reactive({
 
 const onValidSubmit = async (application) => {
   try {
-    const response = await ApplicationService.saveApplication(application);
+    await ApplicationService.saveApplication(application);
     toast.add({
       severity: "success",
       summary: "Успех",
       detail: "Заявление успешно сохранено",
       life: 3000,
     });
+    console.log('set draft application to null after save');
+    applicationsStore.setDraftApplication(null);
     await router.push({ name: "SelfApplications" });
   } catch (error) {
     console.log(error);
