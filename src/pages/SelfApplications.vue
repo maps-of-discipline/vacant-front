@@ -46,9 +46,12 @@
           <span class="m-auto font-bold">Статус</span>
         </template>
         <template #body="slotProps">
-          <Tag 
+          <Tag
             :value="statusVerboseName(slotProps.data.status)"
-            :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
+            :class="[
+              'status-label',
+              AppService.getStatusClass(slotProps.data.status),
+            ]"
           />
         </template>
       </Column>
@@ -109,7 +112,7 @@ import AppService from "../services/appService.js";
 const applications = ref([]);
 const loading = ref(true);
 const error = ref(null);
-const statuses = ref({})
+const statuses = ref({});
 
 const authStore = useAuthStore();
 const appStore = useAppStore();
@@ -148,7 +151,7 @@ const deleteApplication = async (data) => {
         detail: "При удалении заявления произошла ошибка",
         life: 3000,
       });
-      throw error
+      throw error;
     }
   toast.add({
     severity: "success",
@@ -192,46 +195,43 @@ const fetchApplications = async () => {
 
   let draft = applicationStore.draftApplication;
   if (draft) {
-    draft ={
-        id: 0,
-        date: draft.date,
-        type: draft.type,
-        status: "draft",
-      };
+    draft = {
+      id: 0,
+      date: draft.date,
+      type: draft.type,
+      status: "draft",
+    };
   }
 
   applications.value = draft ? [draft, ...res] : [...res];
 };
 
-
 const fetchStatuses = async () => {
-  const res = await StatusService.fetchAll()
+  const res = await StatusService.fetchAll();
   const mapper = res.reduce((acc, obj) => {
     acc[obj.title] = obj;
     return acc;
-  }, {})
-  mapper.draft = {title: 'draft', verbose_name: "Черновик"}
-  statuses.value = mapper
-}
+  }, {});
+  mapper.draft = { title: "draft", verbose_name: "Черновик" };
+  statuses.value = mapper;
+};
 
 onMounted(async () => {
   await fetchApplications();
   await fetchStatuses();
 });
 
-
 const statusVerboseName = (title) => {
-  if (!statuses.value[title]) return title; 
+  if (!statuses.value[title]) return title;
   return String(statuses.value[title].verbose_name);
-}
-
+};
 
 const isCreateButtonShown = () => {
-  const inProgressStatuses = ['draft', 'new', 'needs correction']
+  const inProgressStatuses = ["draft", "new", "needs correction"];
   if (!authStore.checkPermissions(["canCreateSelfApplication"])) {
     return false;
   }
-  if (applications.some((el) => inProgressStatuses.includes(el.status))) {
+  if (!applications.length || applications.some((el) => inProgressStatuses.includes(el.status))) {
     return false;
   }
   return false;
