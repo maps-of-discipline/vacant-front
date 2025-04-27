@@ -14,4 +14,10 @@ export default class MapsService {
         const response = await mapsApi.get("/getAllMaps");
         return response.data;
     }
+
+
+    static async fetchAllMaps() {
+        const response = await mapsApi.get("/getAllMaps")
+        return response.data
+    }
 }

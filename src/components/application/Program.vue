@@ -1,12 +1,15 @@
 <template>
   <Panel :header="getPanelHeader">
-    <div class="flex flex-row gap-2 mb-2">
+    <div class="flex flex-column gap-2 mb-2">
       <div class="flex flex-column flex-1">
         <Select
           class="w-full"
           v-model="program.okso"
           filter
-          :options="selectOptions.directions"
+          :options="programOptions"
+          optionLabel='title'
+          optionValue='value'
+          :loading='props.isOptionsLoading'
           placeholder="Направление обучния"
           :class="{ 'p-invalid': showValidationErrors && oksoErrorMessage }"
           :disabled="!props.editable"
@@ -34,7 +37,11 @@
           v-else
           class="w-full"
           v-model="program.profile"
-          :options="selectOptions.profiles"
+          :options="filteredProfiles"
+          optionLabel='title'
+          optionValue='aup'
+          filter
+          :loading='props.isOptionsLoading'
           placeholder="Профиль"
           :class="{ 'p-invalid': showValidationErrors && profileErrorMessage }"
           :disabled="!props.editable"
@@ -146,7 +153,9 @@
           v-else
           class="w-full"
           v-model="program.university"
-          :options="selectOptions.universities"
+          :options="selectOptions.cities"
+          optionLabel='title'
+          optionValue='value'
           placeholder="Университет / Филлиал"
           :class="{
             'p-invalid': showValidationErrors && universityErrorMessage,
@@ -203,37 +212,16 @@ const program = defineModel("modelValue", {
   }),
 });
 
-onMounted(() => {
-  if (props.type && !program.value.type) {
-    program.value.type = props.type;
-  }
-});
 
 const props = defineProps({
   type: String,
   anotherUniversity: Boolean,
   selectOptions: {
     type: Object,
-    default: () => ({
-      directions: [
-        "09.03.02 Информатика и информационные технологии",
-        "10.03.01 Информационная безопасность",
-      ],
-      profiles: ["Profile 1", "Profile 2", "Profile 3", "Profile 4"],
-      universities: ["Москва", "Не Москва"],
-      semesters: [
-        { title: "1 семестр", value: 1 },
-        { title: "2 семестр", value: 2 },
-        { title: "3 семестр", value: 3 },
-        { title: "4 семестр", value: 4 },
-        { title: "5 семестр", value: 5 },
-        { title: "6 семестр", value: 6 },
-        { title: "7 семестр", value: 7 },
-        { title: "8 семестр", value: 8 },
-        { title: "9 семестр", value: 9 },
-        { title: "10 семестр", value: 10 },
-      ],
-    }),
+  },
+  isOptionsLoading: {
+    type: Boolean, 
+    default: false,
   },
   showValidationErrors: {
     type: Boolean,
@@ -265,6 +253,38 @@ const getPanelHeader = computed(() => {
       return "";
   }
 });
+
+const programOptions = computed(() => {
+  const res = []
+  for (const [okso, program] of Object.entries(props.selectOptions.programs)) {
+    res.push({
+      title: `${okso} ${program.name}`, 
+      value: okso,
+    })
+  }
+  return res
+});
+
+const formTitleToId = (title) => {
+  const mapper = {
+    "Очная": 1, 
+    "Очно-заочная": 2, 
+    "Заочная": 3, 
+  }
+  return mapper[title]
+}
+
+const filteredProfiles = computed(() => {
+  let profiles = []
+  for (const [_, prog] of Object.entries(props.selectOptions.programs)) {
+    for (const profile of prog.profiles) {
+      if (profile.form_id !== formTitleToId(program.value.form))
+        continue
+      profiles.push(profile)
+    }
+  }
+  return profiles
+})
 
 // Validation error messages
 const oksoErrorMessage = computed(() => {
@@ -329,6 +349,15 @@ watch(
   },
   { immediate: true },
 );
+
+
+onMounted(() => {
+  if (props.type && !program.value.type) {
+    program.value.type = props.type;
+  }
+  program.value.form = "Очная"
+  program.value.university = 'Москва'
+});
 </script>
 
 <style scoped>

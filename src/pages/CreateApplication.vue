@@ -1,6 +1,10 @@
 <template>
   <div class="content application-page flex flex-column gap-4">
-    <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" />
+    <CreateApplicationForm 
+      v-model="applicationData" 
+      @valid-submit="onValidSubmit" 
+      :isEdit='true'
+    />
   </div>
 </template>
 

@@ -128,7 +128,7 @@ const getDefaultObject = (type) => {
             return {
                 is_vacation_need: false,
                 begin_year: null,
-                end_year: new Date(),
+                end_year: null,
                 group: "",
                 purpose: "continue_study",
                 type: 'reinstatement'
