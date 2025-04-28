@@ -51,7 +51,7 @@
                 
                 <div class="flex flex-column flex-1">
                     <InputText v-model="modelValue.group" placeholder="Учебная группа (например: 12-34)"
-                        :class="{'p-invalid': showValidationErrors && groupErrorMessage}" :readonly='!props.editable'/>
+                        :class="{'p-invalid': showValidationErrors && groupErrorMessage}" :disabled='!props.editable'/>
                     <Message v-if="showValidationErrors && groupErrorMessage" severity="error" variant="simple" size="small">
                         {{ groupErrorMessage }}
                     </Message>
@@ -63,7 +63,7 @@
     <Panel v-if="type === 'change'" header="Прошу изменить мне условия обучения в связи с: ">
         <div class="flex flex-column">
             <Textarea v-model="modelValue.purpose" id="purpose" autoResize class="w-full" rows="3" 
-                :class="{'p-invalid': showValidationErrors && purposeErrorMessage}" />
+                :class="{'p-invalid': showValidationErrors && purposeErrorMessage}" :disabled='!props.editable' />
             <Message v-if="showValidationErrors && purposeErrorMessage" severity="error" variant="simple" size="small">
                 {{ purposeErrorMessage }}
             </Message>

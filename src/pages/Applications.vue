@@ -76,7 +76,7 @@
 
     <!-- Empty state -->
     <div class="flex justify-content-center p-4" v-else>
-      <p>У вас пока нет поданных заявлений</p>
+      <p>Пока нет поданных заявлений</p>
     </div>
 
     <div

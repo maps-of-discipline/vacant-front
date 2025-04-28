@@ -11,7 +11,7 @@
 <script setup>
 import { reactive, ref, watch, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
-import { useToast, Panel } from "primevue";
+import { useToast, Panel, } from "primevue";
 import CreateApplicationForm from "../components/application/CreateApplicationForm.vue";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";

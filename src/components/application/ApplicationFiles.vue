@@ -81,7 +81,7 @@ const categories = [
     multipleFiles: false,
     required: true,
     validationMessage: "Необходимо загрузить справку о периоде обучения",
-    types: ["transfer", "change"],
+    types: ["transfer"],
   },
   {
     id: "consent",

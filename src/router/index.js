@@ -18,6 +18,9 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
+    meta: {
+      permissions: []
+    },
   },
   {
     path: "/dashboard",
@@ -28,9 +31,9 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
-    // meta: {
-    //   notForAuthenticated: true
-    // }
+    meta: {
+      notForAuthenticated: true
+    }
   },
   {
     path: "/external/login",
@@ -41,59 +44,70 @@ const routes = [
     path: "/external/sign-up",
     name: "Create User",
     component: CreateUser,
-    // meta: {
-    //   notForAuthenticated: true,
-    // }
+    meta: {
+      notForAuthenticated: true,
+    }
   },
   {
     path: "/applications/all",
     name: "Applications",
     component: Applications,
-    // meta: {
-    //   permissions: ['canViewOwnApplications']
-    // },
+    meta: {
+      permissions: ['canViewOwnApplications']
+    },
   },
   {
     path: "/applications/process/:id",
     name: "Process application",
     component: ProcessApplication,
     props: true,
-    // meta: {
-    //   permissions: ['canViewOwnApplications']
-    // },
+    meta: {
+      permissions: [
+        'canViewProcessApplication'
+      ]
+    },
   },
   {
     path: "/applications",
     name: "SelfApplications",
     component: SelfApplications,
-    // meta: {
-    //   permissions: ['canViewOwnApplications']
-    // },
+    meta: {
+      permissions: ['canViewOwnApplications']
+    },
   },
   {
     path: "/profile",
     name: "Profile",
     component: Profile,
+    meta: {
+      permissions: []
+    },
   },
   {
     path: '/applications/create',
     name: "Create Application",
     component: CreateApplication,
-    // meta: {
-    //   permissions: ['canCreateSelfApplication']
-    // }
+    meta: {
+      permissions: ['canCreateSelfApplication']
+    }
   },
   {
     path: "/applications/edit/:id",
     name: "Edit application",
     component: EditApplication,
     props: true,
+    meta: {
+      permissions: ['canEditOwnApplications']
+    }
   },
 
   {
     path: "/rups",
     name: "Rups",
     component: Rups,
+    meta: {
+      permissions: ['canViewRups']
+    }
   }
 ];
 
@@ -110,7 +124,7 @@ router.beforeEach((to, from, next) => {
     }
 
     if (!to.matched.some(record => authStore.checkPermissions(record.meta?.permissions))) {
-      return next({ name: "Login" });
+      return next({ name: "Home" });
     }
   }
 

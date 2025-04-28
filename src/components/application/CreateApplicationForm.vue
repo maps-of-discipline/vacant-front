@@ -14,7 +14,6 @@
           Зявление на перевод из другого ВУЗа
         </h3>
       </template>
-      <pre>{{ options }}</pre>
       <div class="programs flex flex-column gap-4 mb-3">
         <ApplicationHeader
           :type="applicationType"
@@ -50,6 +49,7 @@
           v-model:isValid="formValidation.files"
           :showValidationErrors
           :editable="props.editable"
+          @update:files='onFilesChanged' 
         />
       </div>
       <div
@@ -172,8 +172,8 @@ const isFormValid = computed(() => {
   return (
     formValidation.value.header &&
     formValidation.value.programs.every((isValid) => isValid) &&
-    formValidation.value.footer
-    // && formValidation.files
+    formValidation.value.footer && 
+    formValidation.value.files
   );
 });
 
@@ -192,6 +192,11 @@ const onSubmit = () => {
   model.value.date = new Date()
   emit('valid-submit', model.value)
 };
+
+const onFilesChanged = (files) => {
+  model.value.files = files; 
+  console.log(files)
+}
 
 const fetchOptions = async () => {
   isOptionsLoading.value = true;
@@ -217,8 +222,6 @@ const fetchOptions = async () => {
 
 onMounted(async () => {
   try {
-    if (!props.isEdit)
-      return
     await fetchOptions();
   } catch (err){
     toast.add({

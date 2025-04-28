@@ -54,7 +54,7 @@ const onValidSubmit = async (application) => {
   }
 };
 
-watch(applicationData, (application, o) => {
+watch(applicationData, (application) => {
   applicationsStore.setDraftApplication({
     ...application,
     date: new Date().toISOString(),
