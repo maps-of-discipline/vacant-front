@@ -12,6 +12,7 @@
           :loading='props.isOptionsLoading'
           placeholder="Направление обучния"
           :class="{ 'p-invalid': showValidationErrors && oksoErrorMessage }"
+          :showClear='true'
           :disabled="!props.editable"
         />
         <Message
@@ -43,8 +44,10 @@
           filter
           :loading='props.isOptionsLoading'
           placeholder="Профиль"
+          :showClear='true'
           :class="{ 'p-invalid': showValidationErrors && profileErrorMessage }"
           :disabled="!props.editable"
+          @update:modelValue='onProfileUpdate'
         />
         <Message
           v-if="showValidationErrors && profileErrorMessage"
@@ -177,7 +180,7 @@
           class="w-min"
           v-model="program.sem_num"
           placeholder="Семестр"
-          :options="selectOptions.semesters"
+          :options="filteredSemesterOptions"
           optionLabel="title"
           optionValue="value"
           :class="{ 'p-invalid': showValidationErrors && semNumErrorMessage }"
@@ -274,9 +277,28 @@ const formTitleToId = (title) => {
   return mapper[title]
 }
 
+const filteredSemesterOptions = computed(() => {
+  if (!program.value.profile)
+    return []
+
+  let semCount = 12;
+  for (const [okso, prog] of Object.entries(props.selectOptions.programs)) 
+    for (const profile of prog.profiles) 
+      if (profile.aup === program.value.profile)
+        semCount = profile.semCount
+
+  console.log('sem count', semCount)
+
+  return props.selectOptions.semesters.filter((el) => el.value <= semCount)
+
+})
+
 const filteredProfiles = computed(() => {
   let profiles = []
-  for (const [_, prog] of Object.entries(props.selectOptions.programs)) {
+  for (const [okso, prog] of Object.entries(props.selectOptions.programs)) {
+    if (program.value.okso && program.value.okso != okso)
+      continue
+
     for (const profile of prog.profiles) {
       if (profile.form_id !== formTitleToId(program.value.form))
         continue
@@ -285,6 +307,16 @@ const filteredProfiles = computed(() => {
   }
   return profiles
 })
+
+const onProfileUpdate = (value) => {
+  for (const [okso, programs] of Object.entries(props.selectOptions.programs)) {
+    if (programs.profiles.some((el) => el.aup == value)) {
+      console.log(okso)
+      program.value.okso = okso;
+      return;
+    }
+  }
+}
 
 // Validation error messages
 const oksoErrorMessage = computed(() => {

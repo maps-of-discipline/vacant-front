@@ -213,6 +213,7 @@ const fetchOptions = async () => {
           title: prog.name, 
           form_id: prog.form_educ,
           year: prog.year,
+          semCount: prog.sem_count,
           aup: prog.code
         })
     }
