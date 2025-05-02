@@ -1,17 +1,19 @@
 <template>
   <Panel header="Документы" class="flex flex-column">
-    <FileUpload
-      v-for="(category, index) in filteredCategories"
-      :key="index"
-      :title="category.title"
-      :description="category.description"
-      :multiple="category.multipleFiles"
-      :required="category.required"
-      :validationMessage="category.validationMessage"
-      :showValidationErrors="showValidationErrors"
-      v-model="files[category.id]"
-      v-model:isValid="categoryValidations[category.id]"
-    />
+    <div v-for="(category, index) in filteredCategories">
+      <FileUpload
+        :key="index"
+        :title="category.title"
+        :description="category.description"
+        :multiple="category.multipleFiles"
+        :required="category.required"
+        :validationMessage="category.validationMessage"
+        :showValidationErrors="showValidationErrors"
+        :editable='props.editable'
+        v-model="files[category.id]"
+        v-model:isValid="categoryValidations[category.id]"
+      />
+    </div>
   </Panel>
 </template>
 
@@ -19,6 +21,12 @@
 import { ref, computed, onMounted, watch } from "vue";
 import Panel from "primevue/panel";
 import FileUpload from "../UI/FileUpload.vue";
+import DocumentService from "../../services/documnet";
+import config from "../../config";
+
+const emit = defineEmits(["update:files", "update:isValid"]);
+const files = ref({});
+const categoryValidations = ref({});
 
 const props = defineProps({
   type: {
@@ -42,9 +50,11 @@ const props = defineProps({
   editable: {
     type: Boolean,
   },
-});
+  attachments: {
+    type: Array,
+  },
 
-const emit = defineEmits(["update:files", "update:isValid"]);
+});
 
 const categories = [
   {
@@ -115,27 +125,47 @@ const filteredCategories = computed(() => {
   }
 });
 
-const files = ref({});
-const categoryValidations = ref({});
+const fetchAttachments = async () => {
+  const promises = []
+  for (const [category, data] of Object.entries(props.attachments)) {
+    const filename = data.filepath.split('/').at(-1)
+    const promise = async () => {
+      return {category: data.type, file: await DocumentService.getById(data.id, filename)}
+    }
+    promises.push(promise())
+  }
 
-// Initialize files and validations objects
-onMounted(() => {
+  const res = await Promise.allSettled(promises)
+
+  return res.reduce((acc, el) => {
+    if (!acc[el.value.category]) acc[el.value.category] = []
+    acc[el.value.category].push(el.value.file)
+    return acc
+  }, {})
+}
+
+watch(() => props.attachments, async (n) => {
+  if (n.length > 0) {
+    const res = await fetchAttachments()
+    files.value = res
+  }
+})
+
+onMounted(async () => {
   filteredCategories.value.forEach((category) => {
     files.value[category.id] = [];
     categoryValidations.value[category.id] = !category.required;
   });
 });
 
-// Update files when categories change (when type changes)
+
 watch(
   () => filteredCategories.value,
   (newCategories) => {
-    // Reset files and validations for new categories
     const newFiles = {};
     const newValidations = {};
 
     newCategories.forEach((category) => {
-      // Keep existing files if they exist
       newFiles[category.id] = files.value[category.id] || [];
       newValidations[category.id] = !category.required;
     });
@@ -154,15 +184,12 @@ const isValid = computed(() => {
   return valid;
 });
 
-// Method to expose files for parent component
 const getFiles = () => {
   return files.value;
 };
 
-// Make the getFiles method available to parent components
 defineExpose({ getFiles });
 
-// Watch for validation changes and notify parent
 watch(
   isValid,
   (newValue) => {
@@ -171,7 +198,6 @@ watch(
   { immediate: true },
 );
 
-// Watch for file changes and notify parent
 watch(
   files,
   (newFiles) => {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <RupsPanel aup1="000019419" aup2="000020763" :semNum="4" />
+    <RupsPanel aup1="000021754" aup2="000021748" :semNum="4" />
   </div>
 </template>
 

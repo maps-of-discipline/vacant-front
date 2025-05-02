@@ -34,7 +34,7 @@ const applicationData = reactive({
 
 const onValidSubmit = async (application) => {
   try {
-    const response = await ApplicationService.saveApplication(application);
+    const response = await ApplicationService.updateApplication(application);
     toast.add({
       severity: "success",
       summary: "Успех",
@@ -55,11 +55,12 @@ const onValidSubmit = async (application) => {
 };
 
 watch(applicationData, (application) => {
-  applicationsStore.setDraftApplication({
-    ...application,
-    date: new Date().toISOString(),
-  });
-  console.log("application changed");
+  if (props.id == 0) {
+    applicationsStore.setDraftApplication({
+      ...application,
+      date: new Date().toISOString(),
+    });
+  }
 });
 
 

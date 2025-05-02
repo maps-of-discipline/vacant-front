@@ -1,57 +1,73 @@
 import { api } from "./api.js";
-import config from "../config.js";
+
+const endpointMap = {
+    change: "/applications/change",
+    reinstatement: "/applications/reinstatement",
+    transfer: "/applications/transfer",
+};
 
 export default class ApplicationService {
     static async updateApplication(data) {
         let application = this.unpackApplication(data)
 
-        application.begin_year = new Date(application.begin_year).getFullYear();
-        application.end_year = new Date(application.end_year).getFullYear();
+        const formData = new FormData()
+        formData.append("application_json", JSON.stringify(application))
 
-        let response;
-        switch (application.type) {
-            case "change":
-                response = await api.put("/applications/change", application);
-                break;
-            case "reinstatement":
-                response = await api.put("/applications/reinstatement", application);
-                break;
-            case "transfer":
-                response = await api.put("/applications/transfer", application);
-                break;
-            default:
-                throw new Error(`Unknown application type: ${application.type}`);
+        if (data.files) {
+            Object.entries(data.files).forEach(([category, fileList]) => {
+                if (fileList && fileList.length) {
+                    fileList.forEach((file, index) => {
+                        formData.append(`files`, file, `${category}-${file.name}`);
+                    });
+                }
+            });
         }
-        return this.parseApplication(response.data);
+
+        try {
+            const response = await api.put(
+                endpointMap[application.type],
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            return response.data;
+        } catch (error) {
+            console.error("Request error:", error.message);
+            throw error;
+        }
     }
 
     static async saveApplication(data) {
         let application = this.unpackApplication(data)
 
-        application.begin_year = new Date(application.begin_year).getFullYear();
-        application.end_year = new Date(application.end_year).getFullYear();
+        if (!application || !application.type) {
+            throw new Error("Invalid application: missing type");
+        }
+
+        const formData = new FormData()
+        formData.append("application_json", JSON.stringify(application))
+
+        if (data.files) {
+            Object.entries(data.files).forEach(([category, fileList]) => {
+                if (fileList && fileList.length) {
+                    fileList.forEach((file, index) => {
+                        formData.append(`files`, file, `${category}-${file.name}`);
+                    });
+                }
+            });
+        }
 
         try {
-            if (!application || !application.type) {
-                throw new Error("Invalid application: missing type");
-            }
-
-            let response;
-
-            switch (application.type) {
-                case "change":
-                    response = await api.post("/applications/change", application);
-                    break;
-                case "reinstatement":
-                    response = await api.post("/applications/reinstatement", application);
-                    break;
-                case "transfer":
-                    response = await api.post("/applications/transfer", application);
-                    break;
-                default:
-                    throw new Error(`Unknown application type: ${application.type}`);
-            }
-
+            const response = await api.post(
+                endpointMap[application.type],
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             return response.data;
         } catch (error) {
             console.error("Request error:", error.message);
@@ -73,7 +89,7 @@ export default class ApplicationService {
         const response = await api.get(`/applications/${type}/${id}`);
         return this.parseApplication(response.data);
     }
-    
+
     static async delete(id) {
         const application = await api.delete(`/applications/${id}`)
         return application
@@ -138,12 +154,13 @@ export default class ApplicationService {
             header,
             footer,
             programs: application.programs || [],
+            attachments: application.documents || [],
         };
     }
 
     static unpackApplication(data) {
-        return {
-            id: data.id, 
+        let application = {
+            id: data.id,
             user_id: data.user_id,
             date: data.date,
             type: data.type,
@@ -152,6 +169,11 @@ export default class ApplicationService {
             ...data.header,
             ...data.footer,
         }
+
+        application.begin_year = new Date(application.begin_year).getFullYear();
+        application.end_year = new Date(application.end_year).getFullYear();
+        console.log(application)
+        return application
     }
 
 }

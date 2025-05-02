@@ -15,7 +15,7 @@
 <script setup>
 import { Panel, SelectButton } from "primevue";
 import { useAppStore } from "../store/appStore";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import { useApplicationsStore } from "../store/applicationsStore";
 
 const appStore = useAppStore();
@@ -26,6 +26,7 @@ const applicationType = ref("");
 watch(applicationType, (new_, old) => {
   applicationsStore.setType(new_);
 });
+
 onMounted(() => {
   console.log(applicationType.value);
   applicationType.value = applicationsStore.applicationType;

@@ -49,6 +49,7 @@
           v-model:isValid="formValidation.files"
           :showValidationErrors
           :editable="props.editable"
+          :attachments='model.attachments'
           @update:files='onFilesChanged' 
         />
       </div>
@@ -195,7 +196,6 @@ const onSubmit = () => {
 
 const onFilesChanged = (files) => {
   model.value.files = files; 
-  console.log(files)
 }
 
 const fetchOptions = async () => {

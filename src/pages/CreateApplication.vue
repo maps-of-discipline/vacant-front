@@ -29,6 +29,7 @@ const applicationData = reactive({
   type: applicationsStore.applicationType,
   programs: [{}, {}, {}],
   footer: {},
+  files: {},
 });
 
 const onValidSubmit = async (application) => {
@@ -44,13 +45,13 @@ const onValidSubmit = async (application) => {
     applicationsStore.setDraftApplication(null);
     await router.push({ name: "SelfApplications" });
   } catch (error) {
-    console.log(error);
     toast.add({
       severity: "error",
       summary: "Ошибка",
       detail: "При сохранении заявления произошла ошибка",
       life: 3000,
     });
+    throw error
   }
 };
 
