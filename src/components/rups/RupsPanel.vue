@@ -313,7 +313,7 @@ const getTableDataPlan = computed(() => {
 const filteredTarget = computed(() => {
   if (!controlState.value.withLowCourse)
     return rupData.target
-  return rupData.target.filter((el) => el.period <= props.semNum - 2)
+  return rupData.target.filter((el) => el.period <= props.target.sem - 2)
 })
 
 watch(rupData, () => {
@@ -366,7 +366,7 @@ const getTableData = computed(() => {
   }
 
   if (controlState.value.withLowCourse) {
-    res = res.filter((el) => el.data.period <= props.semNum - 2)
+    res = res.filter((el) => el.data.period <= props.target.sem - 2)
   }
 
   if (filters.value.title)
@@ -374,7 +374,6 @@ const getTableData = computed(() => {
 
   if (filters.value.control)
     res = res.filter((el) => {
-      console.log(el)
       return el.data.control == filters.value.control ||
         (el.children && el.children.some(
           (child) => child.data.control == filters.value.control

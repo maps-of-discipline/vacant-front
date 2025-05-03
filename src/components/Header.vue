@@ -80,14 +80,6 @@ const items = ref([
     require: [],
   },
   {
-    label: "РУПЫ",
-    icon: "pi pi-book",
-    command: () => {
-      router.push({ name: "Rups" });
-    },
-    require: ["canViewRups"],
-  },
-  {
     label: "Список заявлений",
     icon: "pi pi-list",
     command: () => {
