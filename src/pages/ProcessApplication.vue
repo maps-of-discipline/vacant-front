@@ -4,13 +4,10 @@
       <div class="application-page flex flex-row gap-4">
         <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" :editable="false" />
       </div>
-      <div class="tools flex flex-column gap-4 w-auto">
-        <StatusChangePanel 
-          :status="applicationData.status" 
-          :application_id='props.id' 
-          @statusUpdate="onStatusUpdate" 
-          @quickmessage="onQuickMessage" 
-        />
+      <div class="tools flex flex-column gap-3 w-auto">
+        <StatusChangePanel :status="applicationData.status" :application_id='props.id' @statusUpdate="onStatusUpdate"
+          @quickmessage="onQuickMessage" />
+        <RupsNavPanel :application='applicationData'/>
         <CommentsListPanel :application_id="props.id" />
       </div>
     </div>
@@ -26,6 +23,7 @@ import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
 import CommentsListPanel from "../components/tools/CommentsListPanel.vue";
 import StatusChangePanel from "../components/tools/StatusChangePanel.vue";
+import RupsNavPanel from "../components/tools/RupsNavPanel.vue";
 
 const toast = useToast();
 const router = useRouter();
@@ -87,7 +85,7 @@ const fetchApplication = async () => {
 
 
 const onStatusUpdate = async (status) => {
-  const updatedApplication = {...applicationData, status: status}
+  const updatedApplication = { ...applicationData, status: status }
 
   try {
     const application = await ApplicationService.updateApplication(updatedApplication)

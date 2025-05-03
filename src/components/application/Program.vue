@@ -12,7 +12,7 @@
           :loading='props.isOptionsLoading'
           placeholder="Направление обучния"
           :class="{ 'p-invalid': showValidationErrors && oksoErrorMessage }"
-          :showClear='true'
+          :showClear='props.editable'
           :disabled="!props.editable"
         />
         <Message
@@ -44,7 +44,7 @@
           filter
           :loading='props.isOptionsLoading'
           placeholder="Профиль"
-          :showClear='true'
+          :showClear='props.editable'
           :class="{ 'p-invalid': showValidationErrors && profileErrorMessage }"
           :disabled="!props.editable"
           @update:modelValue='onProfileUpdate'

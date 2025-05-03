@@ -102,7 +102,7 @@ const routes = [
   },
 
   {
-    path: "/rups",
+    path: "/applications/process/rups",
     name: "Rups",
     component: Rups,
     meta: {

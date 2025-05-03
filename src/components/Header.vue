@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font"
+    class="flex flex-row header-container justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font"
     v-if="authStore.isAuthenticated"
   >
     <Image
@@ -121,5 +121,11 @@ const onTokenRefresh = async () => {
 <style scoped>
 .logo-light-mode {
   filter: invert(1);
+}
+
+.header-container {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 </style>
