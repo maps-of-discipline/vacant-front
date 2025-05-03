@@ -1,9 +1,10 @@
 <template>
   <div class="content application-page flex flex-column gap-4">
-    <CreateApplicationForm 
-      v-model="applicationData" 
-      :isEdit="true" 
-      @valid-submit="onValidSubmit" />
+    <CreateApplicationForm
+      v-model="applicationData"
+      :isEdit="true"
+      @valid-submit="onValidSubmit"
+    />
   </div>
 </template>
 
@@ -24,7 +25,6 @@ const props = defineProps({
   id: Number,
 });
 
-
 const applicationData = reactive({
   header: {},
   type: applicationsStore.applicationType,
@@ -34,17 +34,19 @@ const applicationData = reactive({
 
 const onValidSubmit = async (application) => {
   try {
-    const response = await ApplicationService.updateApplication(application);
+    if (props.id == 0) await ApplicationService.saveApplication(application);
+    else await ApplicationService.updateApplication(application);
+
     toast.add({
       severity: "success",
       summary: "Успех",
       detail: "Заявление успешно сохранено",
       life: 3000,
     });
-    applicationsStore.setDraftApplication(null)
+    applicationsStore.setDraftApplication(null);
     await router.push({ name: "SelfApplications" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     toast.add({
       severity: "error",
       summary: "Ошибка",
@@ -62,7 +64,6 @@ watch(applicationData, (application) => {
     });
   }
 });
-
 
 onBeforeMount(async () => {
   if (props.id == 0) {

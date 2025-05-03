@@ -28,9 +28,7 @@ watch(applicationType, (new_, old) => {
 });
 
 onMounted(() => {
-  console.log(applicationType.value);
   applicationType.value = applicationsStore.applicationType;
-  console.log(applicationType.value);
 });
 </script>
 

@@ -41,7 +41,6 @@ const onValidSubmit = async (application) => {
       detail: "Заявление успешно сохранено",
       life: 3000,
     });
-    console.log('set draft application to null after save');
     applicationsStore.setDraftApplication(null);
     await router.push({ name: "SelfApplications" });
   } catch (error) {
@@ -57,7 +56,6 @@ const onValidSubmit = async (application) => {
 
 watch(applicationData, (application, o) => {
   applicationsStore.setDraftApplication({...application, date: new Date().toISOString()});
-  console.log("application changed");
 });
 
 onBeforeMount(() => {

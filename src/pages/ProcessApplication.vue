@@ -54,7 +54,7 @@ const onValidSubmit = async (application) => {
     });
     await router.push({ name: "SelfApplications" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     toast.add({
       severity: "error",
       summary: "Ошибка",
@@ -88,7 +88,6 @@ const fetchApplication = async () => {
 
 const onStatusUpdate = async (status) => {
   const updatedApplication = {...applicationData, status: status}
-  console.log('Updating status on Process application page', status, applicationData, updatedApplication)
 
   try {
     const application = await ApplicationService.updateApplication(updatedApplication)

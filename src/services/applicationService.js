@@ -172,7 +172,6 @@ export default class ApplicationService {
 
         application.begin_year = new Date(application.begin_year).getFullYear();
         application.end_year = new Date(application.end_year).getFullYear();
-        console.log(application)
         return application
     }
 

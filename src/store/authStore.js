@@ -21,7 +21,6 @@ export const useAuthStore = defineStore("auth", {
                 access: access,
                 refresh: refresh
             }
-            console.log("setting auth data. this.auth_data = ", this.auth_data)
             setLocalStorage('auth_data', this.auth_data);
 
             this.isAuthenticated = true;

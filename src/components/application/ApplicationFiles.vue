@@ -180,7 +180,6 @@ const isValid = computed(() => {
   const valid = filteredCategories.value
     .filter((category) => category.required)
     .every((category) => categoryValidations.value[category.id]);
-  console.debug("form files validation check result: ", valid);
   return valid;
 });
 

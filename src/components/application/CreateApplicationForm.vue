@@ -32,8 +32,8 @@
           :showValidationErrors="showValidationErrors"
           v-model:isValid="formValidation.programs[index]"
           :editable="props.editable"
-          :selectOptions='options'
-          :isOptionsLoading='isOptionsLoading'  
+          :selectOptions="options"
+          :isOptionsLoading="isOptionsLoading"
         />
 
         <ApplicationFooter
@@ -49,8 +49,8 @@
           v-model:isValid="formValidation.files"
           :showValidationErrors
           :editable="props.editable"
-          :attachments='model.attachments'
-          @update:files='onFilesChanged' 
+          :attachments="model.attachments"
+          @update:files="onFilesChanged"
         />
       </div>
       <div
@@ -64,21 +64,13 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  defineEmits,
-  reactive,
-  watch,
-  onMounted,
-} from "vue";
+import { ref, computed, defineEmits, reactive, watch, onMounted } from "vue";
 import { Panel, Button, useToast } from "primevue";
 import Program from "./Program.vue";
 import ApplicationHeader from "./ApplicationHeader.vue";
 import ApplicationFooter from "./ApplicationFooter.vue";
 import ApplicationFiles from "./ApplicationFiles.vue";
-import MapsService from '../../services/mapsService.js'
-
+import MapsService from "../../services/mapsService.js";
 
 const showValidationErrors = ref(false);
 const emit = defineEmits(["valid-submit"]);
@@ -98,7 +90,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-})
+});
 
 const applicationType = computed(() => {
   return model.value.type;
@@ -117,12 +109,9 @@ const formData = reactive({
   footer: {},
 });
 
-
 const options = ref({
   programs: {},
-  cities: [
-    {title: "Москва", value: "Москва"}
-  ],
+  cities: [{ title: "Москва", value: "Москва" }],
   semesters: [
     { title: "1 семестр", value: 1 },
     { title: "2 семестр", value: 2 },
@@ -135,16 +124,18 @@ const options = ref({
     { title: "9 семестр", value: 9 },
     { title: "10 семестр", value: 10 },
   ],
-})
-const isOptionsLoading = ref(false)
+});
+const isOptionsLoading = ref(false);
 
-const submitLabel = computed(() => { return (props.isEdit) ? 'Сохранить заявление' : "Подать заявление" })
-const submitIcon = computed(() => { return (props.isEdit) ? 'pi pi-save' : "pi pi-check" })
-
+const submitLabel = computed(() => {
+  return props.isEdit ? "Сохранить заявление" : "Подать заявление";
+});
+const submitIcon = computed(() => {
+  return props.isEdit ? "pi pi-save" : "pi pi-check";
+});
 
 const programConfigs = computed(() => {
   const configs = [];
-  console.debug(model.value.type)
   if (model.value.type === "reinstatement") {
     configs.push({ type: "before", anotherUniversity: false });
   } else if (model.value.type === "change") {
@@ -159,7 +150,6 @@ const programConfigs = computed(() => {
   return configs;
 });
 
-
 const isChangeToBudget = computed({
   get: () => {
     if (applicationType !== "change") return false;
@@ -173,11 +163,10 @@ const isFormValid = computed(() => {
   return (
     formValidation.value.header &&
     formValidation.value.programs.every((isValid) => isValid) &&
-    formValidation.value.footer && 
+    formValidation.value.footer &&
     formValidation.value.files
   );
 });
-
 
 const onSubmit = () => {
   showValidationErrors.value = true;
@@ -187,53 +176,53 @@ const onSubmit = () => {
       summary: "Ошибка",
       detail: "Форма заоплнена неверно",
       life: 3000,
-    })
-    return
+    });
+    return;
   }
-  model.value.date = new Date()
-  emit('valid-submit', model.value)
+  model.value.date = new Date();
+  emit("valid-submit", model.value);
 };
 
 const onFilesChanged = (files) => {
-  model.value.files = files; 
-}
+  model.value.files = files;
+};
 
 const fetchOptions = async () => {
   isOptionsLoading.value = true;
-  const response = await MapsService.fetchAllMaps()
+  const response = await MapsService.fetchAllMaps();
   for (const fac of response) {
     for (const prog of fac.directions) {
       if (!options.value.programs[prog.okco_code])
         options.value.programs[prog.okco_code] = {
           name: prog.okco_name,
-          profiles: []
-        }
-      
+          profiles: [],
+        };
+
       options.value.programs[prog.okco_code].profiles.push({
-          title: prog.name, 
-          form_id: prog.form_educ,
-          year: prog.year,
-          semCount: prog.sem_count,
-          aup: prog.code
-        })
+        title: prog.name,
+        form_id: prog.form_educ,
+        year: prog.year,
+        semCount: prog.sem_count,
+        aup: prog.code,
+      });
     }
   }
   isOptionsLoading.value = false;
-}
+};
 
 onMounted(async () => {
   try {
     await fetchOptions();
-  } catch (err){
+  } catch (err) {
     toast.add({
       severity: "error",
       summary: "Ошибка",
       detail: "Не удалось загрузить данные, попробуйте позже.",
       life: 3000,
-    })
-    throw err
+    });
+    throw err;
   }
-})
+});
 </script>
 
 <style scoped>

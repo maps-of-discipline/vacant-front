@@ -9,7 +9,6 @@ export const useAppStore = defineStore("app", {
     actions: {
         setDarkMode(value) {
             this.isDarkMode = value;
-            console.log('setDarkMode', value);
             localStorage.setItem("isDarkMode", value)
         },
         toggleDarkMode() {
@@ -21,7 +20,6 @@ export const useAppStore = defineStore("app", {
             document.documentElement.classList.toggle("my-app-dark", this.isDarkMode);
 
             this.$subscribe((mutation, state) => {
-                console.log('isDarkMode', state.isDarkMode);
                 document.documentElement.classList.toggle("my-app-dark", state.isDarkMode);
             });
         }

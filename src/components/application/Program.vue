@@ -287,7 +287,6 @@ const filteredSemesterOptions = computed(() => {
       if (profile.aup === program.value.profile)
         semCount = profile.semCount
 
-  console.log('sem count', semCount)
 
   return props.selectOptions.semesters.filter((el) => el.value <= semCount)
 
@@ -311,7 +310,6 @@ const filteredProfiles = computed(() => {
 const onProfileUpdate = (value) => {
   for (const [okso, programs] of Object.entries(props.selectOptions.programs)) {
     if (programs.profiles.some((el) => el.aup == value)) {
-      console.log(okso)
       program.value.okso = okso;
       return;
     }

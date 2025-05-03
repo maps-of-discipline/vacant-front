@@ -179,7 +179,6 @@ const editApplication = (data) => {
 };
 
 const fetchApplications = async () => {
-  console.log("fetching applications");
   loading.value = true;
   error.value = null;
   let res;
