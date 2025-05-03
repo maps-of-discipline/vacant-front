@@ -7,7 +7,7 @@
           <Help :message="studyHelpMessage" size="large" />
         </div>
       </template>
-      <TreeTable :value="getTableData" :filters="filters" :pt="treeTablePT" size="small">
+      <TreeTable :value="getTableData" :pt="treeTablePT" size="small">
         <Column field="title" header="Название" expander filterMode="strict">
           <template #body="slotProps">
             <div class="flex gap-2">
@@ -34,7 +34,7 @@
             </div>
           </template>
           <template #filter>
-            <InputText v-model="filters['title']" type="text" placeholder="Название" />
+            <InputText v-model="filters.title" type="text" placeholder="Название" />
           </template>
         </Column>
         <Column field="similarity" header="Схожесть" v-if="controlState.mode == 'rup'">
@@ -53,7 +53,7 @@
         <Column field="period" header="Семестр" />
         <Column field="control" header="Контроль" filterMode="lenient">
           <template #filter>
-            <Select v-model="filters['control']" showClear :options="controlSelectOptions" />
+            <Select v-model="filters.control" showClear :options="controlSelectOptions" />
           </template>
         </Column>
         <Column field="zet" header="ЗЕТ" />
@@ -112,6 +112,12 @@ const props = defineProps({
 });
 
 const toast = useToast();
+const choosen = ref({});
+const filters = ref({
+  title: null,
+  control: null,
+});
+
 const rupData = reactive({
   source: [],
   target: [],
@@ -119,8 +125,7 @@ const rupData = reactive({
   similar: [],
   bestMatch: {},
 });
-const choosen = ref({});
-const filters = ref({});
+
 const controlState = ref({
   mode: "rup",
   withLowCourse: false,
@@ -153,16 +158,26 @@ const onToggleSelection = (parent, child) => {
   });
 };
 
+
 const controlSelectOptions = computed(() => {
   const controls = new Set();
-  for (const node of getTableData.value) {
-    controls.add(node.data.control);
-    if (node.children) {
-      for (const subnode of node.children) {
-        controls.add(subnode.data.control);
+  
+  for (const item of [...rupData.same, ...rupData.target, ...rupData.source]) {
+    if (item && item.control) {
+      controls.add(item.control);
+    }
+  }
+
+  for (const similarGroup of rupData.similar || []) {
+    if (similarGroup && similarGroup.variants) {
+      for (const variant of similarGroup.variants) {
+        if (variant && variant.control) {
+          controls.add(variant.control);
+        }
       }
     }
   }
+  
   return [...controls];
 });
 
@@ -353,6 +368,18 @@ const getTableData = computed(() => {
   if (controlState.value.withLowCourse) {
     res = res.filter((el) => el.data.period <= props.semNum - 2)
   }
+
+  if (filters.value.title)
+    res = res.filter((el) => el.data.title.toLowerCase().includes(filters.value.title.toLowerCase()))
+
+  if (filters.value.control)
+    res = res.filter((el) => {
+      console.log(el)
+      return el.data.control == filters.value.control ||
+        (el.children && el.children.some(
+          (child) => child.data.control == filters.value.control
+        ))
+    }) 
   return res
 
 });
