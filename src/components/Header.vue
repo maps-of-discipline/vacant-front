@@ -7,10 +7,19 @@
       width="192"
       src="/logo-white.png"
       alt="logo"
+      class="md:block hidden cursor-pointer"
       :class="{ 'logo-light-mode': !isDarkMode }"
       @click="router.push('/')"
     />
-    <Menubar :model="accessableItems" class="surface-0 border-0" />
+    <Image
+      width="52"
+      src="/mospolytech-logo-white.png"
+      alt="logo"
+      class="block md:hidden cursor-pointer"
+      :class="{ 'logo-light-mode': !isDarkMode }"
+      @click="router.push('/')"
+    />
+    <Menubar :model="accessableItems" class="flex-grow-1 border-0" />
 
     <!-- Надпись и ToggleSwitch -->
     <div class="flex align-items-center ml-auto">
@@ -105,9 +114,12 @@ const onLogout = () => {
 };
 
 const onTokenRefresh = async () => {
-  const auth_data = await AuthService.refreshTokens(authStore.auth_data.access, authStore.auth_data.refresh)
-  authStore.setAuthData(auth_data.access, auth_data.refresh)     
-}
+  const auth_data = await AuthService.refreshTokens(
+    authStore.auth_data.access,
+    authStore.auth_data.refresh,
+  );
+  authStore.setAuthData(auth_data.access, auth_data.refresh);
+};
 </script>
 
 <style scoped>
