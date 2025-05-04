@@ -75,7 +75,7 @@
             <div class="flex flex-row gap-3 align-items-center">
                 <label>Номер курса для продолжения обучения: </label>
                 <Select v-model="modelValue.continue_year" class="w-min" :options="courseOptions" placeholder="Курс"
-                    optionLabel="title" optionValue="value"/>
+                    optionLabel="title" optionValue="value" showClear/>
             </div>
         </div>
     </Panel>

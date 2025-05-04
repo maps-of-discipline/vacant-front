@@ -52,6 +52,7 @@
           :attachments="model.attachments"
           @update:files="onFilesChanged"
         />
+        <CompletedDisciplinesDialog v-model="model.passed" v-if='applicationType == "transfer"'/>
       </div>
       <div
         class="flex flex-column w-full align-items-center"
@@ -71,6 +72,7 @@ import ApplicationHeader from "./ApplicationHeader.vue";
 import ApplicationFooter from "./ApplicationFooter.vue";
 import ApplicationFiles from "./ApplicationFiles.vue";
 import MapsService from "../../services/mapsService.js";
+import CompletedDisciplinesDialog from "./CompletedDisciplinesDialog.vue";
 
 const showValidationErrors = ref(false);
 const emit = defineEmits(["valid-submit"]);
