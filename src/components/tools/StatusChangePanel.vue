@@ -31,14 +31,15 @@
 
 <script setup>
 import { onBeforeMount, ref, computed, defineProps, defineEmits } from "vue";
-import { Panel, Tag, Divider, Skeleton, Button, useToast } from "primevue";
+import { Panel, Tag, Divider, Skeleton, Button } from "primevue";
 import AppService from "../../services/appService.js";
 import StatusService from "../../services/statusService.js";
 import emitter from "../../eventBus.js";
 import ApplicationService from "../../services/applicationService.js";
+import Toast from "../../tools/toast.js";
 
 const emit = defineEmits(["application-update", "quickmessage"]);
-const toast = useToast();
+const toast = new Toast();
 
 const statuses = ref([]);
 const props = defineProps({
@@ -75,12 +76,7 @@ const onStatusUpdate = async (title, message_id) => {
     emitter.emit("comment-added", comment);
     emit('quickmessage', title);
   } catch (error) {
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "Не удаось добавить комментарий",
-      life: 3000,
-    });
+    toast.error("Не удаось добавить комментарий");
     throw error;
   }
 };

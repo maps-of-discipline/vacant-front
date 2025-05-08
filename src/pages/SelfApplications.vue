@@ -101,13 +101,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Column, DataTable, Button, Tag, useToast } from "primevue";
+import { Column, DataTable, Button, Tag } from "primevue";
 import { useAuthStore } from "../store/authStore.js";
 import { useAppStore } from "../store/appStore.js";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
 import StatusService from "../services/statusService.js";
 import AppService from "../services/appService.js";
+import Toast from "../tools/toast.js";
 
 const applications = ref([]);
 const loading = ref(true);
@@ -118,7 +119,7 @@ const authStore = useAuthStore();
 const appStore = useAppStore();
 const router = useRouter();
 const applicationStore = useApplicationsStore();
-const toast = useToast();
+const toast = new Toast();
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -145,19 +146,10 @@ const deleteApplication = async (data) => {
     try {
       await ApplicationService.delete(data.id);
     } catch (error) {
-      toast.add({
-        severity: "error",
-        summary: "Ошибка",
-        detail: "При удалении заявления произошла ошибка",
-        life: 3000,
-      });
+      toast.error("При удалении заявления произошла ошибка");
       throw error;
     }
-  toast.add({
-    severity: "success",
-    summary: "Заявление удалено",
-    life: 3000,
-  });
+  toast.success("Заявление удалено");
 };
 
 const isEditShown = (data) => {

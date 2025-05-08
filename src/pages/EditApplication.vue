@@ -11,12 +11,13 @@
 <script setup>
 import { reactive, ref, watch, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useToast, Panel } from "primevue";
+import { Panel } from "primevue";
+import Toast from '../tools/toast.js'
 import CreateApplicationForm from "../components/application/CreateApplicationForm.vue";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
 
-const toast = useToast();
+const toast = new Toast();
 const router = useRouter();
 const route = useRoute();
 const applicationsStore = useApplicationsStore();
@@ -37,22 +38,12 @@ const onValidSubmit = async (application) => {
     if (props.id == 0) await ApplicationService.saveApplication(application);
     else await ApplicationService.updateApplication(application);
 
-    toast.add({
-      severity: "success",
-      summary: "Успех",
-      detail: "Заявление успешно сохранено",
-      life: 3000,
-    });
+    toast.success("Заявление успешно сохранено");
     applicationsStore.setDraftApplication(null);
     await router.push({ name: "SelfApplications" });
   } catch (error) {
     console.error(error);
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "При сохранении заявления произошла ошибка",
-      life: 3000,
-    });
+    toast.error("При сохранении заявления произошла ошибка");
   }
 };
 
@@ -74,12 +65,7 @@ onBeforeMount(async () => {
     try {
       app = await ApplicationService.getApplication(props.id, route.query.type);
     } catch (error) {
-      toast.add({
-        severity: "error",
-        summary: "Ошибка",
-        detail: "Не удаось загрузить заявление.",
-        life: 3000,
-      });
+      toast.error("Не удаось загрузить заявление.");
       console.error(error);
       router.push({ name: "SelfApplications" });
     }

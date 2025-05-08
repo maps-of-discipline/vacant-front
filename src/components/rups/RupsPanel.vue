@@ -104,14 +104,14 @@ import {
 import MapsService from "../../services/mapsService";
 import Help from "../UI/Help.vue";
 import RupControlPanel from "./RupControlPanel.vue";
-import { useToast } from "primevue";
+import Toast from "../../tools/toast";
 
 const props = defineProps({
   source: Object,
   target: Object,
 });
 
-const toast = useToast();
+const toast = new Toast();
 const choosen = ref({});
 const filters = ref({
   title: null,
@@ -403,12 +403,7 @@ const fetchRupData = async () => {
     rupData.similar = data.similar;
     rupData.bestMatch = data.best_match;
   } catch (err) {
-    toast.add({
-      severity: "error",
-      message: "Error",
-      detail: "Не удалось загрузить данные",
-      life: 3000,
-    });
+    toast.error("Не удалось загрузить данные");
     console.error(err)
   }
 };

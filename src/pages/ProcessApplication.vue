@@ -25,7 +25,7 @@
 <script setup>
 import { reactive, ref, watch, onBeforeMount, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useToast } from "primevue";
+import Toast from "../tools/toast.js";
 import CreateApplicationForm from "../components/application/CreateApplicationForm.vue";
 import ApplicationService from "../services/applicationService.js";
 import { useApplicationsStore } from "../store/applicationsStore.js";
@@ -33,7 +33,7 @@ import CommentsListPanel from "../components/tools/CommentsListPanel.vue";
 import StatusChangePanel from "../components/tools/StatusChangePanel.vue";
 import RupsNavPanel from "../components/tools/RupsNavPanel.vue";
 
-const toast = useToast();
+const toast = new Toast();
 const router = useRouter();
 const route = useRoute();
 const applicationsStore = useApplicationsStore();
@@ -52,21 +52,11 @@ const applicationData = reactive({
 const onValidSubmit = async (application) => {
   try {
     const response = await ApplicationService.saveApplication(application);
-    toast.add({
-      severity: "success",
-      summary: "Успех",
-      detail: "Заявление успешно сохранено",
-      life: 3000,
-    });
+    toast.success("Заявление успешно сохранено");
     await router.push({ name: "SelfApplications" });
   } catch (error) {
     console.error(error);
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "При сохранении заявления произошла ошибка",
-      life: 3000,
-    });
+    toast.error("При сохранении заявления произошла ошибка");
   }
 };
 
@@ -76,12 +66,7 @@ const fetchApplication = async () => {
     try {
       app = await ApplicationService.getApplication(props.id, route.query.type);
     } catch (error) {
-      toast.add({
-        severity: "error",
-        summary: "Ошибка",
-        detail: "Не удаось загрузить заявление.",
-        life: 3000,
-      });
+      toast.error("Не удаось загрузить заявление.");
       console.error(error);
       router.push({ name: "Applications" });
     }
@@ -96,20 +81,10 @@ const onStatusUpdate = async (status) => {
     await ApplicationService.updateStatus(applicationData.id, status);
     applicationData.status = status
   } catch (e){
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "Не удалось обновить статус заявления",
-      life: 3000,
-    });
+    toast.error("Не удалось обновить статус заявления");
     throw e
   }
-  toast.add({
-    severity: "success",
-    summary: "Успешно",
-    detail: "Статус изменен",
-    life: 3000,
-  });
+  toast.success("Статус обновлен");
 };
 
 const onQuickMessage = (status) => {
@@ -120,6 +95,7 @@ onBeforeMount(async () => {
   try {
     await Promise.allSettled([fetchApplication()]);
   } catch (error) {
+    toast.error('Не удалось загрузить заявления')
     console.error("Error loading page data:", error);
   }
 });

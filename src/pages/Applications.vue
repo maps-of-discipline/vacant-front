@@ -96,7 +96,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Column, DataTable, Button, Tag, useToast } from "primevue";
+import { Column, DataTable, Button, Tag} from "primevue";
 import { useAuthStore } from "../store/authStore.js";
 import { useAppStore } from "../store/appStore.js";
 import ApplicationService from "../services/applicationService.js";
@@ -114,7 +114,6 @@ const authStore = useAuthStore();
 const appStore = useAppStore();
 const router = useRouter();
 const applicationStore = useApplicationsStore();
-const toast = useToast();
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

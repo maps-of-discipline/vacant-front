@@ -35,14 +35,14 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useToast } from "primevue/usetoast";
+import Toast from "../tools/toast.js";
 import { Panel, InputText, Message, Button, FloatLabel } from "primevue";
 import AuthService from "../services/authService";
 import { useAuthStore } from "../store/authStore";
 import { useAppStore } from "../store/appStore";
 
 const router = useRouter();
-const toast = useToast();
+const toast = new Toast();
 const authStore = useAuthStore();
 const appStore = useAppStore();
 
@@ -63,22 +63,11 @@ const login = async () => {
   try {
     loading.value = true;
     await authStore.signInWithEmail(credentials.email);
-    toast.add({
-      severity: "success",
-      summary: "Успешный вход",
-      detail: "Вы успешно вошли в систему",
-      life: 3000,
-    });
-
+    toast.success("Вы успешно вошли в систему");
     router.push({ name: "SelfApplications" });
   } catch (error) {
     loading.value = false;
-    toast.add({
-      severity: "error",
-      summary: "Ошибка входа",
-      detail: error.message || "Неверные данные входа",
-      life: 3000,
-    });
+    toast.error(error.message || "Неверные данные входа");
   }
 };
 </script>

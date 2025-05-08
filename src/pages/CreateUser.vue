@@ -237,18 +237,18 @@ import {
   Select,
   Message,
 } from "primevue";
-import { useToast } from "primevue";
 import { useAuthStore } from "../store/authStore";
 import { useRouter } from "vue-router";
 import { UserAlreadyExistsError } from "../exceptions/user";
 import AuthService from "../services/authService";
+import Toast from "../tools/toast";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 const fullname = ref("");
 const showValidation = ref(false);
-const toast = useToast();
+const toast = new Toast();
 
 const courseSelectOptions = [
   { label: "1 курс", value: 1 },
@@ -333,38 +333,18 @@ const onSubmit = async () => {
   if (isValid.value) {
     try {
       await authStore.signUp(user)
-      toast.add({
-        severity: "success",
-        summary: "Успех",
-        detail: "Пользователь успешно зарегистрирован",
-        life: 3000,
-      });
+      toast.success("Пользователь успешно зарегистрирован");
       AuthService.redirectToLoginViaEmail()
     } catch (error) {
       console.error('asdfasdfasdf', error)
       if (error instanceof UserAlreadyExistsError) {
-        toast.add({
-          severity: "warn",
-          summary: "Ошибка",
-          detail: "Пользователь с такой электронной почтой уже существует.",
-          life: 3000,
-        });
+        toast.warn("Пользователь с такой электронной почтой уже существует.");
       } else {
-        toast.add({
-          severity: "error",
-          summary: "Ошибка",
-          detail: "Не удалось зарегистрировать пользователя",
-          life: 3000,
-        });
+        toast.error("Не удалось зарегистрировать пользователя");
       }
     }
   } else {
-    toast.add({
-      severity: "warn",
-      summary: "Ошибка",
-      detail: "Пожалуйста, заполните все необходимые поля",
-      life: 3000,
-    });
+    toast.warn("Пожалуйста, заполните все необходимые поля");
   }
 };
 </script>

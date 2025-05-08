@@ -15,18 +15,19 @@
 </template>
 
 <script setup>
-import { Panel, FloatLabel, Textarea, SplitButton, useToast } from "primevue";
+import { Panel, FloatLabel, Textarea, SplitButton } from "primevue";
 import { onMounted, onUnmounted, ref } from "vue";
 import CommentList from "../UI/CommentList.vue";
 import ApplicationService from "../../services/applicationService";
 import CommentService from "../../services/commentService.js";
+import Toast from "../../tools/toast.js"
 import emitter from "../../eventBus.js"
 
 const props = defineProps({
   application_id: Number,
 });
 
-const toast = useToast();
+const toast = new Toast();
 
 const comments = ref([]);
 const newComment = ref("");
@@ -51,12 +52,7 @@ const onCommentRemove = async (comment_id) => {
   try {
     await CommentService.removeComment(comment_id);
   } catch {
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "Не удалось удалить комментарий",
-      life: 3000,
-    });
+    toast.error("Не удалось удалить комментарий");
     return;
   }
 
@@ -72,19 +68,10 @@ const onAddComment = async (scope) => {
       scope: scope,
     });
   } catch {
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "Не удалось добавить комментарий",
-      life: 3000,
-    });
+    toast.error("Не удалось добавить комментарий");
     return;
   }
-  toast.add({
-    severity: "success",
-    summary: "Комментарий успешно добавлен",
-    life: 3000,
-  });
+  toast.success("Комментарий успешно добавлен");
   
   newComment.value = "";
   comments.value.push(created_comment);

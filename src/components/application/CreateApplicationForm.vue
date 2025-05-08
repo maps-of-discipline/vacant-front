@@ -66,17 +66,18 @@
 
 <script setup>
 import { ref, computed, defineEmits, reactive, watch, onMounted } from "vue";
-import { Panel, Button, useToast } from "primevue";
+import { Panel, Button } from "primevue";
 import Program from "./Program.vue";
 import ApplicationHeader from "./ApplicationHeader.vue";
 import ApplicationFooter from "./ApplicationFooter.vue";
 import ApplicationFiles from "./ApplicationFiles.vue";
 import MapsService from "../../services/mapsService.js";
 import CompletedDisciplinesDialog from "./CompletedDisciplinesDialog.vue";
+import Toast from "../../tools/toast.js";
 
 const showValidationErrors = ref(false);
 const emit = defineEmits(["valid-submit"]);
-const toast = useToast();
+const toast = new Toast();
 
 const model = defineModel({
   type: Object,
@@ -173,12 +174,7 @@ const isFormValid = computed(() => {
 const onSubmit = () => {
   showValidationErrors.value = true;
   if (!isFormValid.value) {
-    toast.add({
-      severity: "warn",
-      summary: "Ошибка",
-      detail: "Форма заоплнена неверно",
-      life: 3000,
-    });
+    toast.warn("Форма заоплнена неверно");
     return;
   }
   model.value.date = new Date();
@@ -216,12 +212,7 @@ onMounted(async () => {
   try {
     await fetchOptions();
   } catch (err) {
-    toast.add({
-      severity: "error",
-      summary: "Ошибка",
-      detail: "Не удалось загрузить данные, попробуйте позже.",
-      life: 3000,
-    });
+    toast.error("Не удалось загрузить данные, попробуйте позже.");
     throw err;
   }
 });
