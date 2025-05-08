@@ -4,62 +4,99 @@
       <template #header>
         <div class="flex flex-row w-fit alighn-items-center gap-2">
           <span class="font-semibold">Учебный план</span>
-          <Help :message="studyHelpMessage" size="large" />
+          <Help
+            :message="studyHelpMessage"
+            size="large"
+          />
         </div>
       </template>
-      <TreeTable :value="getTableData" :pt="treeTablePT" size="small">
-        <Column field="title" header="Название" expander filterMode="strict">
+      <TreeTable
+        :value="getTableData"
+        :pt="treeTablePT"
+        size="small"
+      >
+        <Column
+          field="title"
+          header="Название"
+          expander
+          filter-mode="strict"
+        >
           <template #body="slotProps">
             <div class="flex gap-2">
-              <Checkbox v-if="slotProps.node.child" v-model="choosen[slotProps.node.parent]['variants'][
-                slotProps.node.data.title
-                ]
-                " :inputId="slotProps.node.data.key" binary @update:modelValue="
-                  onToggleSelection(
-                    slotProps.node.parent,
-                    slotProps.node.data.title,
-                  )
-                  " :disabled="isChecboxInactive(
-                  slotProps.node.parent,
-                  slotProps.node.data.title,
-                )
-                  " />
-              <span :class="{
-                'text-color-secondary':
-                  isChecboxInactive(
-                    slotProps.node.parent,
-                    slotProps.node.data.title,
-                  ) && slotProps.node.child,
-              }">{{ slotProps.node.data.title }}</span>
+              <Checkbox
+                v-if="slotProps.node.child"
+                v-model="choosen[slotProps.node.parent]['variants'][slotProps.node.data.title]"
+                :input-id="slotProps.node.data.key"
+                binary
+                :disabled="isChecboxInactive(slotProps.node.parent, slotProps.node.data.title)"
+                @update:model-value="
+                  onToggleSelection(slotProps.node.parent, slotProps.node.data.title)
+                "
+              />
+              <span
+                :class="{
+                  'text-color-secondary':
+                    isChecboxInactive(slotProps.node.parent, slotProps.node.data.title) &&
+                    slotProps.node.child,
+                }"
+                >{{ slotProps.node.data.title }}</span
+              >
             </div>
           </template>
           <template #filter>
-            <InputText v-model="filters.title" type="text" placeholder="Название" />
+            <InputText
+              v-model="filters.title"
+              type="text"
+              placeholder="Название"
+            />
           </template>
         </Column>
-        <Column field="similarity" header="Схожесть" v-if="controlState.mode == 'rup'">
+        <Column
+          v-if="controlState.mode == 'rup'"
+          field="similarity"
+          header="Схожесть"
+        >
           <template #body="slotProps">
             <span>{{ slotProps.node.data.similarity }}</span>
-            <span v-if="
-              slotProps.node.child &&
-              rupData.bestMatch[slotProps.node.data.title].target !=
-              slotProps.node.parent
-            " v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target
-                " class="text-color-secondary">
+            <span
+              v-if="
+                slotProps.node.child &&
+                rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
+              "
+              v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target"
+              class="text-color-secondary"
+            >
               ({{ rupData.bestMatch[slotProps.node.data.title].similarity }})
             </span>
           </template>
         </Column>
-        <Column field="period" header="Семестр" />
-        <Column field="control" header="Контроль" filterMode="lenient">
+        <Column
+          field="period"
+          header="Семестр"
+        />
+        <Column
+          field="control"
+          header="Контроль"
+          filter-mode="lenient"
+        >
           <template #filter>
-            <Select v-model="filters.control" showClear :options="controlSelectOptions" />
+            <Select
+              v-model="filters.control"
+              show-clear
+              :options="controlSelectOptions"
+            />
           </template>
         </Column>
-        <Column field="zet" header="ЗЕТ" />
+        <Column
+          field="zet"
+          header="ЗЕТ"
+        />
       </TreeTable>
     </Panel>
-    <div class="flex flex-column gap-4" style="min-width: 500px">
+    <div
+      class="flex flex-column gap-4"
+      style="min-width: 500px"
+    >
       <RupControlPanel v-model="controlState" />
       <Panel>
         <template #header>
@@ -68,9 +105,18 @@
             <Help :message="choosedDiscipplinesHelpMessage" />
           </div>
         </template>
-        <DataTable :value="choosedForDataTable.solved" v-if="choosedForDataTable.solved.length > 0">
-          <Column field="title" header="Название" />
-          <Column field="id" header="" />
+        <DataTable
+          v-if="choosedForDataTable.solved.length > 0"
+          :value="choosedForDataTable.solved"
+        >
+          <Column
+            field="title"
+            header="Название"
+          />
+          <Column
+            field="id"
+            header=""
+          />
         </DataTable>
       </Panel>
       <Panel>
@@ -81,8 +127,14 @@
           </div>
         </template>
         <DataTable :value="choosedForDataTable.unsolved">
-          <Column field="title" header="Название" />
-          <Column field="id" header="" />
+          <Column
+            field="title"
+            header="Название"
+          />
+          <Column
+            field="id"
+            header=""
+          />
         </DataTable>
       </Panel>
     </div>
@@ -90,25 +142,22 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted, reactive, computed, ref, watch } from "vue";
-import {
-  Panel,
-  TreeTable,
-  Column,
-  InputText,
-  Select,
-  Slider,
-  Checkbox,
-  DataTable,
-} from "primevue";
-import MapsService from "../../services/mapsService";
-import Help from "../UI/Help.vue";
-import RupControlPanel from "./RupControlPanel.vue";
-import Toast from "../../tools/toast";
+import { defineProps, onMounted, reactive, computed, ref, watch } from 'vue';
+import { Panel, TreeTable, Column, InputText, Select, Checkbox, DataTable } from 'primevue';
+import MapsService from '../../services/mapsService';
+import Help from '../UI/Help.vue';
+import RupControlPanel from './RupControlPanel.vue';
+import Toast from '../../tools/toast';
 
 const props = defineProps({
-  source: Object,
-  target: Object,
+  source: {
+    required: true,
+    type: Object,
+  },
+  target: {
+    required: true,
+    type: Object,
+  },
 });
 
 const toast = new Toast();
@@ -127,7 +176,7 @@ const rupData = reactive({
 });
 
 const controlState = ref({
-  mode: "rup",
+  mode: 'rup',
   withLowCourse: false,
   threshold: 0.1,
   showMatching: true,
@@ -137,31 +186,30 @@ const controlState = ref({
 
 const treeTablePT = {
   row: ({ props }) => {
-    if (controlState.value.mode != "rup")
+    if (controlState.value.mode != 'rup')
       return {
-        class: ["row-inert"],
+        class: ['row-inert'],
       };
 
     return {
       class: {
-        "row-same": props.node.type == "same",
-        "row-variant": props.node.type == "variant",
-        "row-no-variant": props.node.type == "noVariants",
+        'row-same': props.node.type == 'same',
+        'row-variant': props.node.type == 'variant',
+        'row-no-variant': props.node.type == 'noVariants',
       },
     };
   },
 };
 
 const onToggleSelection = (parent, child) => {
-  Object.entries(choosen.value[parent]['variants']).forEach(([c, v]) => {
+  Object.entries(choosen.value[parent]['variants']).forEach(([c]) => {
     if (c != child) choosen.value[parent]['variants'][c] = false;
   });
 };
 
-
 const controlSelectOptions = computed(() => {
   const controls = new Set();
-  
+
   for (const item of [...rupData.same, ...rupData.target, ...rupData.source]) {
     if (item && item.control) {
       controls.add(item.control);
@@ -177,20 +225,17 @@ const controlSelectOptions = computed(() => {
       }
     }
   }
-  
+
   return [...controls];
 });
 
 const choosedForDataTable = computed(() => {
   let res = [];
   for (const [parent, childs] of Object.entries(choosen.value)) {
-    const choosedChilds = Object.entries(childs['variants']).reduce(
-      (acc, [child, isChoosed]) => {
-        if (isChoosed) acc.push({ title: child, parent: parent });
-        return acc;
-      },
-      [],
-    );
+    const choosedChilds = Object.entries(childs['variants']).reduce((acc, [child, isChoosed]) => {
+      if (isChoosed) acc.push({ title: child, parent: parent });
+      return acc;
+    }, []);
 
     choosedChilds.forEach((el) => {
       res.push({ ...el, id: res.length + 1 });
@@ -207,15 +252,12 @@ const choosedForDataTable = computed(() => {
 });
 
 const isChecboxInactive = (parent, child) => {
-  const firstCheckedParent = Object.entries(choosen.value).reduce(
-    (acc, [p, childs]) => {
-      if (childs['variants'][child] && !acc) {
-        acc = p;
-      }
-      return acc;
-    },
-    null,
-  );
+  const firstCheckedParent = Object.entries(choosen.value).reduce((acc, [p, childs]) => {
+    if (childs['variants'][child] && !acc) {
+      acc = p;
+    }
+    return acc;
+  }, null);
 
   if (!firstCheckedParent) return false;
   return firstCheckedParent != parent;
@@ -234,38 +276,36 @@ const getTableDataRups = computed(() => {
       same.push({
         key: `${i}`,
         data: value,
-        type: "same",
+        type: 'same',
       });
     }
   }
 
   const len_same = same.length;
 
-  let data = []
+  let data = [];
   const without_variants = [];
 
   for (const [i, value] of rupData.target.entries()) {
     let variants = [];
     const similarVariants = getVariantsByTitle(value.title);
 
-
     for (const [j, variantData] of similarVariants.entries()) {
       if (variantData.similarity >= controlState.value.threshold)
         variants.push({
           key: `${i + len_same}-variant-${j}`,
           data: variantData,
-          type: "variant",
+          type: 'variant',
           child: true,
           parent: value.title,
         });
     }
 
-
     if (variants.length == 0) {
       without_variants.push({
         key: `${i + len_same}`,
         data: value,
-        type: "noVariants",
+        type: 'noVariants',
       });
       continue;
     }
@@ -273,23 +313,22 @@ const getTableDataRups = computed(() => {
     data.push({
       key: `${i + len_same}`,
       data: value,
-      type: "variant",
+      type: 'variant',
       children: variants.length > 0 ? variants : undefined,
     });
   }
 
-  let res = []
-  res.push(...same.sort((a, b) => sorter(a, b)))
-  if (controlState.value.showWithVariants)
-    res.push(...data.sort((a, b) => sorter(a, b)))
+  let res = [];
+  res.push(...same.sort((a, b) => sorter(a, b)));
+  if (controlState.value.showWithVariants) res.push(...data.sort((a, b) => sorter(a, b)));
   if (controlState.value.showWithoutVariants)
-    res.push(...without_variants.sort((a, b) => sorter(a, b)))
+    res.push(...without_variants.sort((a, b) => sorter(a, b)));
   return res;
-})
+});
 
 const getTableDataPlan = computed(() => {
-  let plandata = []
-  const mode = controlState.value.mode
+  let plandata = [];
+  const mode = controlState.value.mode;
 
   for (const [i, value] of rupData.same.entries()) {
     plandata.push({
@@ -298,8 +337,8 @@ const getTableDataPlan = computed(() => {
       type: mode,
     });
   }
-  const diff = (mode === 'source' ? rupData.source : rupData.target)
-  const sameLen = plandata.length
+  const diff = mode === 'source' ? rupData.source : rupData.target;
+  const sameLen = plandata.length;
   for (const [i, value] of diff.entries()) {
     plandata.push({
       key: `${i + sameLen}`,
@@ -307,25 +346,22 @@ const getTableDataPlan = computed(() => {
       type: mode,
     });
   }
-  return plandata
-})
+  return plandata;
+});
 
 const filteredTarget = computed(() => {
-  if (!controlState.value.withLowCourse)
-    return rupData.target
-  return rupData.target.filter((el) => el.period <= props.target.sem - 2)
-})
+  if (!controlState.value.withLowCourse) return rupData.target;
+  return rupData.target.filter((el) => el.period <= props.target.sem - 2);
+});
 
 watch(rupData, () => {
-  if (!rupData.similar)
-    return
+  if (!rupData.similar) return;
 
-  for (const [i, value] of rupData.target.entries()) {
+  for (const [, value] of rupData.target.entries()) {
     let variants = [];
     const similarVariants = getVariantsByTitle(value.title);
-    for (const [j, variantData] of similarVariants.entries()) {
-      if (variantData.similarity < controlState.value.threshold)
-        continue
+    for (const [, variantData] of similarVariants.entries()) {
+      if (variantData.similarity < controlState.value.threshold) continue;
 
       variants.push({
         title: variantData.title,
@@ -341,61 +377,60 @@ watch(rupData, () => {
 
     choosen.value[value.title] = {
       variants: variants,
-      period: value.period
-    }
+      period: value.period,
+    };
   }
-})
+});
 
 const sorter = (a, b) => {
   let order = a.data.period - b.data.period;
   if (order === 0) {
-    const ac = a.data.control?.length || -1
-    const bc = b.data.control?.length || -1
-    order += ac - bc
+    const ac = a.data.control?.length || -1;
+    const bc = b.data.control?.length || -1;
+    order += ac - bc;
   }
-  return order
-}
+  return order;
+};
 
 const getTableData = computed(() => {
   let res;
-  if (controlState.value.mode === 'rup')
-    res = getTableDataRups.value
+  if (controlState.value.mode === 'rup') res = getTableDataRups.value;
   else {
-    res = getTableDataPlan.value
-    res.sort((a, b) => sorter(a, b))
+    res = getTableDataPlan.value;
+    res.sort((a, b) => sorter(a, b));
   }
 
   if (controlState.value.withLowCourse) {
-    res = res.filter((el) => el.data.period <= props.target.sem - 2)
+    res = res.filter((el) => el.data.period <= props.target.sem - 2);
   }
 
   if (filters.value.title)
-    res = res.filter((el) => el.data.title.toLowerCase().includes(filters.value.title.toLowerCase()))
+    res = res.filter((el) =>
+      el.data.title.toLowerCase().includes(filters.value.title.toLowerCase())
+    );
 
   if (filters.value.control)
     res = res.filter((el) => {
-      return el.data.control == filters.value.control ||
-        (el.children && el.children.some(
-          (child) => child.data.control == filters.value.control
-        ))
-    }) 
-  return res
-
+      return (
+        el.data.control == filters.value.control ||
+        (el.children && el.children.some((child) => child.data.control == filters.value.control))
+      );
+    });
+  return res;
 });
-
 
 const fetchRupData = async () => {
   try {
-    console.log(props.source)
+    console.log(props.source);
     const source = {
-        num: props.source.num,
-        sem: props.source.sem,
-      }
+      num: props.source.num,
+      sem: props.source.sem,
+    };
 
     const target = {
-        num: props.target.num,
-        sem: props.target.sem,
-      }
+      num: props.target.num,
+      sem: props.target.sem,
+    };
     const data = await MapsService.getRups(source, target);
     rupData.source = data.source;
     rupData.target = data.target;
@@ -403,13 +438,12 @@ const fetchRupData = async () => {
     rupData.similar = data.similar;
     rupData.bestMatch = data.best_match;
   } catch (err) {
-    toast.error("Не удалось загрузить данные");
-    console.error(err)
+    toast.error('Не удалось загрузить данные');
+    console.error(err);
   }
 };
 
-const studyHelpMessage =
-  `В данной панели представлена информация из учебного плана, на который переводиться студент.
+const studyHelpMessage = `В данной панели представлена информация из учебного плана, на который переводиться студент.
 У дисциплин могут быть варианты - дисциплины из предыдущего учебного плана, которые могут быть зачтены.
 
 Цветовая маркировка:
@@ -423,10 +457,10 @@ const studyHelpMessage =
 - Значение в скобках указывает на лучшее соответствие из другого блока
 - Фильтры помогут быстрее найти нужную дисциплину
 
-Справа отображаются выбранные соответствия и оставшиеся расхождения между планами.`
+Справа отображаются выбранные соответствия и оставшиеся расхождения между планами.`;
 
-const choosedDiscipplinesHelpMessage = `В данной панели отображаются дисциплины, которые были выбраны для зачета.`
-const rupHelpMsg = `В данной панели представлен список расхождений при смене учебного плана.`
+const choosedDiscipplinesHelpMessage = `В данной панели отображаются дисциплины, которые были выбраны для зачета.`;
+const rupHelpMsg = `В данной панели представлен список расхождений при смене учебного плана.`;
 onMounted(async () => {
   await fetchRupData();
 });

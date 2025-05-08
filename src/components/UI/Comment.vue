@@ -1,13 +1,17 @@
 <template>
   <div>
-    <Panel :header="props.comment.by" class="mb-3" :class="{ 'stuff-comment': props.type === 'stuff' }">
+    <Panel
+      :header="props.comment.by"
+      class="mb-3"
+      :class="{ 'stuff-comment': props.type === 'stuff' }"
+    >
       <template #icons>
-        <Button 
-          icon="pi pi-times" 
-          rounded 
-          size="small" 
-          text 
-          severity="secondary" 
+        <Button
+          icon="pi pi-times"
+          rounded
+          size="small"
+          text
+          severity="secondary"
           @click="emit('remove')"
         />
       </template>
@@ -17,8 +21,8 @@
 </template>
 
 <script setup>
-import { Panel, Button } from "primevue";
-import { defineProps } from "vue";
+import { Panel, Button } from 'primevue';
+import { defineProps } from 'vue';
 
 const props = defineProps({
   comment: {
@@ -27,13 +31,11 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: "user",
+    default: 'user',
   },
 });
 
-const emit = defineEmits(['remove'])
-
-
+const emit = defineEmits(['remove']);
 </script>
 
 <style scoped>

@@ -1,9 +1,12 @@
 <template>
   <div>
-    <span v-if='props.message' class="pi pi-question-circle" v-tooltip.bottom="tooltipMessage"/>    
+    <span
+      v-if="props.message"
+      v-tooltip.bottom="tooltipMessage"
+      class="pi pi-question-circle"
+    ></span>
   </div>
 </template>
-
 
 <script setup>
 import { defineProps, computed } from 'vue';
@@ -14,13 +17,13 @@ const props = defineProps({
   },
   side: {
     type: String,
-    default: 'left'
-  }, 
+    default: 'left',
+  },
   size: {
     type: String,
-    default: 'normal'
-  }
-})
+    default: 'normal',
+  },
+});
 
 const tooltipMessage = computed(() => {
   return {
@@ -29,15 +32,14 @@ const tooltipMessage = computed(() => {
     pt: {
       root: {
         class: {
-          "c-tooltip-small": props.size === 'small',
-          "c-tooltip-normal": props.size === 'normal',
-          "c-tooltip-large": props.size === 'large',
-        }
-      }
-    }
-  }
-})
-
+          'c-tooltip-small': props.size === 'small',
+          'c-tooltip-normal': props.size === 'normal',
+          'c-tooltip-large': props.size === 'large',
+        },
+      },
+    },
+  };
+});
 </script>
 
 <style>

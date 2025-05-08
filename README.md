@@ -34,17 +34,20 @@ Web application for submission, processing, and viewing of Moscow Polytechnic Un
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd vacant_front
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Copy the environment example file and configure your environment variables:
+
    ```bash
    cp .env.example .env
    ```
@@ -75,6 +78,7 @@ VITE_BASE_URL=<Base URL for the application>
 ## Application Structure
 
 An application consists of:
+
 - **header** - information (purpose, years, group, etc.)
 - **programs** - array of programs (before/after transfer)
 - **footer** - confirmations and agreements

@@ -13,65 +13,84 @@
           <div class="flex justify-content-between">
             <div class="flex gap-2">
               <span>Совпадающие</span>
-              <Checkbox :modelValue="model.showMatching" @update:modelValue="updateModel('showMatching', $event)" binary/>
+              <Checkbox
+                :model-value="model.showMatching"
+                binary
+                @update:model-value="updateModel('showMatching', $event)"
+              />
             </div>
             <div class="flex gap-2">
               <span>С вариантами</span>
-              <Checkbox :modelValue="model.showWithVariants" @update:modelValue="updateModel('showWithVariants', $event)" binary/>
+              <Checkbox
+                :model-value="model.showWithVariants"
+                binary
+                @update:model-value="updateModel('showWithVariants', $event)"
+              />
             </div>
             <div class="flex gap-2">
               <span>Без вариантов</span>
-              <Checkbox :modelValue="model.showWithoutVariants" @update:modelValue="updateModel('showWithoutVariants', $event)" binary/>
+              <Checkbox
+                :model-value="model.showWithoutVariants"
+                binary
+                @update:model-value="updateModel('showWithoutVariants', $event)"
+              />
             </div>
           </div>
         </div>
         <div class="flex gap-2 align-items-center">
           <span class="font-semibold">Режим отображения:</span>
-          <SelectButton class='m-auto' 
-                       :modelValue="model.mode" 
-                       @update:modelValue="updateModel('mode', $event)" 
-                       :options="modeOptions" 
-                       optionLabel='name' 
-                       optionValue='value'/>
+          <SelectButton
+            class="m-auto"
+            :model-value="model.mode"
+            :options="modeOptions"
+            option-label="name"
+            option-value="value"
+            @update:model-value="updateModel('mode', $event)"
+          />
+          />
         </div>
-        
+
         <div class="flex gap-2 align-items-center w-full">
           <span class="font-semibold w-full">Мин. схожесть: ({{ model.threshold }})</span>
-          <Slider class="w-full" 
-                 :modelValue="model.threshold" 
-                 @update:modelValue="updateModel('threshold', $event)" 
-                 :min="0.01" 
-                 :max="1.00" 
-                 :step="0.01"/>
+          <Slider
+            class="w-full"
+            :model-value="model.threshold"
+            :min="0.01"
+            :max="1.0"
+            :step="0.01"
+            @update:model-value="updateModel('threshold', $event)"
+          />
         </div>
         <div class="flex gap-2 align-items-center">
           <span class="font-semibold">С понижением курса</span>
-          <Checkbox :modelValue="model.withLowCourse" 
-                   @update:modelValue="updateModel('withLowCourse', $event)" 
-                   binary/>
-        </div>  
+          <Checkbox
+            :model-value="model.withLowCourse"
+            binary
+            @update:model-value="updateModel('withLowCourse', $event)"
+          />
+        </div>
       </div>
     </Panel>
   </div>
 </template>
 
 <script setup>
-import { Checkbox, Panel, SelectButton, Slider } from "primevue";
-import { computed, ref } from "vue";
-import Help from "../UI/Help.vue";
+import { Checkbox, Panel, SelectButton, Slider } from 'primevue';
+import { computed } from 'vue';
+import Help from '../UI/Help.vue';
 
 const props = defineProps({
   modelValue: {
     type: Object,
     default: () => ({
-      mode: "rup",
+      mode: 'rup',
       withLowCourse: false,
       threshold: 0.1,
       showMatching: true,
       showWithVariants: true,
-      showWithoutVariants: true
-    })
-  }
+      showWithoutVariants: true,
+    }),
+  },
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -83,7 +102,7 @@ const model = computed({
   },
   set(newValue) {
     emit('update:modelValue', newValue);
-  }
+  },
 });
 
 // Helper methods to update individual properties
@@ -93,16 +112,16 @@ const updateModel = (key, value) => {
 
 const modeOptions = [
   {
-    name: "Откуда", 
-    value: "source",
+    name: 'Откуда',
+    value: 'source',
   },
   {
-    name: "Рупы", 
-    value: "rup",
+    name: 'Рупы',
+    value: 'rup',
   },
   {
-    name: "Куда", 
-    value: "target",
+    name: 'Куда',
+    value: 'target',
   },
 ];
 

@@ -1,38 +1,42 @@
 <template>
-  <Panel header="Документы" class="flex flex-column">
-    <div v-for="(category, index) in filteredCategories">
+  <Panel
+    header="Документы"
+    class="flex flex-column"
+  >
+    <div
+      v-for="(category, index) in filteredCategories"
+      :key="index"
+    >
       <FileUpload
         :key="index"
+        v-model="files[category.id]"
+        v-model:is-valid="categoryValidations[category.id]"
         :title="category.title"
         :description="category.description"
         :multiple="category.multipleFiles"
         :required="category.required"
-        :validationMessage="category.validationMessage"
-        :showValidationErrors="showValidationErrors"
-        :editable='props.editable'
-        v-model="files[category.id]"
-        v-model:isValid="categoryValidations[category.id]"
+        :validation-message="category.validationMessage"
+        :show-validation-errors="showValidationErrors"
+        :editable="props.editable"
       />
     </div>
   </Panel>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import Panel from "primevue/panel";
-import FileUpload from "../UI/FileUpload.vue";
-import DocumentService from "../../services/documnet";
-import config from "../../config";
+import { ref, computed, onMounted, watch } from 'vue';
+import Panel from 'primevue/panel';
+import FileUpload from '../UI/FileUpload.vue';
+import DocumentService from '../../services/documnet';
 
-const emit = defineEmits(["update:files", "update:isValid"]);
+const emit = defineEmits(['update:files', 'update:isValid']);
 const files = ref({});
 const categoryValidations = ref({});
 
 const props = defineProps({
   type: {
     type: String,
-    validator: (value) =>
-      ["reinstatement", "change", "transfer"].includes(value),
+    validator: (value) => ['reinstatement', 'change', 'transfer'].includes(value),
     required: true,
   },
   isTransferToBudget: {
@@ -52,66 +56,62 @@ const props = defineProps({
   },
   attachments: {
     type: Array,
+    default: () => [],
   },
-
 });
 
 const categories = [
   {
-    id: "passport",
-    title: "Паспорт",
-    description: "Загрузите скан паспорта (страницы с фото и с регистрацией)",
+    id: 'passport',
+    title: 'Паспорт',
+    description: 'Загрузите скан паспорта (страницы с фото и с регистрацией)',
     multipleFiles: false,
     required: true,
-    validationMessage: "Необходимо загрузить скан паспорта",
-    types: ["reinstatement", "change", "transfer"],
+    validationMessage: 'Необходимо загрузить скан паспорта',
+    types: ['reinstatement', 'change', 'transfer'],
   },
   {
-    id: "recordBook",
-    title: "Копия зачетной книжки",
-    description: "Загрузите скан зачетной книжки",
+    id: 'recordBook',
+    title: 'Копия зачетной книжки',
+    description: 'Загрузите скан зачетной книжки',
     multipleFiles: false,
     required: true,
-    validationMessage: "Необходимо загрузить скан зачетной книжки",
-    types: ["change", "toBudget"],
+    validationMessage: 'Необходимо загрузить скан зачетной книжки',
+    types: ['change', 'toBudget'],
   },
   {
-    id: "statusDocument",
-    title:
-      "Документ, подтверждающий отнесение к определенным категориям граждан",
-    description: "Загрузите документ, подтверждающий ваш статус (при наличии)",
+    id: 'statusDocument',
+    title: 'Документ, подтверждающий отнесение к определенным категориям граждан',
+    description: 'Загрузите документ, подтверждающий ваш статус (при наличии)',
     multipleFiles: false,
     required: false,
-    types: ["change", "toBudget"],
+    types: ['change', 'toBudget'],
   },
   {
-    id: "studyPeriod",
-    title: "Справка о периоде обучения",
-    description: "Загрузите справку о периоде обучения",
+    id: 'studyPeriod',
+    title: 'Справка о периоде обучения',
+    description: 'Загрузите справку о периоде обучения',
     multipleFiles: false,
     required: true,
-    validationMessage: "Необходимо загрузить справку о периоде обучения",
-    types: ["transfer"],
+    validationMessage: 'Необходимо загрузить справку о периоде обучения',
+    types: ['transfer'],
   },
   {
-    id: "consent",
-    title: "Согласие на обработку персональных данных",
-    description:
-      "Загрузите подписанное согласие на обработку персональных данных",
+    id: 'consent',
+    title: 'Согласие на обработку персональных данных',
+    description: 'Загрузите подписанное согласие на обработку персональных данных',
     multipleFiles: false,
     required: true,
-    validationMessage:
-      "Необходимо загрузить согласие на обработку персональных данных",
-    types: ["transfer"],
+    validationMessage: 'Необходимо загрузить согласие на обработку персональных данных',
+    types: ['transfer'],
   },
   {
-    id: "achievements",
-    title: "Индивидуальные достижения (по желанию)",
-    description:
-      "Загрузите документы, подтверждающие ваши индивидуальные достижения",
+    id: 'achievements',
+    title: 'Индивидуальные достижения (по желанию)',
+    description: 'Загрузите документы, подтверждающие ваши индивидуальные достижения',
     multipleFiles: true,
     required: false,
-    types: ["change"],
+    types: ['change'],
   },
 ];
 
@@ -121,35 +121,38 @@ const filteredCategories = computed(() => {
   } else {
     return categories
       .filter((category) => category.types.includes(props.type))
-      .filter((category) => !category.types.includes("toBudget"));
+      .filter((category) => !category.types.includes('toBudget'));
   }
 });
 
 const fetchAttachments = async () => {
-  const promises = []
-  for (const [category, data] of Object.entries(props.attachments)) {
-    const filename = data.filepath.split('/').at(-1)
+  const promises = [];
+  for (const [, data] of Object.entries(props.attachments)) {
+    const filename = data.filepath.split('/').at(-1);
     const promise = async () => {
-      return {category: data.type, file: await DocumentService.getById(data.id, filename)}
-    }
-    promises.push(promise())
+      return { category: data.type, file: await DocumentService.getById(data.id, filename) };
+    };
+    promises.push(promise());
   }
 
-  const res = await Promise.allSettled(promises)
+  const res = await Promise.allSettled(promises);
 
   return res.reduce((acc, el) => {
-    if (!acc[el.value.category]) acc[el.value.category] = []
-    acc[el.value.category].push(el.value.file)
-    return acc
-  }, {})
-}
+    if (!acc[el.value.category]) acc[el.value.category] = [];
+    acc[el.value.category].push(el.value.file);
+    return acc;
+  }, {});
+};
 
-watch(() => props.attachments, async (n) => {
-  if (n.length > 0) {
-    const res = await fetchAttachments()
-    files.value = res
+watch(
+  () => props.attachments,
+  async (n) => {
+    if (n.length > 0) {
+      const res = await fetchAttachments();
+      files.value = res;
+    }
   }
-})
+);
 
 onMounted(async () => {
   filteredCategories.value.forEach((category) => {
@@ -157,7 +160,6 @@ onMounted(async () => {
     categoryValidations.value[category.id] = !category.required;
   });
 });
-
 
 watch(
   () => filteredCategories.value,
@@ -173,10 +175,10 @@ watch(
     files.value = newFiles;
     categoryValidations.value = newValidations;
   },
-  { immediate: true },
+  { immediate: true }
 );
 
-const isValid = computed(() => {
+const isFormValid = computed(() => {
   const valid = filteredCategories.value
     .filter((category) => category.required)
     .every((category) => categoryValidations.value[category.id]);
@@ -190,19 +192,19 @@ const getFiles = () => {
 defineExpose({ getFiles });
 
 watch(
-  isValid,
+  isFormValid,
   (newValue) => {
-    emit("update:isValid", newValue);
+    emit('update:isValid', newValue);
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 watch(
   files,
   (newFiles) => {
-    emit("update:files", newFiles);
+    emit('update:files', newFiles);
   },
-  { deep: true },
+  { deep: true }
 );
 </script>
 

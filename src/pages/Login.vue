@@ -1,12 +1,18 @@
 <template>
   <div class="flex h-screen align-items-center justify-content-center surface-50">
     <Panel
-      class="login-form w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0">
+      class="login-form w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0"
+    >
       <template #header>
         <div class="text-center w-full pt-4 pb-3 flex flex-column align-items-center">
           <div class="mb-3">
-            <img :src="'/logo-white.png'" alt="Московский Политех" height="70"
-              :class="{ 'logo-light-mode': !appStore.isDarkMode }" class="mb-3" />
+            <img
+              :src="'/logo-white.png'"
+              alt="Московский Политех"
+              height="70"
+              :class="{ 'logo-light-mode': !appStore.isDarkMode }"
+              class="mb-3"
+            />
           </div>
           <h2 class="text-2xl font-bold m-0 text-900">Добро пожаловать!</h2>
         </div>
@@ -17,12 +23,31 @@
         </h4>
 
         <div class="buttons w-full flex flex-column gap-3">
-          <Button class="p-3 font-medium text-base" @click="AuthService.redirectToLogin()" label="Войти через ЛК"
-            icon="pi pi-sign-in" iconPos="right" raised />
-          <Button class="p-3 font-medium text-base" @click="AuthService.redirectToLoginViaEmail()"
-            label="Войти с помощью Email" icon="pi pi-sign-in" iconPos="right" raised />
-          <Button severity="secondary" class="p-3 font-medium" @click="router.push({ name: 'External Login' })"
-            label="Я студент из другого ВУЗа" icon="pi pi-external-link" iconPos="right" outlined />
+          <Button
+            class="p-3 font-medium text-base"
+            label="Войти через ЛК"
+            icon="pi pi-sign-in"
+            icon-pos="right"
+            raised
+            @click="AuthService.redirectToLogin()"
+          />
+          <Button
+            class="p-3 font-medium text-base"
+            label="Войти с помощью Email"
+            icon="pi pi-sign-in"
+            icon-pos="right"
+            raised
+            @click="AuthService.redirectToLoginViaEmail()"
+          />
+          <Button
+            severity="secondary"
+            class="p-3 font-medium"
+            label="Я студент из другого ВУЗа"
+            icon="pi pi-external-link"
+            icon-pos="right"
+            outlined
+            @click="router.push({ name: 'External Login' })"
+          />
         </div>
       </div>
     </Panel>
@@ -30,12 +55,12 @@
 </template>
 
 <script setup>
-import { onBeforeMount } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useAuthStore } from "../store/authStore.js";
-import { useAppStore } from "../store/appStore.js";
-import AuthService from "../services/authService.js";
-import { Button, Panel } from "primevue";
+import { onBeforeMount } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '../store/authStore.js';
+import { useAppStore } from '../store/appStore.js';
+import AuthService from '../services/authService.js';
+import { Button, Panel } from 'primevue';
 
 const router = useRouter();
 const route = useRoute();
@@ -44,7 +69,7 @@ const appStore = useAppStore();
 
 async function handleTokens(access, refresh) {
   await authStore.setAuthData(access, refresh); // Set token in authStore
-  await router.push("/"); // Redirect to homepage
+  await router.push('/'); // Redirect to homepage
 }
 
 onBeforeMount(async () => {
@@ -67,7 +92,7 @@ onBeforeMount(async () => {
 }
 
 .montserrat-font {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }

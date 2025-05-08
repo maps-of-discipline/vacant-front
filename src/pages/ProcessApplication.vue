@@ -4,15 +4,15 @@
       <div class="application-page flex flex-row gap-4">
         <CreateApplicationForm
           v-model="applicationData"
-          @valid-submit="onValidSubmit"
           :editable="false"
+          @valid-submit="onValidSubmit"
         />
       </div>
       <div class="tools flex flex-column gap-3 w-auto">
         <StatusChangePanel
           :status="applicationData.status"
           :application_id="props.id"
-          @statusUpdate="onStatusUpdate"
+          @status-update="onStatusUpdate"
           @quickmessage="onQuickMessage"
         />
         <RupsNavPanel :application="applicationData" />
@@ -23,15 +23,15 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch, onBeforeMount, computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import Toast from "../tools/toast.js";
-import CreateApplicationForm from "../components/application/CreateApplicationForm.vue";
-import ApplicationService from "../services/applicationService.js";
-import { useApplicationsStore } from "../store/applicationsStore.js";
-import CommentsListPanel from "../components/tools/CommentsListPanel.vue";
-import StatusChangePanel from "../components/tools/StatusChangePanel.vue";
-import RupsNavPanel from "../components/tools/RupsNavPanel.vue";
+import { reactive, onBeforeMount } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import Toast from '../tools/toast.js';
+import CreateApplicationForm from '../components/application/CreateApplicationForm.vue';
+import ApplicationService from '../services/applicationService.js';
+import { useApplicationsStore } from '../store/applicationsStore.js';
+import CommentsListPanel from '../components/tools/CommentsListPanel.vue';
+import StatusChangePanel from '../components/tools/StatusChangePanel.vue';
+import RupsNavPanel from '../components/tools/RupsNavPanel.vue';
 
 const toast = new Toast();
 const router = useRouter();
@@ -39,7 +39,10 @@ const route = useRoute();
 const applicationsStore = useApplicationsStore();
 
 const props = defineProps({
-  id: Number,
+  id: {
+    type: Number,
+    required: true,
+  },
 });
 
 const applicationData = reactive({
@@ -51,12 +54,12 @@ const applicationData = reactive({
 
 const onValidSubmit = async (application) => {
   try {
-    const response = await ApplicationService.saveApplication(application);
-    toast.success("Заявление успешно сохранено");
-    await router.push({ name: "SelfApplications" });
+    await ApplicationService.saveApplication(application);
+    toast.success('Заявление успешно сохранено');
+    await router.push({ name: 'SelfApplications' });
   } catch (error) {
     console.error(error);
-    toast.error("При сохранении заявления произошла ошибка");
+    toast.error('При сохранении заявления произошла ошибка');
   }
 };
 
@@ -66,25 +69,25 @@ const fetchApplication = async () => {
     try {
       app = await ApplicationService.getApplication(props.id, route.query.type);
     } catch (error) {
-      toast.error("Не удаось загрузить заявление.");
+      toast.error('Не удаось загрузить заявление.');
       console.error(error);
-      router.push({ name: "Applications" });
+      router.push({ name: 'Applications' });
     }
     Object.assign(applicationData, app);
   } else {
-    router.push({ name: "Applications" });
+    router.push({ name: 'Applications' });
   }
 };
 
 const onStatusUpdate = async (status) => {
   try {
     await ApplicationService.updateStatus(applicationData.id, status);
-    applicationData.status = status
-  } catch (e){
-    toast.error("Не удалось обновить статус заявления");
-    throw e
+    applicationData.status = status;
+  } catch (e) {
+    toast.error('Не удалось обновить статус заявления');
+    throw e;
   }
-  toast.success("Статус обновлен");
+  toast.success('Статус обновлен');
 };
 
 const onQuickMessage = (status) => {
@@ -95,8 +98,8 @@ onBeforeMount(async () => {
   try {
     await Promise.allSettled([fetchApplication()]);
   } catch (error) {
-    toast.error('Не удалось загрузить заявления')
-    console.error("Error loading page data:", error);
+    toast.error('Не удалось загрузить заявления');
+    console.error('Error loading page data:', error);
   }
 });
 </script>

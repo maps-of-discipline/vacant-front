@@ -4,22 +4,16 @@
   >
     <Panel>
       <template #header>
-        <h3 v-if="applicationType === 'change'">
-          Зявление на смену условий обучения
-        </h3>
-        <h3 v-else-if="applicationType === 'reinstatement'">
-          Зявление на восстановление
-        </h3>
-        <h3 v-else-if="applicationType === 'transfer'">
-          Зявление на перевод из другого ВУЗа
-        </h3>
+        <h3 v-if="applicationType === 'change'">Зявление на смену условий обучения</h3>
+        <h3 v-else-if="applicationType === 'reinstatement'">Зявление на восстановление</h3>
+        <h3 v-else-if="applicationType === 'transfer'">Зявление на перевод из другого ВУЗа</h3>
       </template>
       <div class="programs flex flex-column gap-4 mb-3">
         <ApplicationHeader
-          :type="applicationType"
           v-model="model.header"
-          :showValidationErrors
-          v-model:isValid="formValidation.header"
+          v-model:is-valid="formValidation.header"
+          :type="applicationType"
+          :show-validation-errors
           :editable="props.editable"
         />
 
@@ -27,56 +21,63 @@
           v-for="(programConfig, index) in programConfigs"
           :key="`program-${index}`"
           v-model="model.programs[index]"
+          v-model:is-valid="formValidation.programs[index]"
           :type="programConfig.type"
-          :anotherUniversity="programConfig.anotherUniversity"
-          :showValidationErrors="showValidationErrors"
-          v-model:isValid="formValidation.programs[index]"
+          :another-university="programConfig.anotherUniversity"
+          :show-validation-errors="showValidationErrors"
           :editable="props.editable"
-          :selectOptions="options"
-          :isOptionsLoading="isOptionsLoading"
+          :select-options="options"
+          :is-options-loading="isOptionsLoading"
         />
 
         <ApplicationFooter
-          :showValidationErrors
-          :type="applicationType"
           v-model="model.footer"
-          v-model:isValid="formValidation.footer"
+          v-model:is-valid="formValidation.footer"
+          :show-validation-errors
+          :type="applicationType"
           :editable="props.editable"
         />
         <ApplicationFiles
+          v-model:is-valid="formValidation.files"
           :type="applicationType"
-          :isTransferToBudget="isChangeToBudget"
-          v-model:isValid="formValidation.files"
-          :showValidationErrors
+          :is-transfer-to-budget="isChangeToBudget"
+          :show-validation-errors
           :editable="props.editable"
           :attachments="model.attachments"
           @update:files="onFilesChanged"
         />
-        <CompletedDisciplinesDialog v-model="model.passed" v-if='applicationType == "transfer"'/>
+        <CompletedDisciplinesDialog
+          v-if="applicationType == 'transfer'"
+          v-model="model.passed"
+        />
       </div>
       <div
-        class="flex flex-column w-full align-items-center"
         v-if="props.editable"
+        class="flex flex-column w-full align-items-center"
       >
-        <Button :label="submitLabel" :icon="submitIcon" @click="onSubmit" />
+        <Button
+          :label="submitLabel"
+          :icon="submitIcon"
+          @click="onSubmit"
+        />
       </div>
     </Panel>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, defineEmits, reactive, watch, onMounted } from "vue";
-import { Panel, Button } from "primevue";
-import Program from "./Program.vue";
-import ApplicationHeader from "./ApplicationHeader.vue";
-import ApplicationFooter from "./ApplicationFooter.vue";
-import ApplicationFiles from "./ApplicationFiles.vue";
-import MapsService from "../../services/mapsService.js";
-import CompletedDisciplinesDialog from "./CompletedDisciplinesDialog.vue";
-import Toast from "../../tools/toast.js";
+import { ref, computed, defineEmits, reactive, onMounted } from 'vue';
+import { Panel, Button } from 'primevue';
+import Program from './Program.vue';
+import ApplicationHeader from './ApplicationHeader.vue';
+import ApplicationFooter from './ApplicationFooter.vue';
+import ApplicationFiles from './ApplicationFiles.vue';
+import MapsService from '../../services/mapsService.js';
+import CompletedDisciplinesDialog from './CompletedDisciplinesDialog.vue';
+import Toast from '../../tools/toast.js';
 
 const showValidationErrors = ref(false);
-const emit = defineEmits(["valid-submit"]);
+const emit = defineEmits(['valid-submit']);
 const toast = new Toast();
 
 const model = defineModel({
@@ -114,51 +115,51 @@ const formData = reactive({
 
 const options = ref({
   programs: {},
-  cities: [{ title: "Москва", value: "Москва" }],
+  cities: [{ title: 'Москва', value: 'Москва' }],
   semesters: [
-    { title: "1 семестр", value: 1 },
-    { title: "2 семестр", value: 2 },
-    { title: "3 семестр", value: 3 },
-    { title: "4 семестр", value: 4 },
-    { title: "5 семестр", value: 5 },
-    { title: "6 семестр", value: 6 },
-    { title: "7 семестр", value: 7 },
-    { title: "8 семестр", value: 8 },
-    { title: "9 семестр", value: 9 },
-    { title: "10 семестр", value: 10 },
+    { title: '1 семестр', value: 1 },
+    { title: '2 семестр', value: 2 },
+    { title: '3 семестр', value: 3 },
+    { title: '4 семестр', value: 4 },
+    { title: '5 семестр', value: 5 },
+    { title: '6 семестр', value: 6 },
+    { title: '7 семестр', value: 7 },
+    { title: '8 семестр', value: 8 },
+    { title: '9 семестр', value: 9 },
+    { title: '10 семестр', value: 10 },
   ],
 });
 const isOptionsLoading = ref(false);
 
 const submitLabel = computed(() => {
-  return props.isEdit ? "Сохранить заявление" : "Подать заявление";
+  return props.isEdit ? 'Сохранить заявление' : 'Подать заявление';
 });
 const submitIcon = computed(() => {
-  return props.isEdit ? "pi pi-save" : "pi pi-check";
+  return props.isEdit ? 'pi pi-save' : 'pi pi-check';
 });
 
 const programConfigs = computed(() => {
   const configs = [];
-  if (model.value.type === "reinstatement") {
-    configs.push({ type: "before", anotherUniversity: false });
-  } else if (model.value.type === "change") {
-    configs.push({ type: "current", anotherUniversity: false });
-  } else if (model.value.type === "transfer") {
-    configs.push({ type: "current", anotherUniversity: true });
+  if (model.value.type === 'reinstatement') {
+    configs.push({ type: 'before', anotherUniversity: false });
+  } else if (model.value.type === 'change') {
+    configs.push({ type: 'current', anotherUniversity: false });
+  } else if (model.value.type === 'transfer') {
+    configs.push({ type: 'current', anotherUniversity: true });
   }
 
-  configs.push({ type: "first", anotherUniversity: false });
-  configs.push({ type: "second", anotherUniversity: false });
+  configs.push({ type: 'first', anotherUniversity: false });
+  configs.push({ type: 'second', anotherUniversity: false });
 
   return configs;
 });
 
 const isChangeToBudget = computed({
   get: () => {
-    if (applicationType !== "change") return false;
+    if (applicationType.value !== 'change') return false;
     const currentBase = formData.programs[0].base;
     const newBases = [formData.programs[1].base, formData.programs[2].base];
-    return newBases.includes("Бюджетная") && currentBase !== "Бюджетная";
+    return newBases.includes('Бюджетная') && currentBase !== 'Бюджетная';
   },
 });
 
@@ -174,11 +175,11 @@ const isFormValid = computed(() => {
 const onSubmit = () => {
   showValidationErrors.value = true;
   if (!isFormValid.value) {
-    toast.warn("Форма заоплнена неверно");
+    toast.warn('Форма заоплнена неверно');
     return;
   }
   model.value.date = new Date();
-  emit("valid-submit", model.value);
+  emit('valid-submit', model.value);
 };
 
 const onFilesChanged = (files) => {
@@ -212,7 +213,7 @@ onMounted(async () => {
   try {
     await fetchOptions();
   } catch (err) {
-    toast.error("Не удалось загрузить данные, попробуйте позже.");
+    toast.error('Не удалось загрузить данные, попробуйте позже.');
     throw err;
   }
 });

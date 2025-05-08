@@ -3,105 +3,95 @@
     <div class="">
       <div class="flex flex-row gap-2 mb-2">
         <Checkbox
-          inputId="hostel_policy_accepted"
           v-model="modelValue.hostel_policy_accepted"
+          input-id="hostel_policy_accepted"
           binary
-          :invalid="
-            props.showValidationErrors &&
-            !props.modelValue.hostel_policy_accepted
-          "
+          :invalid="props.showValidationErrors && !props.modelValue.hostel_policy_accepted"
           :readonly="!props.editable"
         />
-        <label for="hostel_policy_accepted"
-          >Ознакомлен, что общежитие предоставляется при наличии свободного
-          жилого фонда после подачи заявки в личном кабинете обучающегося в
-          соответствии с очередностью</label
-        >
+        <label for="hostel_policy_accepted">
+          > Ознакомлен, что общежитие предоставляется при наличии свободного жилого фонда после
+          заявки в личном кабинете обучающегося в соответствии с очередностью
+        </label>
       </div>
-      <div class="flex flex-row gap-2 mb-2" v-if="needsPaidPolicy">
+      <div
+        v-if="needsPaidPolicy"
+        class="flex flex-row gap-2 mb-2"
+      >
         <Checkbox
-          inputId="paid_policy_accepted"
           v-model="modelValue.paid_policy_accepted"
+          input-id="paid_policy_accepted"
           binary
-          :invalid="
-            props.showValidationErrors && !props.modelValue.paid_policy_accepted
-          "
+          :invalid="props.showValidationErrors && !props.modelValue.paid_policy_accepted"
           :readonly="!props.editable"
         />
-        <label for="paid_policy_accepted"
-          >В случае невозможности перевода на бюджетную основу прошу рассмотреть
-          возможность перевода на платную договорную основу</label
-        >
+        <label for="paid_policy_accepted">
+          > В случае невозможности перевода на бюджетную основу прошу рассмотреть возможность
+          платную договорную основу
+        </label>
       </div>
       <div class="flex flex-row gap-2 mb-2">
         <Checkbox
-          inputId="vacation_policy_viewed"
           v-model="modelValue.vacation_policy_viewed"
+          input-id="vacation_policy_viewed"
           binary
-          :invalid="
-            props.showValidationErrors &&
-            !props.modelValue.vacation_policy_viewed
-          "
+          :invalid="props.showValidationErrors && !props.modelValue.vacation_policy_viewed"
           :readonly="!props.editable"
         />
-        <label for="vacation_policy_viewed"
-          >С положением о заполнении вакантных мест ознакомлен</label
-        >
+        <label for="vacation_policy_viewed">
+          С положением о заполнении вакантных мест ознакомлен
+        </label>
       </div>
       <div class="flex flex-row gap-2 mb-2">
         <Checkbox
-          inputId="no_restrictions_policy_accepted"
           v-model="modelValue.no_restrictions_policy_accepted"
+          input-id="no_restrictions_policy_accepted"
           binary
-          :invalid="
-            props.showValidationErrors &&
-            !props.modelValue.no_restrictions_policy_accepted
-          "
+          :invalid="props.showValidationErrors && !props.modelValue.no_restrictions_policy_accepted"
           :readonly="!props.editable"
         />
-        <label for="no_restrictions_policy_accepted"
-          >Подтверждаю отсутствие ограничений, предусмотренных для освоения
-          образовательной программы за счет бюджетный оссигнований</label
-        >
+        <label for="no_restrictions_policy_accepted">
+          > Подтверждаю отсутствие ограничений, предусмотренных для освоения образовательной
+          программы за счет бюджетный оссигнований
+        </label>
       </div>
       <div class="flex flex-row gap-2 mb-2">
         <Checkbox
-          inputId="reliable_information_policy_accepted"
           v-model="modelValue.reliable_information_policy_accepted"
+          input-id="reliable_information_policy_accepted"
           binary
           :invalid="
-            props.showValidationErrors &&
-            !props.modelValue.reliable_information_policy_accepted
+            props.showValidationErrors && !props.modelValue.reliable_information_policy_accepted
           "
           :readonly="!props.editable"
         />
         <label for="reliable_information_policy_accepted">
-          Ознакомлен с необходимостью в заявлении достовреный сведений и
-          представления подлинных документов</label
-        >
+          Ознакомлен с необходимостью в заявлении достовреный сведений и представления подлинных
+          документов
+        </label>
       </div>
       <Message
         v-if="!(!props.showValidationErrors || isValid)"
         severity="error"
         icon="pi pi-times-circle"
-        >Пожалуйста, примите все условия</Message
       >
+        Пожалуйста, примите все условия
+      </Message>
     </div>
   </Panel>
 </template>
 
 <script setup>
-import { Panel, Checkbox, Message } from "primevue";
-import { computed, watch, onMounted } from "vue";
+import { Panel, Checkbox, Message } from 'primevue';
+import { computed, watch, onMounted } from 'vue';
 
-const emit = defineEmits(["update:modelValue", "update:isValid"]);
+const emit = defineEmits(['update:modelValue', 'update:isValid']);
 
 const props = defineProps({
   type: {
     type: String,
     required: true,
-    validator: (value) =>
-      ["reinstatement", "change", "transfer"].includes(value),
+    validator: (value) => ['reinstatement', 'change', 'transfer'].includes(value),
   },
   modelValue: {
     type: Object,
@@ -121,11 +111,7 @@ const props = defineProps({
   },
 });
 
-const needsPaidPolicy = computed(
-  () =>
-    props.type === "reinstatement" ||
-    props.type === "transfer",
-);
+const needsPaidPolicy = computed(() => props.type === 'reinstatement' || props.type === 'transfer');
 
 const getDefaultObject = (type) => {
   const baseObject = {
@@ -136,7 +122,7 @@ const getDefaultObject = (type) => {
     type: type,
   };
 
-  if (type === "reinstatement" || type === "change" || type === "transfer") {
+  if (type === 'reinstatement' || type === 'change' || type === 'transfer') {
     baseObject.paid_policy_accepted = false;
   }
 
@@ -145,10 +131,10 @@ const getDefaultObject = (type) => {
 
 onMounted(() => {
   if (!props.modelValue || Object.keys(props.modelValue).length === 0) {
-    emit("update:modelValue", getDefaultObject(props.type));
+    emit('update:modelValue', getDefaultObject(props.type));
   } else if (props.modelValue.type !== props.type) {
     const newDefault = getDefaultObject(props.type);
-    emit("update:modelValue", newDefault);
+    emit('update:modelValue', newDefault);
   }
 });
 
@@ -159,14 +145,14 @@ watch(
     const newDefault = getDefaultObject(newType);
 
     // Reset model with new structure while keeping any matching properties
-    emit("update:modelValue", {
+    emit('update:modelValue', {
       ...newDefault,
       ...Object.keys(currentData)
         .filter((key) => Object.keys(newDefault).includes(key))
         .reduce((obj, key) => ({ ...obj, [key]: currentData[key] }), {}),
     });
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 const isValid = computed(() => {
@@ -182,9 +168,9 @@ const isValid = computed(() => {
 watch(
   isValid,
   (newValue) => {
-    emit("update:isValid", newValue);
+    emit('update:isValid', newValue);
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 
