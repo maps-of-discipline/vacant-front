@@ -2,12 +2,20 @@
   <div class="content flex">
     <div class="m-auto flex flex-row gap-4">
       <div class="application-page flex flex-row gap-4">
-        <CreateApplicationForm v-model="applicationData" @valid-submit="onValidSubmit" :editable="false" />
+        <CreateApplicationForm
+          v-model="applicationData"
+          @valid-submit="onValidSubmit"
+          :editable="false"
+        />
       </div>
       <div class="tools flex flex-column gap-3 w-auto">
-        <StatusChangePanel :status="applicationData.status" :application_id='props.id' @statusUpdate="onStatusUpdate"
-          @quickmessage="onQuickMessage" />
-        <RupsNavPanel :application='applicationData'/>
+        <StatusChangePanel
+          :status="applicationData.status"
+          :application_id="props.id"
+          @statusUpdate="onStatusUpdate"
+          @quickmessage="onQuickMessage"
+        />
+        <RupsNavPanel :application="applicationData" />
         <CommentsListPanel :application_id="props.id" />
       </div>
     </div>
@@ -83,27 +91,30 @@ const fetchApplication = async () => {
   }
 };
 
-
 const onStatusUpdate = async (status) => {
-  const updatedApplication = { ...applicationData, status: status }
-
   try {
-    const application = await ApplicationService.updateApplication(updatedApplication)
-    Object.assign(applicationData, application)
-  } catch {
+    await ApplicationService.updateStatus(applicationData.id, status);
+    applicationData.status = status
+  } catch (e){
     toast.add({
       severity: "error",
       summary: "Ошибка",
       detail: "Не удалось обновить статус заявления",
       life: 3000,
-    })
+    });
+    throw e
   }
-}
+  toast.add({
+    severity: "success",
+    summary: "Успешно",
+    detail: "Статус изменен",
+    life: 3000,
+  });
+};
 
 const onQuickMessage = (status) => {
-  applicationData.status = status
-}
-
+  applicationData.status = status;
+};
 
 onBeforeMount(async () => {
   try {
@@ -112,7 +123,6 @@ onBeforeMount(async () => {
     console.error("Error loading page data:", error);
   }
 });
-
 </script>
 
 <style scoped>

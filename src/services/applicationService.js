@@ -7,6 +7,10 @@ const endpointMap = {
 };
 
 export default class ApplicationService {
+    static async updateStatus(application_id, status) {
+        const response = api.post(`/applications/${application_id}/update-status`, { status: status });
+        return response.data;
+    }
     static async updateApplication(data) {
         let application = this.unpackApplication(data)
 
@@ -14,7 +18,7 @@ export default class ApplicationService {
         formData.append("application_json", JSON.stringify(application))
 
         if (data.files) {
-            Object.entries(data.files).forEach(([category, fileList]) => {
+            Object.entries(data.files).forEach(([]) => {
                 if (fileList && fileList.length) {
                     fileList.forEach((file, index) => {
                         formData.append(`files`, file, `${category}-${file.name}`);
