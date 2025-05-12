@@ -11,7 +11,7 @@ export default class AuthService {
   }
 
   static redirectToLoginViaEmail() {
-    window.location.href = `${config.admin_api_base}/loginServise/email?return_url=${config.base_url}/login&service_name=${config.service_name}`;
+    window.location.href = `${config.admin_api_base}/auth/email?return_url=${config.base_url}/login&service_name=${config.service_name}`;
   }
 
   static async refreshTokens(access, refresh) {

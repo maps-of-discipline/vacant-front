@@ -264,7 +264,14 @@ const choosedForDataTable = computed(() => {
     .reduce((acc, el) => {
       acc.push({ ...el, id: acc.length + 1 });
       return acc;
-    }, []);
+    }, [])
+    .filter(
+      (el) =>
+        el.elective_group == null ||
+        (el.elective_group != null &&
+          controlState.value.choosenElectives.target[el.elective_group] &&
+          el.title == controlState.value.choosenElectives.target[el.elective_group])
+    );
 
   return { solved: res, unsolved };
 });
@@ -341,7 +348,27 @@ const getTableDataRups = computed(() => {
   if (controlState.value.showWithVariants) res.push(...data.sort((a, b) => sorter(a, b)));
   if (controlState.value.showWithoutVariants)
     res.push(...without_variants.sort((a, b) => sorter(a, b)));
-  return res;
+
+  let rups = [];
+  for (const dataEl of res) {
+    if (controlState.value.choosenElectives) {
+      if (
+        dataEl.data.elective_group !== null &&
+        dataEl.data.title !== controlState.value.choosenElectives.target[dataEl.data.elective_group]
+      )
+        continue;
+      if (dataEl.children)
+        dataEl.children = dataEl.children.filter(
+          (child) =>
+            child.data.elective_group === null ||
+            (child.data.elective_group !== null &&
+              child.data.title ===
+                controlState.value.choosenElectives.source[child.data.elective_group])
+        );
+      rups.push(dataEl);
+    }
+  }
+  return rups;
 });
 
 const getTableDataPlan = computed(() => {
@@ -364,7 +391,18 @@ const getTableDataPlan = computed(() => {
       type: mode,
     });
   }
-  return plandata;
+  let res = [];
+  for (const dataEl of plandata) {
+    if (controlState.value.choosenElectives) {
+      if (
+        dataEl.data.elective_group !== null &&
+        dataEl.data.title !== controlState.value.choosenElectives.target[dataEl.data.elective_group]
+      )
+        continue;
+    }
+    res.push(dataEl);
+  }
+  return res;
 });
 
 const filteredTarget = computed(() => {
@@ -410,33 +448,40 @@ const sorter = (a, b) => {
   return order;
 };
 
-
-
-
 const getTableData = computed(() => {
-  let res;
-  if (controlState.value.mode === 'rup') res = getTableDataRups.value;
+  let data;
+  if (controlState.value.mode === 'rup') data = getTableDataRups.value;
   else {
-    res = getTableDataPlan.value;
-    res.sort((a, b) => sorter(a, b));
+    data = getTableDataPlan.value;
+    data.sort((a, b) => sorter(a, b));
+  }
+  console.log(data);
+  let res = [];
+
+  for (const dataEl of data) {
+    if (controlState.value.withLowCourse && dataEl.data.period > props.target.sem - 2) {
+      continue;
+    }
+
+    if (
+      filters.value.title &&
+      dataEl.data.title.toLowerCase().includes(filters.value.title.toLowerCase())
+    )
+      continue;
+
+    if (filters.value.control)
+      if (
+        dataEl.data.control != filters.value.control &&
+        !(
+          dataEl.children &&
+          dataEl.children.some((child) => child.data.control == filters.value.control)
+        )
+      )
+        continue;
+
+    res.push(dataEl);
   }
 
-  if (controlState.value.withLowCourse) {
-    res = res.filter((el) => el.data.period <= props.target.sem - 2);
-  }
-
-  if (filters.value.title)
-    res = res.filter((el) =>
-      el.data.title.toLowerCase().includes(filters.value.title.toLowerCase())
-    );
-
-  if (filters.value.control)
-    res = res.filter((el) => {
-      return (
-        el.data.control == filters.value.control ||
-        (el.children && el.children.some((child) => child.data.control == filters.value.control))
-      );
-    });
   return res;
 });
 
