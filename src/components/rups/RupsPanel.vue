@@ -39,8 +39,9 @@
                     isChecboxInactive(slotProps.node.parent, slotProps.node.data.title) &&
                     slotProps.node.child,
                 }"
-                >{{ slotProps.node.data.title }}</span
               >
+                {{ slotProps.node.data.title }}
+              </span>
             </div>
           </template>
           <template #filter>
@@ -91,13 +92,29 @@
           field="zet"
           header="ЗЕТ"
         />
+        <Column
+          field="amount"
+          header="Объем"
+          :pt="{
+            column: {
+              bodyCellContent: () => {
+                return {
+                  class: 'text-center',
+                };
+              },
+            },
+          }"
+        />
       </TreeTable>
     </Panel>
     <div
       class="flex flex-column gap-4"
       style="min-width: 500px"
     >
-      <RupControlPanel v-model="controlState" />
+      <RupControlPanel
+        v-model="controlState"
+        :rup-data="rupData"
+      />
       <Panel>
         <template #header>
           <div class="flex flex-row w-fit alighn-items-center gap-2">
@@ -182,6 +199,7 @@ const controlState = ref({
   showMatching: true,
   showWithVariants: true,
   showWithoutVariants: true,
+  choosenElectives: {},
 });
 
 const treeTablePT = {
@@ -392,6 +410,9 @@ const sorter = (a, b) => {
   return order;
 };
 
+
+
+
 const getTableData = computed(() => {
   let res;
   if (controlState.value.mode === 'rup') res = getTableDataRups.value;
@@ -443,6 +464,10 @@ const fetchRupData = async () => {
   }
 };
 
+onMounted(async () => {
+  await fetchRupData();
+});
+
 const studyHelpMessage = `В данной панели представлена информация из учебного плана, на который переводиться студент.
 У дисциплин могут быть варианты - дисциплины из предыдущего учебного плана, которые могут быть зачтены.
 
@@ -461,9 +486,6 @@ const studyHelpMessage = `В данной панели представлена 
 
 const choosedDiscipplinesHelpMessage = `В данной панели отображаются дисциплины, которые были выбраны для зачета.`;
 const rupHelpMsg = `В данной панели представлен список расхождений при смене учебного плана.`;
-onMounted(async () => {
-  await fetchRupData();
-});
 </script>
 
 <style scoped>

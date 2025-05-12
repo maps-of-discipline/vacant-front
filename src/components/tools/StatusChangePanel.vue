@@ -39,17 +39,17 @@
         <Divider />
         <span>{{ sts.verbose_name }}</span>
         <div
-          v-if="sts.messages.length > 0"
+          v-if="sts.messages?.length > 0"
           class="flex flex-column gap-2 mt-3"
         >
           <Button
-            v-for="(message, index) in status.messages"
+            v-for="(message, index) in sts.messages"
             :key="index"
             size="small"
             severity="secondary"
             :label="message.title"
             class="justify-content-start p-1"
-            @click="onStatusUpdate(status.title, message.id)"
+            @click="onStatusUpdate(sts.title, message.id)"
           />
         </div>
       </div>

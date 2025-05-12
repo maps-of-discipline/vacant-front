@@ -7,7 +7,7 @@ import { BadRequestError } from '../exceptions/general.js';
 
 export default class AuthService {
   static redirectToLogin() {
-    window.location.href = `${config.admin_api_base}/loginServise?return_url=${config.base_url}/login&service_name=${config.service_name}`;
+    window.location.href = `${config.admin_api_base}/auth?return_url=${config.base_url}/login&service_name=${config.service_name}`;
   }
 
   static redirectToLoginViaEmail() {

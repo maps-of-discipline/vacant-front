@@ -11,7 +11,6 @@
       class="file-row flex align-items-center p-2 border-0 border-round-sm surface-50 mb-3"
       :class="{ 'p-invalid': showValidationErrors && required && !hasFiles }"
     >
-      >
       <div
         v-if="modelValue && modelValue.length > 0"
         class="flex-1 flex align-items-center"

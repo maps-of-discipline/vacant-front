@@ -47,7 +47,6 @@
             option-value="value"
             @update:model-value="updateModel('mode', $event)"
           />
-          />
         </div>
 
         <div class="flex gap-2 align-items-center w-full">
@@ -69,6 +68,10 @@
             @update:model-value="updateModel('withLowCourse', $event)"
           />
         </div>
+        <ElectiveModal
+          v-model="model.choosenElectives"
+          :rup-data="props.rupData"
+        />
       </div>
     </Panel>
   </div>
@@ -77,6 +80,7 @@
 <script setup>
 import { Checkbox, Panel, SelectButton, Slider } from 'primevue';
 import { computed } from 'vue';
+import ElectiveModal from './ElectiveModal.vue';
 import Help from '../UI/Help.vue';
 
 const props = defineProps({
@@ -89,7 +93,12 @@ const props = defineProps({
       showMatching: true,
       showWithVariants: true,
       showWithoutVariants: true,
+      choosenElectives: {},
     }),
+  },
+  rupData: {
+    type: Object,
+    required: true,
   },
 });
 

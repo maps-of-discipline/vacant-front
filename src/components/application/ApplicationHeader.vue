@@ -1,7 +1,8 @@
 <template>
   <Panel
     v-if="type === 'reinstatement'"
-    class="panel-no-header">
+    class="panel-no-header"
+  >
     <div class="flex flex-column gap-2 mb-4">
       <label class="mb-2">Цель восстановления: </label>
       <div class="flex flex-row gap-2 align-items-center">
@@ -11,7 +12,8 @@
             input-id="10"
             name="purpose"
             value="continue_study"
-            :readonly="!props.editable" />
+            :readonly="!props.editable"
+          />
           <label for="male">Продолжение обучения</label>
         </div>
         <div class="flex items-center gap-2">
@@ -20,7 +22,8 @@
             input-id="20"
             name="purpose"
             value="gia"
-            :readonly="!props.editable" />
+            :readonly="!props.editable"
+          />
           <label for="male">Подготовка и прохождение ГИА</label>
         </div>
       </div>
@@ -30,8 +33,11 @@
       <Checkbox
         v-model="modelValue.is_vacation_need"
         binary
-        :readonly="!props.editable" />
-      <label for="male">Предоставление каникул в пределах срока освоения образовательной программы</label>
+        :readonly="!props.editable"
+      />
+      <label for="male"
+        >Предоставление каникул в пределах срока освоения образовательной программы</label
+      >
     </div>
 
     <div class="flex flex-column gap-2 mb-2">
@@ -44,12 +50,14 @@
             date-format="yy"
             placeholder="Год поступления"
             :readonly="!props.editable"
-            :class="{ 'p-invalid': showValidationErrors && beginYearErrorMessage }" />
+            :class="{ 'p-invalid': showValidationErrors && beginYearErrorMessage }"
+          />
           <Message
             v-if="showValidationErrors && beginYearErrorMessage"
             severity="error"
             variant="simple"
-            size="small">
+            size="small"
+          >
             {{ beginYearErrorMessage }}
           </Message>
         </div>
@@ -62,12 +70,14 @@
             date-format="yy"
             placeholder="Год отчисления"
             :readonly="!props.editable"
-            :class="{ 'p-invalid': showValidationErrors && endYearErrorMessage }" />
+            :class="{ 'p-invalid': showValidationErrors && endYearErrorMessage }"
+          />
           <Message
             v-if="showValidationErrors && endYearErrorMessage"
             severity="error"
             variant="simple"
-            size="small">
+            size="small"
+          >
             {{ endYearErrorMessage }}
           </Message>
         </div>
@@ -77,12 +87,14 @@
             v-model="modelValue.group"
             placeholder="Учебная группа (например: 12-34)"
             :class="{ 'p-invalid': showValidationErrors && groupErrorMessage }"
-            :disabled="!props.editable" />
+            :disabled="!props.editable"
+          />
           <Message
             v-if="showValidationErrors && groupErrorMessage"
             severity="error"
             variant="simple"
-            size="small">
+            size="small"
+          >
             {{ groupErrorMessage }}
           </Message>
         </div>
@@ -92,7 +104,8 @@
 
   <Panel
     v-if="type === 'change'"
-    header="Прошу изменить мне условия обучения в связи с: ">
+    header="Прошу изменить мне условия обучения в связи с: "
+  >
     <div class="flex flex-column">
       <Textarea
         id="purpose"
@@ -102,18 +115,22 @@
         rows="3"
         :class="{ 'p-invalid': showValidationErrors && purposeErrorMessage }"
         :disabled="!props.editable"
-        <Message
+      />
+      <Message
         v-if="showValidationErrors && purposeErrorMessage"
         severity="error"
         variant="simple"
-        size="small" 
-      />
+        size="small"
+      >
+        {{ purposeErrorMessage }}
+      </Message>
     </div>
   </Panel>
 
   <Panel
     v-if="type === 'transfer'"
-    header="Для аспирантов: ">
+    header="Для аспирантов: "
+  >
     <div class="flex flex-column">
       <div class="flex flex-row gap-3 align-items-center">
         <label>Номер курса для продолжения обучения: </label>
@@ -124,7 +141,8 @@
           placeholder="Курс"
           option-label="title"
           option-value="value"
-          show-clear />
+          show-clear
+        />
       </div>
     </div>
   </Panel>

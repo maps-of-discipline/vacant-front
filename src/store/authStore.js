@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     permissions: getLocalStorage('permissions') || [],
-    isAuthenticated: getLocalStorage('isAuthenticated') === 'true' || false,
+    isAuthenticated: getLocalStorage('isAuthenticated') || false,
   }),
 
   actions: {
