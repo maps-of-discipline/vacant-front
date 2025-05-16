@@ -68,10 +68,10 @@
 <script setup>
 import { ref, computed, defineEmits, reactive, onMounted } from 'vue';
 import { Panel, Button } from 'primevue';
-import Program from './Program.vue';
-import ApplicationHeader from './ApplicationHeader.vue';
-import ApplicationFooter from './ApplicationFooter.vue';
-import ApplicationFiles from './ApplicationFiles.vue';
+import Program from './application_form/Program.vue';
+import ApplicationHeader from './application_form/ApplicationHeader.vue';
+import ApplicationFooter from './application_form/ApplicationFooter.vue';
+import ApplicationFiles from './application_form/ApplicationFiles.vue';
 import MapsService from '../../services/mapsService.js';
 import CompletedDisciplinesDialog from './CompletedDisciplinesDialog.vue';
 import Toast from '../../tools/toast.js';

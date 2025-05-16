@@ -1,19 +1,30 @@
 <template>
-  <div>
+  <div
+    :class="{
+      'pl-4': authStore.payload.user_id == comment.by_id,
+      'pr-4': authStore.payload.user_id != comment.by_id,
+    }"
+  >
     <Panel
       :header="props.comment.by"
-      class="mb-3"
-      :class="{ 'stuff-comment': props.type === 'stuff' }"
+      class="mb-3 w-fit"
+      :class="{
+        'stuff-comment': props.type === 'stuff',
+        'ml-auto': authStore.payload.user_id == comment.by_id,
+      }"
     >
       <template #icons>
-        <Button
-          icon="pi pi-times"
-          rounded
-          size="small"
-          text
-          severity="secondary"
-          @click="emit('remove')"
-        />
+        <div class="pl-3">
+          <Button
+            v-if="authStore.payload.user_id == comment.by_id"
+            icon="pi pi-times"
+            rounded
+            size="small"
+            text
+            severity="secondary"
+            @click="emit('remove')"
+          />
+        </div>
       </template>
       {{ props.comment.text }}
     </Panel>
@@ -23,6 +34,7 @@
 <script setup>
 import { Panel, Button } from 'primevue';
 import { defineProps } from 'vue';
+import { useAuthStore } from '../../store/authStore';
 
 const props = defineProps({
   comment: {
@@ -36,6 +48,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['remove']);
+const authStore = useAuthStore();
 </script>
 
 <style scoped>

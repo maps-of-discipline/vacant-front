@@ -10,4 +10,9 @@ export default class CommentService {
     const response = await api.delete(`/comment/${id}`);
     return response.data;
   }
+
+  static async getUserComments() {
+    const response = await api.get('/comment/users');
+    return response.data;
+  }
 }

@@ -14,6 +14,12 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: getLocalStorage('isAuthenticated') || false,
   }),
 
+  getters: {
+    payload: (state) => {
+      return jwtDecode(state.auth_data.access) || null;
+    },
+  },
+
   actions: {
     async setAuthData(access, refresh) {
       this.logout();

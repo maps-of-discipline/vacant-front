@@ -79,6 +79,10 @@
             size="small"
             @click="deleteApplication(slotProps.data)"
           />
+          <CommentDialog
+            :application-id="slotProps.data.id"
+            :comments="commentsByApplicationId(slotProps.data.id)"
+          />
         </div>
       </template>
     </Column>
@@ -115,11 +119,14 @@ import { useApplicationsStore } from '../../store/applicationsStore.js';
 import StatusService from '../../services/statusService.js';
 import AppService from '../../services/appService.js';
 import Toast from '../../tools/toast.js';
+import CommentDialog from './CommentDialog.vue';
+import CommentService from '../../services/commentService.js';
 
 const applications = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const statuses = ref({});
+const applicationsComments = ref({});
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -211,9 +218,19 @@ const fetchStatuses = async () => {
   statuses.value = mapper;
 };
 
+const fetchUserComments = async () => {
+  const comments = await CommentService.getUserComments();
+  Object.assign(applicationsComments.value, comments);
+};
+
+const commentsByApplicationId = (application_id) => {
+  return applicationsComments.value[application_id] || [];
+};
+
 onMounted(async () => {
   await fetchApplications();
   await fetchStatuses();
+  await fetchUserComments();
 });
 
 const statusVerboseName = (title) => {

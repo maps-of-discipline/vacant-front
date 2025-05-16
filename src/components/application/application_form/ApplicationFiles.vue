@@ -26,8 +26,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import Panel from 'primevue/panel';
-import FileUpload from '../UI/FileUpload.vue';
-import DocumentService from '../../services/documnet';
+import FileUpload from '../../UI/FileUpload.vue';
+import DocumentService from '../../../services/documnet';
 
 const emit = defineEmits(['update:files', 'update:isValid']);
 const files = ref({});
