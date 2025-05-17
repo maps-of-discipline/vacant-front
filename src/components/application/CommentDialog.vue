@@ -1,5 +1,6 @@
 <template>
   <Button
+    v-if="comments.length > 0"
     size="small"
     rounded
     icon="pi pi-comment"
@@ -15,6 +16,7 @@
     >
       <CommentWidget
         v-model="comments"
+        :can-delete-comments="false"
         :application-id="props.applicationId"
         :can-create-stuff-comments="false"
       />
@@ -23,12 +25,11 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 import { Button, Dialog } from 'primevue';
 import CommentWidget from '../UI/CommentWidget.vue';
 
 const isVisible = ref(false);
-
 const comments = defineModel('comments', {
   type: Array,
   default: () => [],

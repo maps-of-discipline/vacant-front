@@ -62,7 +62,6 @@ import { onBeforeMount, ref, computed, defineProps, defineEmits } from 'vue';
 import { Panel, Tag, Divider, Skeleton, Button } from 'primevue';
 import AppService from '../../services/appService.js';
 import StatusService from '../../services/statusService.js';
-import emitter from '../../eventBus.js';
 import ApplicationService from '../../services/applicationService.js';
 import Toast from '../../tools/toast.js';
 
@@ -79,6 +78,11 @@ const props = defineProps({
     required: true,
     type: Number,
   },
+});
+
+const comments = defineModel('comments', {
+  type: Array,
+  required: true,
 });
 
 const currentStatus = computed(() => {
@@ -104,8 +108,7 @@ const fetchStatuses = async () => {
 const onStatusUpdate = async (title, message_id) => {
   try {
     const comment = await ApplicationService.addQuickComment(props.application_id, message_id);
-    emitter.emit('comment-added', comment);
-    emit('quickmessage', title);
+    comments.value.push(comment);
   } catch (error) {
     toast.error('Не удаось добавить комментарий');
     throw error;

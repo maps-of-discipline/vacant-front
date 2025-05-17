@@ -10,20 +10,24 @@
       </div>
       <div class="tools flex flex-column gap-3 w-auto">
         <StatusChangePanel
+          v-model:comments="comments"
           :status="applicationData.status"
           :application_id="props.id"
           @status-update="onStatusUpdate"
           @quickmessage="onQuickMessage"
         />
         <RupsNavPanel :application="applicationData" />
-        <CommentsListPanel :application_id="props.id" />
+        <CommentsListPanel
+          v-model="comments"
+          :application-id="props.id"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, onBeforeMount } from 'vue';
+import { reactive, onBeforeMount, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import Toast from '../tools/toast.js';
 import CreateApplicationForm from '../components/application/CreateApplicationForm.vue';
@@ -37,6 +41,8 @@ const toast = new Toast();
 const router = useRouter();
 const route = useRoute();
 const applicationsStore = useApplicationsStore();
+
+const comments = ref([])
 
 const props = defineProps({
   id: {

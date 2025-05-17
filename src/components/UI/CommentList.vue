@@ -12,6 +12,7 @@
         :key="comment.id"
         :comment="comment"
         :type="comment.scope"
+        :can-delete-comments="props.canDeleteComments"
         @remove="emit('remove', comment.id)"
       />
     </ScrollPanel>
@@ -29,6 +30,11 @@ const props = defineProps({
   comments: {
     type: Array,
     required: true,
+  },
+
+  canDeleteComments: {
+    type: Boolean,
+    default: () => false,
   },
 });
 

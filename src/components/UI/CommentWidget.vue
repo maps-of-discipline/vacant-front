@@ -2,6 +2,7 @@
   <div class="flex flex-column align-items-end">
     <CommentList
       :comments="comments"
+      :can-delete-comments="props.canDeleteComments"
       @remove="onCommentRemove"
     />
     <FloatLabel
@@ -53,6 +54,10 @@ const props = defineProps({
     required: true,
   },
   canCreateStuffComments: {
+    type: Boolean,
+    default: () => false,
+  },
+  canDeleteComments: {
     type: Boolean,
     default: () => false,
   },

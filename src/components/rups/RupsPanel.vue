@@ -455,7 +455,6 @@ const getTableData = computed(() => {
     data = getTableDataPlan.value;
     data.sort((a, b) => sorter(a, b));
   }
-  console.log(data);
   let res = [];
 
   for (const dataEl of data) {
@@ -487,7 +486,6 @@ const getTableData = computed(() => {
 
 const fetchRupData = async () => {
   try {
-    console.log(props.source);
     const source = {
       num: props.source.num,
       sem: props.source.sem,

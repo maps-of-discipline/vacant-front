@@ -2,7 +2,6 @@ import { mapsApi } from './api';
 
 export default class MapsService {
   static async getRups(aup1, aup2) {
-    console.log(aup1, aup2);
     const response = await mapsApi.post('/rups/get-rups-for-two-aups/v2', {
       aup1,
       aup2,

@@ -16,7 +16,7 @@
       <template #icons>
         <div class="pl-3">
           <Button
-            v-if="authStore.payload.user_id == comment.by_id"
+            v-if="authStore.payload.user_id == comment.by_id && canDeleteComments"
             icon="pi pi-times"
             rounded
             size="small"
@@ -44,6 +44,11 @@ const props = defineProps({
   type: {
     type: String,
     default: 'user',
+  },
+
+  canDeleteComments: {
+    type: Boolean,
+    default: () => false,
   },
 });
 
