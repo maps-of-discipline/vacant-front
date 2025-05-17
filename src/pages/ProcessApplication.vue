@@ -53,7 +53,7 @@ const props = defineProps({
 
 const applicationData = reactive({
   header: {},
-  type: applicationsStore.applicationType,
+  type: applicationsStore.getApplicationType,
   programs: [{}, {}, {}],
   footer: {},
 });

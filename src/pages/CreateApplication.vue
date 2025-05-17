@@ -22,7 +22,7 @@ const applicationsStore = useApplicationsStore();
 
 const applicationData = reactive({
   header: {},
-  type: applicationsStore.applicationType,
+  type: applicationsStore.getApplicationType,
   programs: [{}, {}, {}],
   footer: {},
   files: {},

@@ -45,4 +45,9 @@ export default class AuthService {
     }
     // this.redirectToLoginViaEmail()
   }
+
+  static async fetchUserData() {
+    const response = await api.post('/users/me');
+    return response.data;
+  }
 }

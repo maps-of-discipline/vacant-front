@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import AuthService from '../services/authService.js';
 import { jwtDecode } from 'jwt-decode';
 import { setLocalStorage, getLocalStorage } from './utils.js';
+import { useApplicationsStore } from './applicationsStore.js';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -10,6 +11,7 @@ export const useAuthStore = defineStore('auth', {
       refresh: null,
     },
 
+    user_data: getLocalStorage('user_data') || {},
     permissions: getLocalStorage('permissions') || [],
     isAuthenticated: getLocalStorage('isAuthenticated') || false,
   }),
@@ -35,6 +37,8 @@ export const useAuthStore = defineStore('auth', {
       const payload = jwtDecode(this.auth_data.access);
       this.permissions = payload.permissions;
       setLocalStorage('permissions', this.permissions);
+      this.user_data = await AuthService.fetchUserData();
+      setLocalStorage('user_data', this.user_data);
     },
 
     async signUp(user) {
@@ -80,6 +84,10 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('auth_data');
       localStorage.removeItem('permissions');
       localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('user_data');
+
+      const applicationStore = useApplicationsStore();
+      applicationStore.reset();
     },
   },
 });

@@ -13,7 +13,7 @@
         <SelectButton
           v-model="applicationType"
           size="large"
-          :options="['change', 'reinstatement', 'transfer']"
+          :options="['change', 'reinstatement', 'transfer', 'auto']"
         />
       </div>
     </Panel>
@@ -29,7 +29,7 @@ import { useApplicationsStore } from '../store/applicationsStore';
 const appStore = useAppStore();
 const applicationsStore = useApplicationsStore();
 
-const applicationType = ref('');
+const applicationType = ref('auto');
 
 watch(applicationType, (new_) => {
   applicationsStore.setType(new_);
