@@ -75,10 +75,13 @@ import ApplicationFiles from './application_form/ApplicationFiles.vue';
 import MapsService from '../../services/mapsService.js';
 import CompletedDisciplinesDialog from './CompletedDisciplinesDialog.vue';
 import Toast from '../../tools/toast.js';
+import { useAuthStore } from '../../store/authStore.js';
+import getCurrentSemester from '../../tools/utils.js';
 
 const showValidationErrors = ref(false);
 const emit = defineEmits(['valid-submit']);
 const toast = new Toast();
+const authStore = useAuthStore();
 
 const model = defineModel({
   type: Object,
@@ -209,6 +212,37 @@ const fetchOptions = async () => {
   isOptionsLoading.value = false;
 };
 
+const getCurrentProgram = (user_data, curr_prog) => {
+  let program = {...curr_prog};
+  if (user_data.enter_year && user_data.specializaiton && !(curr_prog.profile && curr_prog.osko)) {
+    const enter_year = user_data.enter_year.split('/')[0];
+    for (const [okso, program] of options.value.programs) {
+      const profile = program.profiles.filter((el) => el.title == user_data.specializaiton && el.year == enter_year);
+      if (profile) {
+        program.profile = profile.aup;
+        program.okso = okso;
+        break;
+      }
+    }
+  }
+
+  if (user_data.finance && !curr_prog.base) program.base = user_data.finance;
+  if (user_data.form && !curr_prog.form) program.form = user_data.form;
+  if (user_data.course && !curr_prog.course) {
+    let current_semester = getCurrentSemester().semester;
+    program.semester = user_data.course * 2 + current_semester - 1;
+  }
+  program.university = !curr_prog.university ? 'Москва' : curr_prog.university
+  return program;
+};
+
+
+
+const prefillApplication = () => {
+  const user_data = authStore.user_data;
+  model.value.programs[0] = getCurrentProgram(user_data, model.value.programs[0]);
+};
+
 onMounted(async () => {
   try {
     await fetchOptions();
@@ -216,6 +250,7 @@ onMounted(async () => {
     toast.error('Не удалось загрузить данные, попробуйте позже.');
     throw err;
   }
+  prefillApplication();
 });
 </script>
 
