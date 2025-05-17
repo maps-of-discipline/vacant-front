@@ -42,7 +42,7 @@ const router = useRouter();
 const route = useRoute();
 const applicationsStore = useApplicationsStore();
 
-const comments = ref([])
+const comments = ref([]);
 
 const props = defineProps({
   id: {

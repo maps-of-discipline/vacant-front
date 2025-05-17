@@ -30,6 +30,8 @@
       size="small"
       label="Сохранить"
       icon="pi pi-eye"
+      :loading="isProcessingNewComment"
+      :disabled="!newComment"
       @click="onAddComment('user')"
     />
   </div>
@@ -66,6 +68,7 @@ const props = defineProps({
 const toast = new Toast();
 
 const newComment = ref('');
+const isProcessingNewComment = ref(false);
 const saveCommentConfig = [];
 
 if (props.canCreateStuffComments)
@@ -96,6 +99,12 @@ const onCommentRemove = async (comment_id) => {
 };
 
 const onAddComment = async (scope) => {
+  if (!newComment.value || isProcessingNewComment.value) {
+    return null;
+  }
+
+  isProcessingNewComment.value = true;
+
   let created_comment;
   try {
     created_comment = await CommentService.create({
@@ -111,6 +120,7 @@ const onAddComment = async (scope) => {
 
   newComment.value = '';
   comments.value.push(created_comment);
+  isProcessingNewComment.value = false;
 };
 
 onMounted(async () => {

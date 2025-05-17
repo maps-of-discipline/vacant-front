@@ -12,7 +12,7 @@
       v-model:visible="isVisible"
       modal
       header="Комментарии"
-      class="w-4"
+      class="xs:w-12 sm:w-10 md:w-8 lg:w-6 xl:w-4"
     >
       <CommentWidget
         v-model="comments"
@@ -43,4 +43,8 @@ const props = defineProps({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.comments-modal {
+  max-width: 800px;
+}
+</style>

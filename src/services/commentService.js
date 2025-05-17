@@ -13,6 +13,10 @@ export default class CommentService {
 
   static async getUserComments() {
     const response = await api.get('/comment/users');
-    return response.data;
+    const res = {};
+    for (const [application_id, comments] of Object.entries(response.data)) {
+      res[application_id] = comments.sort((a, b) => a.id >= b.id);
+    }
+    return res;
   }
 }
