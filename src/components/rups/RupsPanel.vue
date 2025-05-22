@@ -62,6 +62,7 @@
             <span
               v-if="
                 slotProps.node.child &&
+                rupData.bestMatch[slotProps.node.data.title] &&
                 rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
               "
               v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target"
@@ -162,6 +163,7 @@
 import { defineProps, onMounted, reactive, computed, ref, watch } from 'vue';
 import { Panel, TreeTable, Column, InputText, Select, Checkbox, DataTable } from 'primevue';
 import MapsService from '../../services/mapsService';
+import RupService from '../../services/rupsService';
 import Help from '../UI/Help.vue';
 import RupControlPanel from './RupControlPanel.vue';
 import Toast from '../../tools/toast';
@@ -219,10 +221,21 @@ const treeTablePT = {
   },
 };
 
-const onToggleSelection = (parent, child) => {
+const onToggleSelection = async (parent, child) => {
   Object.entries(choosen.value[parent]['variants']).forEach(([c]) => {
     if (c != child) choosen.value[parent]['variants'][c] = false;
   });
+
+  const parent_id = [...rupData.same, ...rupData.target].filter((el) => el.title == parent)[0].id;
+  const child_id = [...rupData.same, ...rupData.source].filter((el) => el.title == child)[0].id;
+  const state = choosen.value[parent]['variants'][child];
+
+  try {
+    await RupService.updateChoosen(parent_id, child_id, state);
+  } catch (err) {
+    console.error(err);
+    toast.error('Не удалось сохранить выбор');
+  }
 };
 
 const controlSelectOptions = computed(() => {
@@ -430,11 +443,6 @@ watch(rupData, () => {
       acc[curr.title] = false;
       return acc;
     }, {});
-
-    choosen.value[value.title] = {
-      variants: variants,
-      period: value.period,
-    };
   }
 });
 
@@ -464,7 +472,7 @@ const getTableData = computed(() => {
 
     if (
       filters.value.title &&
-      dataEl.data.title.toLowerCase().includes(filters.value.title.toLowerCase())
+      !dataEl.data.title.toLowerCase().includes(filters.value.title.toLowerCase())
     )
       continue;
 
@@ -495,12 +503,15 @@ const fetchRupData = async () => {
       num: props.target.num,
       sem: props.target.sem,
     };
-    const data = await MapsService.getRups(source, target);
+    const data1 = await MapsService.getRups(source, target);
+    const data = await RupService.getRups(source, target);
     rupData.source = data.source;
     rupData.target = data.target;
     rupData.same = data.same;
     rupData.similar = data.similar;
     rupData.bestMatch = data.best_match;
+    choosen.value = data.choosen;
+    console.log(choosen.value)
   } catch (err) {
     toast.error('Не удалось загрузить данные');
     console.error(err);

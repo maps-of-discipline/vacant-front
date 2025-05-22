@@ -11,7 +11,7 @@ const config = {
   },
   get semester2Start() {
     return new Date(new Date().getFullYear(), 8, 1);
-  }
+  },
 };
 
 export default config;

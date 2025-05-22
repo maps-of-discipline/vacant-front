@@ -213,11 +213,13 @@ const fetchOptions = async () => {
 };
 
 const getCurrentProgram = (user_data, curr_prog) => {
-  let program = {...curr_prog};
+  let program = { ...curr_prog };
   if (user_data.enter_year && user_data.specializaiton && !(curr_prog.profile && curr_prog.osko)) {
     const enter_year = user_data.enter_year.split('/')[0];
     for (const [okso, program] of options.value.programs) {
-      const profile = program.profiles.filter((el) => el.title == user_data.specializaiton && el.year == enter_year);
+      const profile = program.profiles.filter(
+        (el) => el.title == user_data.specializaiton && el.year == enter_year
+      );
       if (profile) {
         program.profile = profile.aup;
         program.okso = okso;
@@ -232,11 +234,9 @@ const getCurrentProgram = (user_data, curr_prog) => {
     let current_semester = getCurrentSemester().semester;
     program.semester = user_data.course * 2 + current_semester - 1;
   }
-  program.university = !curr_prog.university ? 'Москва' : curr_prog.university
+  program.university = !curr_prog.university ? 'Москва' : curr_prog.university;
   return program;
 };
-
-
 
 const prefillApplication = () => {
   const user_data = authStore.user_data;
