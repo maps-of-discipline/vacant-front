@@ -62,8 +62,8 @@
             <span
               v-if="
                 slotProps.node.child &&
-                rupData.bestMatch[slotProps.node.data.title] &&
-                rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
+                  rupData.bestMatch[slotProps.node.data.title] &&
+                  rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
               "
               v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target"
               class="text-color-secondary"
@@ -511,7 +511,7 @@ const fetchRupData = async () => {
     rupData.similar = data.similar;
     rupData.bestMatch = data.best_match;
     choosen.value = data.choosen;
-    console.log(choosen.value)
+    console.log(choosen.value);
   } catch (err) {
     toast.error('Не удалось загрузить данные');
     console.error(err);

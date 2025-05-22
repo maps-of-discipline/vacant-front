@@ -83,6 +83,10 @@
             :application-id="slotProps.data.id"
             :comments="commentsByApplicationId(slotProps.data.id)"
           />
+          <DownloadPDFApplication
+            :id="slotProps.data.id"
+            :type="slotProps.data.type"
+          />
         </div>
       </template>
     </Column>
@@ -121,6 +125,9 @@ import AppService from '../../services/appService.js';
 import Toast from '../../tools/toast.js';
 import CommentDialog from './CommentDialog.vue';
 import CommentService from '../../services/commentService.js';
+import config from '../../config.js';
+import DocumentService from '../../services/documnet.js';
+import DownloadPDFApplication from '../UI/DownloadPDFApplication.vue';
 
 const applications = ref([]);
 const loading = ref(true);
@@ -137,6 +144,7 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('ru-RU');
 };
+
 
 const getTypeTranslation = (type) => {
   switch (type) {

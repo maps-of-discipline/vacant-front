@@ -17,16 +17,26 @@
         />
       </div>
     </Panel>
+    <Panel header="Access">
+      <div class="flex">
+        <Textarea
+          v-model="authStore.auth_data.access"
+          class="w-full"
+        />
+      </div>
+    </Panel>
   </div>
 </template>
 
 <script setup>
-import { Panel, SelectButton } from 'primevue';
+import { Panel, SelectButton, Textarea } from 'primevue';
 import { useAppStore } from '../store/appStore';
 import { onMounted, ref, watch } from 'vue';
 import { useApplicationsStore } from '../store/applicationsStore';
+import { useAuthStore } from '../store/authStore';
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
 const applicationsStore = useApplicationsStore();
 
 const applicationType = ref('auto');
