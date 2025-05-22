@@ -61,171 +61,6 @@
               </Message>
             </div>
           </div>
-          <div class="flex flex-row gap-3 mb-3 w-full">
-            <div class="w-full">
-              <InputMask
-                v-model="user.snils"
-                mask="999-999-999 99"
-                class="w-full"
-                placeholder="СНИЛС"
-                :invalid="showValidation && !user.snils"
-              />
-              <Message
-                v-if="showValidation && !user.snils"
-                severity="error"
-                variant="simple"
-                size="small"
-              >
-                Поле должно быть заполнено
-              </Message>
-            </div>
-            <div class="w-full">
-              <Select
-                v-model="user.course"
-                :options="courseSelectOptions"
-                option-label="label"
-                option-value="value"
-                class="w-full"
-                placeholder="Курс"
-                :invalid="showValidation && !user.course"
-              />
-              <Message
-                v-if="showValidation && !user.course"
-                severity="error"
-                variant="simple"
-                size="small"
-              >
-                Поле должно быть заполнено
-              </Message>
-            </div>
-          </div>
-        </div>
-      </Panel>
-      <Panel
-        header="Паспорт"
-        class="mb-4"
-      >
-        <div class="flex flex-column gap-3">
-          <div class="flex flex-row gap-3">
-            <InputMask
-              v-model="user.passport_series"
-              mask="99 99"
-              class="w-full"
-              placeholder="Серия"
-              :invalid="showValidation && !user.passport_series"
-            />
-            <InputMask
-              v-model="user.passport_number"
-              mask="999999"
-              class="w-full"
-              placeholder="Номер"
-              :invalid="showValidation && !user.passport_number"
-            />
-          </div>
-          <Message
-            v-if="showValidation && (!user.passport_series || !user.passport_number)"
-            severity="error"
-            variant="simple"
-            size="small"
-          >
-            Серия и номер паспорта обязательны
-          </Message>
-
-          <div class="flex flex-wrap gap-4">
-            <label class="font-semibold">Пол:</label>
-            <div class="flex items-center gap-2">
-              <RadioButton
-                v-model="user.sex"
-                input-id="male"
-                name="sex"
-                value="male"
-              />
-              <label for="male">Муж.</label>
-            </div>
-            <div class="flex items-center gap-2">
-              <RadioButton
-                v-model="user.sex"
-                input-id="female"
-                name="sex"
-                value="female"
-              />
-              <label for="female">Жен.</label>
-            </div>
-          </div>
-          <Message
-            v-if="showValidation && !user.sex"
-            severity="error"
-            variant="simple"
-            size="small"
-          >
-            Укажите пол
-          </Message>
-
-          <DatePicker
-            v-model="user.birthdate"
-            placeholder="Дата рождения"
-            :invalid="showValidation && !user.birthdate"
-          />
-          <Message
-            v-if="showValidation && !user.birthdate"
-            severity="error"
-            variant="simple"
-            size="small"
-          >
-            Укажите дату рождения
-          </Message>
-
-          <InputText
-            v-model="user.passport_birthplace"
-            placeholder="Место рождения"
-            :invalid="showValidation && !user.passport_birthplace"
-          />
-          <Message
-            v-if="showValidation && !user.passport_birthplace"
-            severity="error"
-            variant="simple"
-            size="small"
-          >
-            Укажите место рождения
-          </Message>
-
-          <InputText
-            v-model="user.passport_issued_by"
-            placeholder="Кем выдан"
-            :invalid="showValidation && !user.passport_issued_by"
-          />
-          <Message
-            v-if="showValidation && !user.passport_issued_by"
-            severity="error"
-            variant="simple"
-            size="small"
-          >
-            Укажите кем выдан паспорт
-          </Message>
-
-          <div class="flex flex-row gap-3">
-            <InputMask
-              v-model="user.passport_issued_code"
-              mask="999-999"
-              class="w-full"
-              placeholder="Код подразделения"
-              :invalid="showValidation && !user.passport_issued_code"
-            />
-            <DatePicker
-              v-model="user.passport_issued_date"
-              class="w-full"
-              placeholder="Дата выдачи"
-              :invalid="showValidation && !user.passport_issued_date"
-            />
-          </div>
-          <Message
-            v-if="showValidation && (!user.passport_issued_code || !user.passport_issued_date)"
-            severity="error"
-            variant="simple"
-            size="small"
-          >
-            Укажите код подразделения и дату выдачи
-          </Message>
         </div>
       </Panel>
       <div class="button-group flex justify-content-center">
@@ -240,16 +75,7 @@
 
 <script setup>
 import { reactive, watch, ref, computed } from 'vue';
-import {
-  Panel,
-  InputText,
-  Button,
-  RadioButton,
-  DatePicker,
-  InputMask,
-  Select,
-  Message,
-} from 'primevue';
+import { Panel, InputText, Button, InputMask, Message } from 'primevue';
 import { useAuthStore } from '../store/authStore';
 import { UserAlreadyExistsError } from '../exceptions/user';
 import AuthService from '../services/authService';
@@ -260,14 +86,6 @@ const authStore = useAuthStore();
 const fullname = ref('');
 const showValidation = ref(false);
 const toast = new Toast();
-
-const courseSelectOptions = [
-  { label: '1 курс', value: 1 },
-  { label: '2 курс', value: 2 },
-  { label: '3 курс', value: 3 },
-  { label: '4 курс', value: 4 },
-  { label: '5 курс', value: 5 },
-];
 
 const user = reactive({
   email: null,

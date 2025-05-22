@@ -36,7 +36,7 @@ const isShown = (type) => {
 const downloadPdf = async () => {
   try {
     isLoading.value = true;
-    const { url, filename} = await DocumentService.getTransherPDF(props.id);
+    const { url, filename } = await DocumentService.getTransherPDF(props.id);
     const link = document.createElement('a');
 
     link.href = url;

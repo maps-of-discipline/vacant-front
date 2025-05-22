@@ -46,6 +46,11 @@ export const useAuthStore = defineStore('auth', {
       await AuthService.signUp(user);
     },
 
+    setUserData(data) {
+      this.auth_data = data;
+      setLocalStorage('user_data', data);
+    },
+
     async signInWithEmail(email) {
       this.logout();
       const auth_data = await AuthService.signInWithEmail(email);

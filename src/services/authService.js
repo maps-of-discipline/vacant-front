@@ -50,4 +50,9 @@ export default class AuthService {
     const response = await api.post('/users/me');
     return response.data;
   }
+
+  static async updateUserData(user) {
+    const response = await api.put('/users', user);
+    return response.data;
+  }
 }

@@ -1,8 +1,10 @@
 <template>
-  <div class="page m-auto mt-3">
+  <div class="flex flex-column gap-4 page m-auto mt-3">
+    <UserForm />
     <Panel
       header="Тип Заявления (временно)"
       class="flex flex-column border-2 border-red-100"
+      toggleable
       :class="{
         'bg-red-100': !appStore.isDarkMode,
         'bg-red-900 opacity-50': appStore.isDarkMode,
@@ -17,11 +19,20 @@
         />
       </div>
     </Panel>
-    <Panel header="Access">
+    <Panel
+      header="JWT - токен"
+      class="flex flex-column border-2 border-red-100"
+      toggleable
+      :class="{
+        'bg-red-100': !appStore.isDarkMode,
+        'bg-red-900 opacity-50': appStore.isDarkMode,
+      }"
+    >
       <div class="flex">
         <Textarea
           v-model="authStore.auth_data.access"
           class="w-full"
+          rows="10"
         />
       </div>
     </Panel>
@@ -34,6 +45,7 @@ import { useAppStore } from '../store/appStore';
 import { onMounted, ref, watch } from 'vue';
 import { useApplicationsStore } from '../store/applicationsStore';
 import { useAuthStore } from '../store/authStore';
+import UserForm from '../components/user/UserForm.vue';
 
 const appStore = useAppStore();
 const authStore = useAuthStore();

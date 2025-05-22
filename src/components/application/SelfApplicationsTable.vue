@@ -145,7 +145,6 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('ru-RU');
 };
 
-
 const getTypeTranslation = (type) => {
   switch (type) {
     case 'reinstatement':
