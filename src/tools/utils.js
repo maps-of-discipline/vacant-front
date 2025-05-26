@@ -11,3 +11,13 @@ export default function getCurrentSemester(currentDate = new Date()) {
     return { semester: 2, year: year };
   }
 }
+
+export function debounce(func, delay = 1000) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}

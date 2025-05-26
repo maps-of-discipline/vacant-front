@@ -26,6 +26,11 @@ export const mapsApi = axios.create({
   timeout: 10000,
 });
 
+export const getgeo_api = axios.create({
+  baseURL: config.getgeo_baseurl,
+  timeout: 10000,
+});
+
 const authInterceptor = async (config) => {
   const authStore = useAuthStore();
   if (authStore.isAuthenticated) {
@@ -48,6 +53,13 @@ const authInterceptor = async (config) => {
   return config;
 };
 
+const getgeoAuthTokenInterceptor = async (cfg) => {
+  cfg.headers.Authorization = config.getgeo_key;
+  cfg.headers.Accept = 'application/json';
+  cfg.headers['Content-Type'] = 'application/json';
+  return cfg;
+};
+
 // Move interceptors to this setup function
 api.interceptors.request.use(authInterceptor, (error) => {
   console.error(error);
@@ -55,3 +67,5 @@ api.interceptors.request.use(authInterceptor, (error) => {
 });
 
 adminApiBackend.interceptors.request.use(authInterceptor, (error) => Promise.reject(error));
+
+getgeo_api.interceptors.request.use(getgeoAuthTokenInterceptor, (error) => Promise.reject(error));

@@ -26,7 +26,8 @@
               <label
                 for="snils"
                 class="text-sm"
-              >СНИЛС</label
+              >
+                СНИЛС</label
               >
             </FloatLabel>
           </div>
@@ -55,7 +56,8 @@
               <label
                 for="course"
                 class="text-sm"
-                >Курс</label
+              >
+                Курс</label
               >
             </FloatLabel>
           </div>
@@ -90,7 +92,8 @@
             <label
               for="pass-series"
               class="text-sm"
-              >Серия</label
+            >
+              Серия</label
             >
           </FloatLabel>
           <FloatLabel variant="on">
@@ -104,7 +107,8 @@
             <label
               for="pass-number"
               class="text-sm"
-              >Номер</label
+            >
+              Номер</label
             >
           </FloatLabel>
         </div>
@@ -197,10 +201,16 @@
         </FloatLabel>
 
         <FloatLabel variant="on">
-          <InputText
+          <Select
             id="issued_by"
             v-model="model.passport_issued_by"
+            filter
+            :loading="isIssuedByLoading"
+            class="w-full"
+            :options="issuedByOptions"
             :invalid="showValidation && !model.passport_issued_by"
+            @filter="onIssuedByInputHandler"
+            @update:model-value="onIssuedByUpdate"
           />
           <Message
             v-if="showValidation && !model.passport_issued_by"
@@ -250,8 +260,9 @@
             <label
               for="issued_date"
               class="text-sm"
-              >Дата выдачи</label
             >
+              Дата выдачи
+            </label>
           </FloatLabel>
         </div>
         <Message
@@ -290,6 +301,8 @@ import { useAuthStore } from '../../store/authStore';
 import { computed, ref, watch } from 'vue';
 import AuthService from '../../services/authService';
 import Toast from '../../tools/toast';
+import { debounce } from '../../tools/utils';
+import GetGeoService from '../../services/getgeo';
 
 const authStore = useAuthStore();
 const toast = new Toast();
@@ -308,6 +321,9 @@ const prepareAuthData = (user_data) => {
 
   return data;
 };
+
+const issuedByOptions = ref([authStore.user_data.passport_issued_by]);
+const isIssuedByLoading = ref(false);
 
 model.value = prepareAuthData(authStore.user_data);
 
@@ -340,6 +356,22 @@ const onSaveUserData = async () => {
   }
   toast.success('Данные сохранены');
 };
+
+const onIssuedByInputHandler = debounce(async (value) => {
+  if (value.lentght == 0) return;
+
+  isIssuedByLoading.value = true;
+  const response = await GetGeoService.passports(`${value.value}`, 40);
+  isIssuedByLoading.value = false;
+
+  let options = response.suggestions.reduce((acc, el) => {
+    const label = el.value.toUpperCase();
+    if (acc.indexOf(label) < 0) acc.push(label);
+    return acc;
+  }, []);
+
+  issuedByOptions.value = options.slice(0, 19);
+}, 1000);
 
 watch(
   () => model.value,

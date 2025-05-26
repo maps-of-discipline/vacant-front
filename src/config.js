@@ -6,6 +6,9 @@ const config = {
   base_url: import.meta.env.VITE_BASE_URL,
   service_name: 'vacancy',
 
+  getgeo_key: import.meta.env.VITE_GETGEO_KEY,
+  getgeo_baseurl: 'https://api.gigdata.ru/api/v2',
+
   get semester1Start() {
     return new Date(new Date().getFullYear(), 1, 1);
   },
