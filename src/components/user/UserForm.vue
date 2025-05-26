@@ -177,11 +177,22 @@
           >
         </FloatLabel>
         <FloatLabel variant="on">
-          <InputText
+          <Select
             id="birthplace"
             v-model="model.passport_birthplace"
+            editable
+            empty-message="Начните вводить адрес, чтобы увидеть варианты"
+            empty-filter-message="Если в списке нет вашего варианта, ввдеите его в поле"
+            :loading="isBirthPlaceLoading"
             class="w-full"
+            :options="birthplaceOptions"
             :invalid="showValidation && !model.passport_birthplace"
+            :pt="{
+              label: {
+                class: 'text-lg',
+              },
+            }"
+            @update:model-value="onBirthPlaceHandler"
           />
           <Message
             v-if="showValidation && !model.passport_birthplace"
@@ -210,7 +221,6 @@
             :options="issuedByOptions"
             :invalid="showValidation && !model.passport_issued_by"
             @filter="onIssuedByInputHandler"
-            @update:model-value="onIssuedByUpdate"
           />
           <Message
             v-if="showValidation && !model.passport_issued_by"
@@ -323,7 +333,9 @@ const prepareAuthData = (user_data) => {
 };
 
 const issuedByOptions = ref([authStore.user_data.passport_issued_by]);
+const birthplaceOptions = ref([authStore.user_data.birthdate]);
 const isIssuedByLoading = ref(false);
+const isBirthPlaceLoading = ref(false);
 
 model.value = prepareAuthData(authStore.user_data);
 
@@ -358,7 +370,7 @@ const onSaveUserData = async () => {
 };
 
 const onIssuedByInputHandler = debounce(async (value) => {
-  if (value.lentght == 0) return;
+  if (value.value.lentght == 0) return;
 
   isIssuedByLoading.value = true;
   const response = await GetGeoService.passports(`${value.value}`, 40);
@@ -371,6 +383,21 @@ const onIssuedByInputHandler = debounce(async (value) => {
   }, []);
 
   issuedByOptions.value = options.slice(0, 19);
+}, 1000);
+
+const onBirthPlaceHandler = debounce(async (value) => {
+  if (value.lentght == 0) return;
+
+  isBirthPlaceLoading.value = true;
+  const response = await GetGeoService.address(value, 10);
+  isBirthPlaceLoading.value = false;
+
+  let options = response.suggestions.reduce((acc, el) => {
+    acc.push(el.value);
+    return acc;
+  }, []);
+
+  birthplaceOptions.value = options;
 }, 1000);
 
 watch(

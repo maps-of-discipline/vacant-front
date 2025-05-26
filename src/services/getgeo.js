@@ -15,4 +15,8 @@ export default class GetGeoService {
   static async passports(query, count = 5) {
     return await GetGeoService.makeRequest('/suggest/passports', query, count);
   }
+
+  static async address(query, count = 5) {
+    return await GetGeoService.makeRequest('/suggest/address', query, count);
+  }
 }
