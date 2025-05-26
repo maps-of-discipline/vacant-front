@@ -142,15 +142,26 @@
 
     <div class="flex flex-column gap-3">
       <div class="flex flex-column">
-        <InputText
+        <Select
           v-if="anotherUniversity"
           v-model="program.university"
           class="w-full"
-          placeholder="Университет / Филлиал"
+          filter
+          editable
+          :options="globalUniversityOptions"
+          empty-message="Начните вводить название, чтобы увидеть список."
+          empty-filter-message="Если в списке нет вашего университета, то введите название в поле."
+          placeholder="Университет"
           :class="{
             'p-invalid': showValidationErrors && universityErrorMessage,
           }"
           :readonly="!props.editable"
+          :pt="{
+            label: {
+              class: 'text-lg',
+            },
+          }"
+          @filter="onUniverityFilter"
         />
         <Select
           v-else
@@ -201,7 +212,9 @@
 
 <script setup>
 import { Select, InputText, RadioButton, Panel, Message } from 'primevue';
-import { defineModel, computed, onMounted, watch } from 'vue';
+import { defineModel, computed, onMounted, watch, ref } from 'vue';
+import { debounce } from '../../../tools/utils';
+import GetGeoService from '../../../services/getgeo';
 
 const program = defineModel('modelValue', {
   default: () => ({
@@ -241,6 +254,8 @@ const props = defineProps({
     type: Boolean,
   },
 });
+
+const globalUniversityOptions = ref([])
 
 const emit = defineEmits(['update:isValid']);
 
@@ -312,6 +327,21 @@ const onProfileUpdate = (value) => {
     }
   }
 };
+
+const onUniverityFilter = debounce(async (data) => {
+  if (data.length == 0) return;
+
+  const response = await GetGeoService.educations(data.value, 30);
+
+  let options = response.suggestions.reduce((acc, el) => {
+    const label = el.value;
+    if (acc.indexOf(label) < 0) acc.push(label);
+    return acc;
+  }, []);
+
+  globalUniversityOptions.value = options;
+  console.log(globalUniversityOptions.value);
+}, 1000);
 
 // Validation error messages
 const oksoErrorMessage = computed(() => {
