@@ -80,7 +80,10 @@
     >
       <div class="flex flex-column gap-3">
         <div class="flex flex-row gap-3">
-          <FloatLabel variant="on">
+          <FloatLabel
+            variant="on"
+            class="w-full"
+          >
             <InputMask
               id="pass-series"
               v-model="model.passport_series"
@@ -96,7 +99,10 @@
               Серия</label
             >
           </FloatLabel>
-          <FloatLabel variant="on">
+          <FloatLabel
+            variant="on"
+            class="w-full"
+          >
             <InputMask
               id="pass-number"
               v-model="model.passport_number"

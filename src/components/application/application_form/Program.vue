@@ -255,7 +255,7 @@ const props = defineProps({
   },
 });
 
-const globalUniversityOptions = ref([])
+const globalUniversityOptions = ref([]);
 
 const emit = defineEmits(['update:isValid']);
 
