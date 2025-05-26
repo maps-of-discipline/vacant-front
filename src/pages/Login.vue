@@ -69,7 +69,7 @@ const appStore = useAppStore();
 
 async function handleTokens(access, refresh) {
   await authStore.setAuthData(access, refresh); // Set token in authStore
-  await router.push('/'); // Redirect to homepage
+  await router.push({ name: 'Home' }); // Redirect to homepage
 }
 
 onBeforeMount(async () => {

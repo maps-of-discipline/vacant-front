@@ -4,40 +4,60 @@
       <div class="flex flex-column">
         <div class="flex flex-row gap-3 mb-3 w-full">
           <div class="w-full">
-            <InputMask
-              v-model="model.snils"
-              mask="999-999-999 99"
+            <FloatLabel
+              variant="on"
               class="w-full"
-              placeholder="СНИЛС"
-              :invalid="showValidation && !user.snils"
-            />
-            <Message
-              v-if="showValidation && !user.snils"
-              severity="error"
-              variant="simple"
-              size="small"
             >
-              Поле должно быть заполнено
-            </Message>
+              <InputMask
+                id="snils"
+                v-model="model.snils"
+                mask="999-999-999 99"
+                class="w-full"
+                :invalid="showValidation && !user.snils"
+              />
+              <Message
+                v-if="showValidation && !user.snils"
+                severity="error"
+                variant="simple"
+                size="small"
+              >
+                Поле должно быть заполнено
+              </Message>
+              <label
+                for="snils"
+                class="text-sm"
+              >СНИЛС</label
+              >
+            </FloatLabel>
           </div>
           <div class="w-full">
-            <Select
-              v-model="model.course"
-              :options="courseSelectOptions"
-              option-label="label"
-              option-value="value"
+            <FloatLabel
+              variant="on"
               class="w-full"
-              placeholder="Курс"
-              :invalid="showValidation && !user.course"
-            />
-            <Message
-              v-if="showValidation && !user.course"
-              severity="error"
-              variant="simple"
-              size="small"
             >
-              Поле должно быть заполнено
-            </Message>
+              <Select
+                id="course"
+                v-model="model.course"
+                :options="courseSelectOptions"
+                option-label="label"
+                option-value="value"
+                class="w-full"
+                :invalid="showValidation && !user.course"
+              />
+              <Message
+                v-if="showValidation && !user.course"
+                severity="error"
+                variant="simple"
+                size="small"
+              >
+                Поле должно быть заполнено
+              </Message>
+              <label
+                for="course"
+                class="text-sm"
+                >Курс</label
+              >
+            </FloatLabel>
           </div>
         </div>
         <div class="flex flex-column">
@@ -58,20 +78,35 @@
     >
       <div class="flex flex-column gap-3">
         <div class="flex flex-row gap-3">
-          <InputMask
-            v-model="model.passport_series"
-            mask="99 99"
-            class="w-full"
-            placeholder="Серия"
-            :invalid="showValidation && !model.passport_series"
-          />
-          <InputMask
-            v-model="model.passport_number"
-            mask="999999"
-            class="w-full"
-            placeholder="Номер"
-            :invalid="showValidation && !model.passport_number"
-          />
+          <FloatLabel variant="on">
+            <InputMask
+              id="pass-series"
+              v-model="model.passport_series"
+              mask="99 99"
+              class="w-full"
+              placeholder="Серия"
+              :invalid="showValidation && !model.passport_series"
+            />
+            <label
+              for="pass-series"
+              class="text-sm"
+              >Серия</label
+            >
+          </FloatLabel>
+          <FloatLabel variant="on">
+            <InputMask
+              id="pass-number"
+              v-model="model.passport_number"
+              mask="999999"
+              class="w-full"
+              :invalid="showValidation && !model.passport_number"
+            />
+            <label
+              for="pass-number"
+              class="text-sm"
+              >Номер</label
+            >
+          </FloatLabel>
         </div>
         <Message
           v-if="showValidation && (!model.passport_series || !model.passport_number)"
@@ -87,7 +122,7 @@
           <div class="flex items-center gap-2">
             <RadioButton
               v-model="model.sex"
-              input-id="male"
+              input-id="Male"
               name="sex"
               value="Male"
             />
@@ -98,7 +133,7 @@
               v-model="model.sex"
               input-id="Female"
               name="sex"
-              value="female"
+              value="Female"
             />
             <label for="female">Жен.</label>
           </div>
@@ -112,62 +147,112 @@
           Укажите пол
         </Message>
 
-        <DatePicker
-          v-model="model.birthdate"
-          placeholder="Дата рождения"
-          :invalid="showValidation && !model.birthdate"
-        />
-        <Message
-          v-if="showValidation && !model.birthdate"
-          severity="error"
-          variant="simple"
-          size="small"
+        <FloatLabel
+          variant="on"
+          class="flex w-full"
         >
-          Укажите дату рождения
-        </Message>
+          <DatePicker
+            id="birtdate"
+            v-model="model.birtdate"
+            :invalid="showValidation && !model.birtdate"
+            class="w-full"
+          />
+          <Message
+            v-if="showValidation && !model.birthdate"
+            severity="error"
+            variant="simple"
+            size="small"
+          >
+            Укажите дату рождения
+          </Message>
+          <label
+            for="birtdate"
+            class="text-sm"
+          >
+            Дата рождения</label
+          >
+        </FloatLabel>
+        <FloatLabel variant="on">
+          <InputText
+            id="birthplace"
+            v-model="model.passport_birthplace"
+            class="w-full"
+            :invalid="showValidation && !model.passport_birthplace"
+          />
+          <Message
+            v-if="showValidation && !model.passport_birthplace"
+            severity="error"
+            variant="simple"
+            size="small"
+          >
+            Укажите место рождения
+          </Message>
 
-        <InputText
-          v-model="model.passport_birthplace"
-          placeholder="Место рождения"
-          :invalid="showValidation && !model.passport_birthplace"
-        />
-        <Message
-          v-if="showValidation && !model.passport_birthplace"
-          severity="error"
-          variant="simple"
-          size="small"
-        >
-          Укажите место рождения
-        </Message>
+          <label
+            for="birthplace"
+            class="text-sm"
+          >
+            Место рождения
+          </label>
+        </FloatLabel>
 
-        <InputText
-          v-model="model.passport_issued_by"
-          placeholder="Кем выдан"
-          :invalid="showValidation && !model.passport_issued_by"
-        />
-        <Message
-          v-if="showValidation && !model.passport_issued_by"
-          severity="error"
-          variant="simple"
-          size="small"
-        >
-          Укажите кем выдан паспорт
-        </Message>
+        <FloatLabel variant="on">
+          <InputText
+            id="issued_by"
+            v-model="model.passport_issued_by"
+            :invalid="showValidation && !model.passport_issued_by"
+          />
+          <Message
+            v-if="showValidation && !model.passport_issued_by"
+            severity="error"
+            variant="simple"
+            size="small"
+          >
+            Укажите кем выдан паспорт
+          </Message>
+          <label
+            for="issued_by"
+            class="text-sm"
+          >
+            Кем выдан
+          </label>
+        </FloatLabel>
 
         <div class="flex flex-row gap-3">
-          <InputMask
-            v-model="model.passport_issued_code"
-            mask="999-999"
-            class="w-full"
-            placeholder="Код подразделения"
-            :invalid="showValidation && !model.passport_issued_code"
-          />
-          <DatePicker
-            v-model="model.passport_issued_date"
-            class="w-full"
-            placeholder="Дата выдачи"
-            :invalid="showValidation && !model.passport_issued_date"
-          />
+          <FloatLabel
+            variant="on"
+            class="flex w-full"
+          >
+            <InputMask
+              id="issued_code"
+              v-model="model.passport_issued_code"
+              mask="999-999"
+              class="w-full"
+              :invalid="showValidation && !model.passport_issued_code"
+            />
+            <label
+              for="issued_code"
+              class="text-sm"
+            >
+              Код подразделения
+            </label>
+          </FloatLabel>
+          <FloatLabel
+            variant="on"
+            class="flex w-full"
+          >
+            <DatePicker
+              id="issued_date"
+              v-model="model.passport_issued_date"
+              class="w-full"
+              :invalid="showValidation && !model.passport_issued_date"
+            />
+            <label
+              for="issued_date"
+              class="text-sm"
+              >Дата выдачи</label
+            >
+          </FloatLabel>
         </div>
         <Message
           v-if="showValidation && (!model.passport_issued_code || !user.passport_issued_date)"
@@ -199,9 +284,10 @@ import {
   RadioButton,
   InputText,
   Button,
+  FloatLabel,
 } from 'primevue';
 import { useAuthStore } from '../../store/authStore';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import AuthService from '../../services/authService';
 import Toast from '../../tools/toast';
 
@@ -212,7 +298,18 @@ const model = defineModel({
   default: () => {},
 });
 
-model.value = authStore.user_data;
+const prepareAuthData = (user_data) => {
+  const data = { ...user_data };
+  for (const [key, value] of Object.entries(data)) {
+    if (value == 'None') data[key] = null;
+  }
+  data.passport_issued_date = new Date(data.passport_issued_date);
+  data.birtdate = new Date(data.birtdate);
+
+  return data;
+};
+
+model.value = prepareAuthData(authStore.user_data);
 
 const showValidation = ref(false);
 
@@ -244,15 +341,21 @@ const onSaveUserData = async () => {
   toast.success('Данные сохранены');
 };
 
-watch(authStore.user_data, (newValue) => {
-  for (const [key, value] of Object.entries(newValue)) {
-    if (value == 'None') newValue[key] = null;
+watch(
+  () => model.value,
+  (newValue) => {
+    console.log('model.value.birtdate', model.value.birtdate);
+    for (const [key, value] of Object.entries(newValue)) {
+      if (value == 'None') newValue[key] = null;
+    }
+    newValue.passport_issued_date = new Date(newValue.passport_issued_date, 0, 1);
+    newValue.birtdate = new Date(newValue.birtdate, 0, 1);
+    authStore.setUserData(newValue);
+  },
+  {
+    deep: true,
   }
-  console.log(newValue.birthdate);
-  newValue.passport_issued_date = new Date(newValue.passport_issued_date);
-  newValue.birthdate = new Date(newValue.birthdate);
-  model.value = newValue;
-});
+);
 </script>
 
 <style scoped></style>
