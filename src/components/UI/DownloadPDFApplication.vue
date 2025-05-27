@@ -1,7 +1,6 @@
 <template>
   <div>
     <Button
-      v-if="isShown(props.type)"
       rounded
       severity="secondary"
       icon="pi pi-file-pdf"
@@ -36,7 +35,7 @@ const isShown = (type) => {
 const downloadPdf = async () => {
   try {
     isLoading.value = true;
-    const { url, filename } = await DocumentService.getTransherPDF(props.id);
+    const { url, filename } = await DocumentService.getTransherPDF(props.id, props.type);
     const link = document.createElement('a');
 
     link.href = url;

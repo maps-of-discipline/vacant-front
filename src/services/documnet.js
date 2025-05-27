@@ -6,8 +6,8 @@ export default class DocumentService {
     return new File([response.data], filename, { type: response.headers['Content-Type'] });
   }
 
-  static async getTransherPDF(application_id) {
-    const response = await api.get(`/documents/transfer/${application_id}`, {
+  static async getTransherPDF(application_id, type) {
+    const response = await api.get(`/documents/${type}/${application_id}`, {
       responseType: 'blob',
     });
 

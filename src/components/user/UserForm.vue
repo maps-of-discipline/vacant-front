@@ -389,7 +389,7 @@ const onIssuedByInputHandler = debounce(async (value) => {
   }, []);
 
   issuedByOptions.value = options.slice(0, 19);
-}, 1000);
+}, 500);
 
 const onBirthPlaceHandler = debounce(async (value) => {
   if (value.lentght == 0) return;
@@ -404,7 +404,7 @@ const onBirthPlaceHandler = debounce(async (value) => {
   }, []);
 
   birthplaceOptions.value = options;
-}, 1000);
+}, 500);
 
 watch(
   () => model.value,
