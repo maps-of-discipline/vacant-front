@@ -19,7 +19,7 @@
         />
       </template>
       <template #end>
-        <div class="hidden md:flex align-items-center ml-auto">
+        <div class="md:flex hidden align-items-center ml-auto">
           <span class="mr-2">Темная тема</span>
           <ToggleSwitch
             v-model="isDarkMode"
