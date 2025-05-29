@@ -62,32 +62,28 @@
     </Column>
     <Column>
       <template #body="slotProps">
-        <div class="w-full flex justify-content-end gap-2">
-          <Button
-            v-if="isEditShown(slotProps.data)"
-            rounded
-            severity="secondary"
-            icon="pi pi-pencil m-auto"
-            size="small"
-            @click="editApplication(slotProps.data)"
-          />
-          <Button
-            v-if="isDeleteShown(slotProps.data)"
-            rounded
-            severity="danger"
-            icon="pi pi-trash m-auto"
-            size="small"
-            @click="deleteApplication(slotProps.data)"
-          />
-          <CommentDialog
-            :application-id="slotProps.data.id"
-            :comments="commentsByApplicationId(slotProps.data.id)"
-          />
-          <DownloadPDFApplication
-            :id="slotProps.data.id"
-            :type="slotProps.data.type"
-          />
-        </div>
+        <Button
+          type="button"
+          rounded
+          size="small"
+          icon="pi pi-ellipsis-v"
+          severity="secondary"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+          :loading="applicationLoadingState[slotProps.data.id]"
+          @click="(event) => application_menus[slotProps.data.id].toggle(event)"
+        />
+        <Menu
+          id="overlay_menu"
+          :ref="(el) => initMenuRef(slotProps.data.id, el)"
+          :model="getMenuItems(slotProps.data)"
+          :popup="true"
+        />
+        <CommentDialog
+          v-model:visible="comment_dialog_visibile[slotProps.data.id]"
+          :application-id="slotProps.data.id"
+          :comments="commentsByApplicationId(slotProps.data.id)"
+        />
       </template>
     </Column>
   </DataTable>
@@ -114,9 +110,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { Column, DataTable, Button, Tag } from 'primevue';
+import { Column, DataTable, Button, Tag, Menu, useConfirm } from 'primevue';
 import { useAuthStore } from '../../store/authStore.js';
 import ApplicationService from '../../services/applicationService.js';
 import { useApplicationsStore } from '../../store/applicationsStore.js';
@@ -125,9 +121,7 @@ import AppService from '../../services/appService.js';
 import Toast from '../../tools/toast.js';
 import CommentDialog from './CommentDialog.vue';
 import CommentService from '../../services/commentService.js';
-import config from '../../config.js';
-import DocumentService from '../../services/documnet.js';
-import DownloadPDFApplication from '../UI/DownloadPDFApplication.vue';
+import { useDownloadPDF } from '../../composables/downloadPDF.js';
 
 const applications = ref([]);
 const loading = ref(true);
@@ -139,11 +133,16 @@ const authStore = useAuthStore();
 const router = useRouter();
 const applicationStore = useApplicationsStore();
 const toast = new Toast();
+const confirm = useConfirm();
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('ru-RU');
 };
+
+const comment_dialog_visibile = ref({});
+const application_menus = ref({});
+const applicationLoadingState = ref({});
 
 const getTypeTranslation = (type) => {
   switch (type) {
@@ -156,6 +155,75 @@ const getTypeTranslation = (type) => {
     default:
       return type;
   }
+};
+
+const getMenuItems = (data) => {
+  let items = [];
+  const { isLoading, downloadPdf } = useDownloadPDF();
+
+  watch(isLoading, (value) => (applicationLoadingState.value[data.id] = value));
+
+  if (data.id > 0)
+    items.push({
+      label: 'Сохранить в PDF',
+      icon: 'pi pi-file-pdf',
+      command: async () => await downloadPdf(data.id, data.type),
+    });
+
+  if (commentsByApplicationId(data.id).length > 0)
+    items.push({
+      label: 'Комментарии',
+      icon: 'pi pi-comment',
+      disabled: false,
+      command: () => {
+        comment_dialog_visibile.value[data.id] = !comment_dialog_visibile.value[data.id];
+      },
+    });
+  if (isEditShown(data))
+    items.push({
+      label: 'Изменить',
+      icon: 'pi pi-pencil',
+      command: () => {
+        editApplication(data);
+      },
+    });
+  if (isDeleteShown(data))
+    items.push({
+      label: 'Удалить',
+      icon: 'pi pi-trash',
+      command: (event) => {
+        confirmedDeleteApplication(data, event);
+      },
+    });
+  return items;
+};
+
+const initMenuRef = (id, el) => {
+  if (el) {
+    application_menus.value[id] = el;
+  }
+};
+
+const confirmedDeleteApplication = (data, event) => {
+  let require_config = {
+    message: 'Вы уверены, что хотите удалить заявление?',
+    icon: 'pi pi-exclamation-circle',
+    rejectProps: {
+      label: 'Нет',
+      severity: 'secondary',
+    },
+    acceptProps: {
+      label: 'Да',
+      severity: 'danger',
+    },
+    accept: async () => {
+      await deleteApplication(data);
+    },
+    reject: () => {},
+  };
+
+  if (event) require_config = { ...require_config, target: event.currentTarget };
+  confirm.require(require_config);
 };
 
 const deleteApplication = async (data) => {
@@ -213,6 +281,9 @@ const fetchApplications = async () => {
   }
 
   applications.value = draft ? [draft, ...res] : [...res];
+
+  for (const application of applications.value)
+    comment_dialog_visibile.value[application.id] = false;
 };
 
 const fetchStatuses = async () => {

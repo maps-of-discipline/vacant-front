@@ -9,10 +9,17 @@ export default class DocumentService {
   static async getTransherPDF(application_id, type) {
     const response = await api.get(`/documents/${type}/${application_id}`, {
       responseType: 'blob',
+      headers: {
+        'Access-Control-Expose-Headers': '*',
+      },
     });
 
-    const contentDisposition = response.headers['content-disposition'];
+    const allHeadersStr = response.request?.getAllResponseHeaders?.() || '';
+    console.log('Raw headers:', allHeadersStr);
+
+    const contentDisposition = decodeURIComponent(response.headers['content-disposition']);
     let filename = 'transfer.pdf';
+    console.log(response.headers);
 
     if (contentDisposition) {
       const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);

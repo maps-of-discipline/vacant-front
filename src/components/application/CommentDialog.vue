@@ -1,6 +1,6 @@
 <template>
   <Button
-    v-if="comments.length > 0"
+    v-if="showButton && comments.length > 0"
     size="small"
     rounded
     icon="pi pi-comment"
@@ -25,11 +25,14 @@
 </template>
 
 <script setup>
-import { defineProps, ref, watch } from 'vue';
+import { defineProps } from 'vue';
 import { Button, Dialog } from 'primevue';
 import CommentWidget from '../UI/CommentWidget.vue';
 
-const isVisible = ref(false);
+const isVisible = defineModel('visible', {
+  type: Boolean,
+  default: false,
+});
 const comments = defineModel('comments', {
   type: Array,
   default: () => [],
@@ -39,6 +42,11 @@ const props = defineProps({
   applicationId: {
     type: Number,
     required: true,
+  },
+
+  showButton: {
+    type: Boolean,
+    default: true,
   },
 });
 </script>
