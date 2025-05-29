@@ -83,7 +83,6 @@ onBeforeMount(async () => {
 .application-page {
   width: 100%;
   max-width: 800px;
-  min-width: 530px;
   margin: 0 auto;
 }
 </style>

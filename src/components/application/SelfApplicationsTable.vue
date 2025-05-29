@@ -13,80 +13,119 @@
     {{ error }}
   </div>
 
-  <DataTable
-    v-else-if="applications.length > 0"
-    :value="applications"
-    table-style="min-width: 50rem"
-    striped-rows
-    paginator
-    :rows="5"
-    class="p-datatable-sm custom-table"
-  >
-    <Column
-      field="type"
-      header="Тип заявления"
-    >
-      <template #body="slotProps">
-        {{ getTypeTranslation(slotProps.data.type) }}
-      </template>
-    </Column>
-    <Column
-      field="date"
-      class="w-2"
-      header-class="text-center"
-      body-class="text-center"
-    >
-      <template #header>
-        <span class="m-auto font-bold">Дата подачи</span>
-      </template>
-      <template #body="slotProps">
-        {{ formatDate(slotProps.data.date) }}
-      </template>
-    </Column>
+  <div v-else-if="applications.length > 0">
+    <div class="hidden lg:flex w-full">
+      <DataTable
+        :value="applications"
+        table-style="min-width: 50rem"
+        striped-rows
+        paginator
+        :rows="5"
+        class="p-datatable-sm custom-table w-full"
+      >
+        <Column
+          field="type"
+          header="Тип заявления"
+        >
+          <template #body="slotProps">
+            {{ getTypeTranslation(slotProps.data.type) }}
+          </template>
+        </Column>
+        <Column
+          field="date"
+          class="w-2"
+          header-class="text-center"
+          body-class="text-center"
+        >
+          <template #header>
+            <span class="m-auto font-bold">Дата подачи</span>
+          </template>
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.date) }}
+          </template>
+        </Column>
 
-    <Column
-      field="status"
-      class="w-2"
-      header-class="text-center"
-      body-class="text-center"
-    >
-      <template #header>
-        <span class="m-auto font-bold">Статус</span>
-      </template>
-      <template #body="slotProps">
-        <Tag
-          :value="statusVerboseName(slotProps.data.status)"
-          :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
-        />
-      </template>
-    </Column>
-    <Column>
-      <template #body="slotProps">
-        <Button
-          type="button"
-          rounded
-          size="small"
-          icon="pi pi-ellipsis-v"
-          severity="secondary"
-          aria-haspopup="true"
-          aria-controls="overlay_menu"
-          :loading="applicationLoadingState[slotProps.data.id]"
-          @click="(event) => application_menus[slotProps.data.id].toggle(event)"
-        />
-        <Menu
-          id="overlay_menu"
-          :ref="(el) => initMenuRef(slotProps.data.id, el)"
-          :model="getMenuItems(slotProps.data)"
-          :popup="true"
-        />
-        <CommentDialog
-          v-model:visible="comment_dialog_visibile[slotProps.data.id]"
-          :application-id="slotProps.data.id"
-          :comments="commentsByApplicationId(slotProps.data.id)"
-        />
-      </template>
-    </Column>
-  </DataTable>
+        <Column
+          field="status"
+          class="w-2"
+          header-class="text-center"
+          body-class="text-center"
+        >
+          <template #header>
+            <span class="m-auto font-bold">Статус</span>
+          </template>
+          <template #body="slotProps">
+            <Tag
+              :value="statusVerboseName(slotProps.data.status)"
+              :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
+            />
+          </template>
+        </Column>
+        <Column>
+          <template #body="slotProps">
+            <Button
+              type="button"
+              rounded
+              size="small"
+              icon="pi pi-ellipsis-v"
+              severity="secondary"
+              aria-haspopup="true"
+              aria-controls="overlay_menu"
+              :loading="applicationLoadingState[slotProps.data.id]"
+              @click="(event) => application_menus[slotProps.data.id].toggle(event)"
+            />
+            <Menu
+              id="overlay_menu"
+              :ref="(el) => initMenuRef(slotProps.data.id, el)"
+              :model="getMenuItems(slotProps.data)"
+              :popup="true"
+            />
+            <CommentDialog
+              v-model:visible="comment_dialog_visibile[slotProps.data.id]"
+              :application-id="slotProps.data.id"
+              :comments="commentsByApplicationId(slotProps.data.id)"
+            />
+          </template>
+        </Column>
+      </DataTable>
+    </div>
+    <div class="flex flex-column lg:hidden">
+      <ApplicationCard
+        v-for="application in applications"
+        :key="application.id"
+        :type="getTypeTranslation(application.type)"
+        :date="formatDate(application.date)"
+        :status="statusVerboseName(application.status)"
+        :status-class="['status-label', AppService.getStatusClass(application.status)]"
+      >
+        <template #actions>
+          <Button
+            type="button"
+            rounded
+            size="small"
+            icon="pi pi-ellipsis-v"
+            severity="secondary"
+            aria-haspopup="true"
+            aria-controls="overlay_menu"
+            :loading="applicationLoadingState[application.id]"
+            @click="(event) => application_menus[application.id].toggle(event)"
+          />
+          <Menu
+            id="overlay_menu"
+            :ref="(el) => initMenuRef(application.id, el)"
+            :model="getMenuItems(application)"
+            :popup="true"
+          />
+          <CommentDialog
+            v-model:visible="comment_dialog_visibile[application.id]"
+            :application-id="application.id"
+            :comments="commentsByApplicationId(application.id)"
+          />
+        </template>
+      </ApplicationCard>
+    </div>
+  </div>
+
 
   <!-- Empty state -->
   <div
@@ -122,6 +161,7 @@ import Toast from '../../tools/toast.js';
 import CommentDialog from './CommentDialog.vue';
 import CommentService from '../../services/commentService.js';
 import { useDownloadPDF } from '../../composables/downloadPDF.js';
+import ApplicationCard from './ApplicationCard.vue';
 
 const applications = ref([]);
 const loading = ref(true);

@@ -3,52 +3,49 @@
     v-if="authStore.isAuthenticated"
     class="flex flex-row header-container justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font"
   >
-    <Image
-      width="192"
-      src="/logo-white.png"
-      alt="logo"
-      class="md:block hidden cursor-pointer"
-      :class="{ 'logo-light-mode': !isDarkMode }"
-      @click="router.push('/')"
-    />
-    <Image
-      width="52"
-      src="/mospolytech-logo-white.png"
-      alt="logo"
-      class="block md:hidden cursor-pointer"
-      :class="{ 'logo-light-mode': !isDarkMode }"
-      @click="router.push('/')"
-    />
     <Menubar
       class="flex-grow-1 border-0"
+      breakpoint="1192px"
       :model="accessableItems"
-    />
-
-    <div class="flex align-items-center ml-auto">
-      <span class="mr-2">Темная тема</span>
-      <ToggleSwitch
-        v-model="isDarkMode"
-        class="mr-3"
-        :on-label="'🌙'"
-        :off-label="'☀️'"
-      />
-      <Button
-        icon="pi pi-sync"
-        size="small"
-        class="mr-2"
-        rounded
-        aria-label="Filter"
-        @click="onTokenRefresh()"
-      />
-      <Button
-        icon="pi pi-sign-out"
-        size="small"
-        class="mr-2"
-        rounded
-        aria-label="Filter"
-        @click="onLogout()"
-      />
-    </div>
+    >
+      <template #start>
+        <Image
+          width="192"
+          src="/logo-white.png"
+          alt="logo"
+          class="cursor-pointer"
+          :class="{ 'logo-light-mode': !isDarkMode }"
+          @click="router.push('/')"
+        />
+      </template>
+      <template #end>
+        <div class="hidden md:flex align-items-center ml-auto">
+          <span class="mr-2">Темная тема</span>
+          <ToggleSwitch
+            v-model="isDarkMode"
+            class="mr-3"
+            :on-label="'🌙'"
+            :off-label="'☀️'"
+          />
+          <Button
+            icon="pi pi-sync"
+            size="small"
+            class="mr-2"
+            rounded
+            aria-label="Filter"
+            @click="onTokenRefresh()"
+          />
+          <Button
+            icon="pi pi-sign-out"
+            size="small"
+            class="mr-2"
+            rounded
+            aria-label="Filter"
+            @click="onLogout()"
+          />
+        </div>
+      </template>
+    </Menubar>
   </div>
 </template>
 
@@ -66,14 +63,6 @@ const appStore = useAppStore();
 const router = useRouter();
 
 const items = ref([
-  {
-    label: 'Дашборд',
-    icon: 'pi pi-chart-bar',
-    command: () => {
-      router.push({ name: 'Dashboard' });
-    },
-    require: ['canViewDashboard'],
-  },
   {
     label: 'Список поданных заявлений',
     icon: 'pi pi-file',

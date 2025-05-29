@@ -59,87 +59,87 @@
         </Message>
       </div>
     </div>
-
-    <div class="mb-2">
-      <div class="flex flex-row gap-2 align-items-center">
-        <span class="mr-2">Основа обучния:</span>
-        <div class="flex items-center gap-2">
-          <RadioButton
-            v-model="program.base"
-            :input-id="`base-paid-${props.type}`"
-            :name="`base-${props.type}`"
-            value="Платная"
-            :readonly="!props.editable"
-          />
-          <label :for="`base-paid-${props.type}`">Платная</label>
+    <div class="flex sm:flex-column gap-4 sm:gap-0">
+      <div class="mb-2">
+        <div class="flex flex-column sm:flex-row gap-2 align-items-left md:align-items-center">
+          <span class="mr-2">Основа обучния:</span>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="program.base"
+              :input-id="`base-paid-${props.type}`"
+              :name="`base-${props.type}`"
+              value="Платная"
+              :readonly="!props.editable"
+            />
+            <label :for="`base-paid-${props.type}`">Платная</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="program.base"
+              :input-id="`base-free-${props.type}`"
+              :name="`base-${props.type}`"
+              :readonly="!props.editable"
+              value="Бюджетная"
+            />
+            <label :for="`base-free-${props.type}`">Бюджетная</label>
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <RadioButton
-            v-model="program.base"
-            :input-id="`base-free-${props.type}`"
-            :name="`base-${props.type}`"
-            :readonly="!props.editable"
-            value="Бюджетная"
-          />
-          <label :for="`base-free-${props.type}`">Бюджетная</label>
-        </div>
+        <Message
+          v-if="showValidationErrors && baseErrorMessage"
+          severity="error"
+          variant="simple"
+          size="small"
+          class="ml-2"
+        >
+          {{ baseErrorMessage }}
+        </Message>
       </div>
-      <Message
-        v-if="showValidationErrors && baseErrorMessage"
-        severity="error"
-        variant="simple"
-        size="small"
-        class="ml-2"
-      >
-        {{ baseErrorMessage }}
-      </Message>
-    </div>
 
-    <div class="mb-2">
-      <div class="flex flex-row gap-2 align-items-center">
-        <span class="mr-2">Форма обучния:</span>
-        <div class="flex items-center gap-2">
-          <RadioButton
-            v-model="program.form"
-            :input-id="`form-full-${props.type}`"
-            :name="`form-${props.type}`"
-            value="Очная"
-            :readonly="!props.editable"
-          />
-          <label :for="`form-full-${props.type}`">Очная</label>
+      <div class="mb-2">
+        <div class="flex flex-column sm:flex-row gap-2 align-items-left md:align-items-center">
+          <span class="mr-2">Форма обучния:</span>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="program.form"
+              :input-id="`form-full-${props.type}`"
+              :name="`form-${props.type}`"
+              value="Очная"
+              :readonly="!props.editable"
+            />
+            <label :for="`form-full-${props.type}`">Очная</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="program.form"
+              :input-id="`form-evening-${props.type}`"
+              :name="`form-${props.type}`"
+              value="Очно-заочная"
+              :readonly="!props.editable"
+            />
+            <label :for="`form-evening-${props.type}`">Очно-заочная</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="program.form"
+              :input-id="`form-distant-${props.type}`"
+              :name="`form-${props.type}`"
+              value="Заочная"
+              :readonly="!props.editable"
+            />
+            <label :for="`form-distant-${props.type}`">Заочная</label>
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <RadioButton
-            v-model="program.form"
-            :input-id="`form-evening-${props.type}`"
-            :name="`form-${props.type}`"
-            value="Очно-заочная"
-            :readonly="!props.editable"
-          />
-          <label :for="`form-evening-${props.type}`">Очно-заочная</label>
-        </div>
-        <div class="flex items-center gap-2">
-          <RadioButton
-            v-model="program.form"
-            :input-id="`form-distant-${props.type}`"
-            :name="`form-${props.type}`"
-            value="Заочная"
-            :readonly="!props.editable"
-          />
-          <label :for="`form-distant-${props.type}`">Заочная</label>
-        </div>
+        <Message
+          v-if="showValidationErrors && formErrorMessage"
+          severity="error"
+          variant="simple"
+          size="small"
+          class="ml-2"
+        >
+          {{ formErrorMessage }}
+        </Message>
       </div>
-      <Message
-        v-if="showValidationErrors && formErrorMessage"
-        severity="error"
-        variant="simple"
-        size="small"
-        class="ml-2"
-      >
-        {{ formErrorMessage }}
-      </Message>
     </div>
-
     <div class="flex flex-column gap-3">
       <div class="flex flex-column">
         <Select
