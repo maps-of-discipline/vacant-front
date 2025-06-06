@@ -73,6 +73,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     checkPermissions(required) {
+      console.log(required);
+      
       if (required.length === 0) {
         return this.isAuthenticated;
       }

@@ -28,6 +28,7 @@
             :off-label="'☀️'"
           />
           <Button
+            v-if="authStore.checkPermissions(['canUpdateTokens'])"
             icon="pi pi-sync"
             size="small"
             class="mr-2"

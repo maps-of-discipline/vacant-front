@@ -61,7 +61,7 @@ const appStore = useAppStore();
 
 async function handleTokens(access, refresh) {
   await authStore.setAuthData(access, refresh);
-  await router.push({ name: 'Home' });
+  router.push({ name: 'Home' });
 }
 
 onBeforeMount(async () => {

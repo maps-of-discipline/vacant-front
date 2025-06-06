@@ -2,6 +2,7 @@
   <div class="flex flex-column gap-4 page m-auto mt-3">
     <UserForm />
     <Panel
+      v-if="authStore.checkPermissions(['canViewApplicationTypeChooseModel'])"
       header="Тип Заявления (временно)"
       class="flex flex-column border-2 border-red-100"
       toggleable
@@ -20,6 +21,7 @@
       </div>
     </Panel>
     <Panel
+      v-if="authStore.checkPermissions(['canViewJWTToken'])"
       header="JWT - токен"
       class="flex flex-column border-2 border-red-100"
       toggleable

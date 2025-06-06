@@ -56,7 +56,7 @@ const routes = [
     name: 'Applications',
     component: Applications,
     meta: {
-      permissions: ['canViewOwnApplications'],
+      permissions: ['canViewApplicationsList'],
     },
   },
   {
