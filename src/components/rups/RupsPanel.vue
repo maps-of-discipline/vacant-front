@@ -526,9 +526,9 @@ const studyHelpMessage = `В данной панели представлена 
 У дисциплин могут быть варианты - дисциплины из предыдущего учебного плана, которые могут быть зачтены.
 
 Цветовая маркировка:
-• <span class='font-semibold' style="color: #3e8b41">Зеленая</span> - дисциплины, полностью совпадающие в обоих планах
-• <span class='font-semibold' style="color: #3e848d">Синяя</span> - дисциплины с вариантами соответствия
-• <span class='font-semibold' style="color: #863e8d">Фиолетовая</span> - дисциплины без вариантов соответствия
+• <span class='font-semibold' style="color: #6eeb83">Зеленая</span> - дисциплины, полностью совпадающие в обоих планах
+• <span class='font-semibold' style="color: #ffb800">Желтая</span> - дисциплины с вариантами соответствия
+• <span class='font-semibold' style="color: #ff4314">Красная</span> - дисциплины без вариантов соответствия
 
 Функции:
 - Используйте чекбоксы для выбора соответствующей дисциплины, чтобы зачесть ее
@@ -548,15 +548,15 @@ const rupHelpMsg = `В данной панели представлен спис
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-same > td:first-child) {
-  border-left: 5px solid #3e8b41 !important;
+  border-left: 5px solid #6eeb83 !important;
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-variant > td:first-child) {
-  border-left: 5px solid #3e848d !important;
+  border-left: 5px solid #ffb800 !important;
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-no-variant > td:first-child) {
-  border-left: 5px solid #863e8d !important;
+  border-left: 5px solid #ff4314 !important;
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-inert > td:first-child) {
