@@ -81,6 +81,15 @@
               size="small"
               @click="editApplication(slotProps.data)"
             />
+            <Button
+              v-if="authStore.checkPermissions(['canDeleteApplications'])"
+              rounded
+              size="small"
+              icon="pi pi-trash"
+              severity="danger"
+              variant="text"
+              @click="deleteApplication(slotProps.data.id)"
+            />
           </div>
         </template>
       </Column>
@@ -181,6 +190,11 @@ const fetchStatuses = async () => {
   }, {});
   mapper.draft = { title: 'draft', verbose_name: 'Черновик' };
   statuses.value = mapper;
+};
+
+const deleteApplication = async (application_id) => {
+  await ApplicationService.delete(application_id);
+  applications.value = applications.value.filter((el) => el.id != application_id);
 };
 
 onMounted(async () => {

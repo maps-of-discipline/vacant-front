@@ -44,7 +44,8 @@ const orderedComments = computed(() => {
     user: 1,
   };
 
-  const ordered = props.comments.sort((a, b) => priority[a.scope] < priority[b.scope]);
+  let ordered = props.comments;
+  ordered = ordered.sort((a, b) => priority[a.scope] < priority[b.scope]);
   return ordered;
 });
 </script>
