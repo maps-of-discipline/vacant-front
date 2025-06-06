@@ -126,7 +126,6 @@
     </div>
   </div>
 
-
   <!-- Empty state -->
   <div
     v-else

@@ -20,6 +20,15 @@
         class="inline-flex flex-wrap"
         style="width: fit-content !important; max-width: max-content !important"
       >
+        <!-- <Button -->
+        <!--   v-for="(sts, index) in unchoosedStatuses" -->
+        <!--   :key="index" -->
+        <!--   size="small" -->
+        <!--   :label="sts.verbose_name" -->
+        <!--   class="justify-content-start p-1 mr-2 mb-2" -->
+        <!--   :class="[AppService.getStatusClass(sts.title)]" -->
+        <!--   @click="emit('statusUpdate', sts.title)" -->
+        <!-- /> -->
         <Button
           v-for="(sts, index) in unchoosedStatuses"
           :key="index"
@@ -27,39 +36,77 @@
           :label="sts.verbose_name"
           class="justify-content-start p-1 mr-2 mb-2"
           :class="[AppService.getStatusClass(sts.title)]"
-          @click="emit('statusUpdate', sts.title)"
+          @click="onStatusUpdate(sts.title)"
         />
       </div>
-
-      <div
-        v-for="(sts, idx) in statusesWithMessages"
-        :key="idx"
-        class="mt-3"
+      <Dialog
+        v-model:visible="isStatusDetailDialogVisible"
+        header="Пожалуйста, выберете комментарий"
+        :closable="false"
+        modal
       >
-        <Divider />
-        <span>{{ sts.verbose_name }}</span>
         <div
-          v-if="sts.messages?.length > 0"
-          class="flex flex-column gap-2 mt-3"
+          v-for="message in statusDetailMessages"
+          :key="message.id"
         >
+          <div class="mb-3">
+            <RadioButton
+              v-model="choosedMessage"
+              :input-id="'message' + message.id"
+              name="message"
+              :value="message.id"
+            />
+            <label :for="'message' + message.id">{{ message.title }}</label>
+          </div>
+        </div>
+        <div class="ml-auto w-fit">
           <Button
-            v-for="(message, index) in sts.messages"
-            :key="index"
+            class="mr-2"
+            label="Сохранить"
+            icon="pi pi-check"
             size="small"
+            :severity="choosedMessage != null ? 'primary' : 'secondary'"
+            :disabled="choosedMessage == null"
+            @click="saveStatusWithMessage"
+          />
+          <Button
+            label="Отмена"
+            icon="pi pi-times"
             severity="secondary"
-            :label="message.title"
-            class="justify-content-start p-1"
-            @click="onStatusUpdate(sts.title, message.id)"
+            size="small"
+            @click="() => (isStatusDetailDialogVisible = false)"
           />
         </div>
-      </div>
+      </Dialog>
+      <!-- <div -->
+      <!--   v-for="(sts, idx) in statusesWithMessages" -->
+      <!--   :key="idx" -->
+      <!--   class="mt-3" -->
+      <!-- > -->
+      <!--   <Divider /> -->
+      <!--   <span>{{ sts.verbose_name }}</span> -->
+      <!--   <div -->
+      <!--     v-if="sts.messages?.length > 0" -->
+      <!--     class="flex flex-column gap-2 mt-3" -->
+      <!--   > -->
+      <!--     <Button -->
+      <!--       v-for="(message, index) in sts.messages" -->
+      <!--       :key="index" -->
+      <!--       size="small" -->
+      <!--       severity="secondary" -->
+      <!--       :label="message.title" -->
+      <!--       class="justify-content-start p-1" -->
+      <!--       @click="onStatusUpdate(sts.title, message.id)" -->
+      <!--     /> -->
+      <!--   </div> -->
+      <!-- </div> -->
     </Panel>
   </div>
 </template>
 
 <script setup>
 import { onBeforeMount, ref, computed, defineProps, defineEmits } from 'vue';
-import { Panel, Tag, Divider, Skeleton, Button } from 'primevue';
+import { Panel, Tag, Dialog, Divider, Skeleton, Button, RadioButton } from 'primevue';
 import AppService from '../../services/appService.js';
 import StatusService from '../../services/statusService.js';
 import ApplicationService from '../../services/applicationService.js';
@@ -69,6 +116,10 @@ const emit = defineEmits(['application-update', 'quickmessage', 'statusUpdate'])
 const toast = new Toast();
 
 const statuses = ref([]);
+const isStatusDetailDialogVisible = ref(false);
+const statusDetailMessages = ref([]);
+const choosedMessage = ref(null);
+
 const props = defineProps({
   status: {
     required: true,
@@ -105,10 +156,26 @@ const fetchStatuses = async () => {
   statuses.value = resp;
 };
 
-const onStatusUpdate = async (title, message_id) => {
+const onStatusUpdate = async (title) => {
+  const status = statuses.value.find((el) => el.title == title);
+  if (status.messages.length == 0) {
+    emit('statusUpdate', status.title);
+    return;
+  }
+  choosedMessage.value = null;
+  statusDetailMessages.value = status.messages;
+  isStatusDetailDialogVisible.value = true;
+};
+
+const saveStatusWithMessage = async () => {
   try {
-    const comment = await ApplicationService.addQuickComment(props.application_id, message_id);
+    const comment = await ApplicationService.addQuickComment(
+      props.application_id,
+      choosedMessage.value
+    );
     comments.value.push(comment);
+    isStatusDetailDialogVisible.value = false;
+    toast.success('Статус обновлен');
   } catch (error) {
     toast.error('Не удаось добавить комментарий');
     throw error;
