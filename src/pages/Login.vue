@@ -32,14 +32,6 @@
             @click="AuthService.redirectToLogin()"
           />
           <Button
-            class="p-3 font-medium text-base"
-            label="Войти с помощью Email"
-            icon="pi pi-sign-in"
-            icon-pos="right"
-            raised
-            @click="AuthService.redirectToLoginViaEmail()"
-          />
-          <Button
             severity="secondary"
             class="p-3 font-medium"
             label="Я студент из другого ВУЗа"
@@ -68,8 +60,8 @@ const authStore = useAuthStore();
 const appStore = useAppStore();
 
 async function handleTokens(access, refresh) {
-  await authStore.setAuthData(access, refresh); // Set token in authStore
-  await router.push({ name: 'Home' }); // Redirect to homepage
+  await authStore.setAuthData(access, refresh);
+  await router.push({ name: 'Home' });
 }
 
 onBeforeMount(async () => {
