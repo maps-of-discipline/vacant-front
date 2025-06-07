@@ -1,7 +1,9 @@
 <template>
   <div>
-    <Panel>
-      <ElectiveModal class="mr-auto mb-4" v-model="model.choosenElectives" :rup-data="props.rupData" />
+    <Panel class="mb-4">
+      <div class="flex w-full">
+        <ElectiveModal class="mr-auto" v-model="model.choosenElectives" :rup-data="props.rupData" />
+      </div>
     </Panel>
 
     <Panel>
