@@ -14,7 +14,6 @@
           :status="applicationData.status"
           :application_id="props.id"
           @status-update="onStatusUpdate"
-          @quickmessage="onQuickMessage"
         />
         <RupsNavPanel :application="applicationData" />
         <CommentsListPanel
@@ -94,10 +93,6 @@ const onStatusUpdate = async (status) => {
     throw e;
   }
   toast.success('Статус обновлен');
-};
-
-const onQuickMessage = (status) => {
-  applicationData.status = status;
 };
 
 onBeforeMount(async () => {

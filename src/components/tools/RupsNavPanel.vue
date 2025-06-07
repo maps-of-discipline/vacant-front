@@ -4,11 +4,11 @@
       <Fluid>
         <div class="flex gap-2 w-full">
           <Button
-            label="Желаемая"
+            label="Приоритет 1"
             @click="redirectToRups(1)"
           />
           <Button
-            label="Альтернативная"
+            label="Приоритет 2"
             @click="redirectToRups(2)"
           />
         </div>
