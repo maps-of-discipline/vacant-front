@@ -2,7 +2,7 @@
   <div>
     <Panel class="mb-4">
       <div class="flex w-full">
-        <ElectiveModal class="mr-auto" v-model="model.choosenElectives" :rup-data="props.rupData" />
+        <ElectiveModal class="ml-auto" v-model="model.choosenElectives" :rup-data="props.rupData" />
       </div>
     </Panel>
 
