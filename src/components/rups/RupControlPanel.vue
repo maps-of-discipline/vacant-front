@@ -1,6 +1,10 @@
 <template>
   <div>
     <Panel>
+      <ElectiveModal class="mr-auto mb-4" v-model="model.choosenElectives" :rup-data="props.rupData" />
+    </Panel>
+
+    <Panel>
       <template #header>
         <div class="flex flex-row w-fit alighn-items-center gap-2">
           <span class="font-semibold">Управление</span>
@@ -46,9 +50,7 @@
         </div>
       </div>
     </Panel>
-    <Panel header="Элективы">
-      <ElectiveModal v-model="model.choosenElectives" :rup-data="props.rupData" />
-    </Panel>
+
   </div>
 </template>
 
