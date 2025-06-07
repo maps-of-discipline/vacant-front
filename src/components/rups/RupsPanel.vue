@@ -548,18 +548,18 @@ const rupHelpMsg = `В данной панели представлен спис
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-same > td:first-child) {
-  border-left: 5px solid #6eeb83 !important;
+  border-left: 7px solid #6eeb83 !important;
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-variant > td:first-child) {
-  border-left: 5px solid #ffb800 !important;
+  border-left: 7px solid #ffb800 !important;
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-no-variant > td:first-child) {
-  border-left: 5px solid #ff4314 !important;
+  border-left: 7px solid #ff4314 !important;
 }
 
 :deep(.p-treetable .p-treetable-tbody > tr.row-inert > td:first-child) {
-  border-left: 5px solid light-dark(var(--p-surface-100), var(--p-surface-700)) !important;
+  border-left: 7px solid light-dark(var(--p-surface-100), var(--p-surface-700)) !important;
 }
 </style>
