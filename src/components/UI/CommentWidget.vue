@@ -18,12 +18,20 @@
       <label for="on_label">Оставить комментарий</label>
     </FloatLabel>
     <SplitButton
-      v-if="saveCommentConfig.length > 0"
+      v-if="saveCommentConfig.length > 0 && !props.onlyStaffComments"
       size="small"
       label="Сохранить"
       icon="pi pi-eye"
       :model="saveCommentConfig"
       @click="onAddComment('user')"
+    />
+    <Button
+      v-else-if="props.onlyStaffComments"
+      size="small"
+      label="Сохранить для сотрутдников"
+      icon="pi pi-eye-slash"
+      :model="saveCommentConfig"
+      @click="onAddComment('stuff')"
     />
     <Button
       v-else
@@ -62,6 +70,10 @@ const props = defineProps({
   canDeleteComments: {
     type: Boolean,
     default: () => false,
+  },
+  onlyStaffComments: {
+    type: Boolean,
+    deafult: false,
   },
 });
 

@@ -9,15 +9,21 @@
       :header="props.comment.by"
       class="mb-3 w-fit"
       :class="{
-        'stuff-comment': props.type === 'stuff',
         'ml-auto': authStore.payload.user_id == comment.by_id,
       }"
     >
+      <template #header>
+        <span
+          v-if="props.type === 'stuff'"
+          class="pi pi-eye-slash mr-2"
+        ></span>
+        <span class="font-semibold">{{ props.comment.by }}</span>
+      </template>
       <template #icons>
         <div class="pl-3">
           <Button
             v-if="authStore.payload.user_id == comment.by_id && canDeleteComments"
-            icon="pi pi-times"
+            icon="pi pi-trash"
             rounded
             size="small"
             text

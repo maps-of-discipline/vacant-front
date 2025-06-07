@@ -6,6 +6,7 @@
         :can-delete-comments="true"
         :application-id="props.applicationId"
         :can-create-stuff-comments="true"
+        :only-staff-comments="true"
       />
     </Panel>
   </div>
