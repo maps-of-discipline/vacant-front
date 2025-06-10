@@ -1,66 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="grid">
-      <!-- Quick Navigation Tiles -->
-      <div class="col-6 sm:col-4 md:col-3 lg:col-2 flex-auto">
-        <div
-          class="nav-tile surface-card shadow-1 hover:shadow-3 border-round p-3 flex flex-column align-items-center justify-content-center transition-colors transition-duration-300 transform-scale-on-hover"
-          @click="router.push({ name: 'Applications' })"
-        >
-          <div class="mb-2">
-            <i class="pi pi-list text-2xl text-primary"></i>
-          </div>
-          <div class="text-center font-medium">Все заявления</div>
-        </div>
-      </div>
-
-      <div class="col-6 sm:col-4 md:col-3 lg:col-2 flex-auto">
-        <div
-          class="nav-tile surface-card shadow-1 hover:shadow-3 border-round p-3 flex flex-column align-items-center justify-content-center transition-colors transition-duration-300 transform-scale-on-hover"
-          @click="router.push({ name: 'Self Applications' })"
-        >
-          <div class="mb-2">
-            <i class="pi pi-user text-2xl text-primary"></i>
-          </div>
-          <div class="text-center font-medium">Мои заявления</div>
-        </div>
-      </div>
-
-      <div class="col-6 sm:col-4 md:col-3 lg:col-2 flex-auto">
-        <div
-          class="nav-tile surface-card shadow-1 hover:shadow-3 border-round p-3 flex flex-column align-items-center justify-content-center bg-green-50 transition-colors transition-duration-300 transform-scale-on-hover"
-          @click="router.push({ name: 'Create application' })"
-        >
-          <div class="mb-2">
-            <i class="pi pi-plus text-2xl text-green-500"></i>
-          </div>
-          <div class="text-center font-medium">Новое заявление</div>
-        </div>
-      </div>
-
-      <div class="col-6 sm:col-4 md:col-3 lg:col-2 flex-auto">
-        <div
-          class="nav-tile surface-card shadow-1 hover:shadow-3 border-round p-3 flex flex-column align-items-center justify-content-center transition-colors transition-duration-300 transform-scale-on-hover"
-          @click="router.push({ name: 'Rups' })"
-        >
-          <div class="mb-2">
-            <i class="pi pi-book text-2xl text-primary"></i>
-          </div>
-          <div class="text-center font-medium">Учебные планы</div>
-        </div>
-      </div>
-
-      <div class="col-6 sm:col-4 md:col-3 lg:col-2 flex-auto">
-        <div
-          class="nav-tile surface-card shadow-1 hover:shadow-3 border-round p-3 flex flex-column align-items-center justify-content-center bg-bluegray-50 transition-colors transition-duration-300 transform-scale-on-hover"
-          @click="router.push({ name: 'Profile' })"
-        >
-          <div class="mb-2">
-            <i class="pi pi-user-edit text-2xl text-bluegray-700"></i>
-          </div>
-          <div class="text-center font-medium">Профиль</div>
-        </div>
-      </div>
       <!-- Summary cards -->
       <div class="col-12 md:col-6 lg:col-3">
         <Card class="mb-0 h-full">
@@ -158,12 +98,7 @@
         <Card class="h-full">
           <template #title> Динамика заявлений </template>
           <template #content>
-            <Chart
-              type="line"
-              :data="chartData"
-              :options="chartOptions"
-              class="h-20rem"
-            />
+            <Chart type="line" :data="chartData" :options="chartOptions" class="h-20rem" />
           </template>
         </Card>
       </div>
@@ -172,12 +107,7 @@
         <Card class="h-full">
           <template #title> Типы заявлений </template>
           <template #content>
-            <Chart
-              type="doughnut"
-              :data="pieData"
-              :options="pieOptions"
-              class="h-20rem"
-            />
+            <Chart type="doughnut" :data="pieData" :options="pieOptions" class="h-20rem" />
           </template>
         </Card>
       </div>
@@ -188,76 +118,38 @@
           <template #title>
             <div class="flex justify-content-between align-items-center">
               <span>Последние заявления</span>
-              <Button
-                label="Все заявления"
-                icon="pi pi-external-link"
-                link
-                @click="router.push({ name: 'Applications' })"
-              />
+              <Button label="Все заявления" icon="pi pi-external-link" link
+                @click="router.push({ name: 'Applications' })" />
             </div>
           </template>
           <template #content>
-            <DataTable
-              :value="recentApplications"
-              :row-hover="true"
-              :paginator="true"
-              :rows="5"
-              class="p-datatable-sm"
-              striped-rows
-            >
-              <Column
-                field="id"
-                header="ID"
-                :sortable="true"
-                style="width: 5rem"
-              />
-              <Column
-                field="fio"
-                header="ФИО"
-                :sortable="true"
-              >
+            <DataTable :value="recentApplications" :row-hover="true" :paginator="true" :rows="5" class="p-datatable-sm"
+              striped-rows>
+              <Column field="id" header="ID" :sortable="true" style="width: 5rem" />
+              <Column field="fio" header="ФИО" :sortable="true">
                 <template #body="slotProps">
                   {{ getShortFullName(slotProps.data.fio) }}
                 </template>
               </Column>
-              <Column
-                field="type"
-                header="Тип заявления"
-                :sortable="true"
-              >
+              <Column field="type" header="Тип заявления" :sortable="true">
                 <template #body="slotProps">
                   {{ getTypeTranslation(slotProps.data.type) }}
                 </template>
               </Column>
-              <Column
-                field="date"
-                header="Дата подачи"
-                :sortable="true"
-              >
+              <Column field="date" header="Дата подачи" :sortable="true">
                 <template #body="slotProps">
                   {{ formatDate(slotProps.data.date) }}
                 </template>
               </Column>
-              <Column
-                field="status"
-                header="Статус"
-                :sortable="true"
-              >
+              <Column field="status" header="Статус" :sortable="true">
                 <template #body="slotProps">
-                  <Tag
-                    :value="statusVerboseName(slotProps.data.status)"
-                    :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
-                  />
+                  <Tag :value="statusVerboseName(slotProps.data.status)"
+                    :class="['status-label', AppService.getStatusClass(slotProps.data.status)]" />
                 </template>
               </Column>
               <Column style="width: 5rem">
                 <template #body="slotProps">
-                  <Button
-                    icon="pi pi-eye"
-                    rounded
-                    text
-                    @click="viewApplication(slotProps.data)"
-                  />
+                  <Button icon="pi pi-eye" rounded text @click="viewApplication(slotProps.data)" />
                 </template>
               </Column>
             </DataTable>
@@ -503,12 +395,12 @@ const fetchRecentApplications = async () => {
     const newAppsChange =
       totalApps > 0
         ? Math.round(
-            (applications.filter(
-              (app) => new Date(app.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-            ).length /
-              totalApps) *
-              100
-          )
+          (applications.filter(
+            (app) => new Date(app.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+          ).length /
+            totalApps) *
+          100
+        )
         : 0;
 
     const approvalRate = totalApps > 0 ? (approved / totalApps) * 100 : 0;
