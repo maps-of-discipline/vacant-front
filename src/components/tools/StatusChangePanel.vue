@@ -134,8 +134,8 @@ const saveStatusWithMessage = async () => {
     comments.value.push(comment);
     isStatusDetailDialogVisible.value = false;
     dialogStatus.value = '';
-    choosedMessage.value = '';
-    toast.success('Статус обновлен');
+    customMessage.value = '';
+    // toast.success('Статус обновлен');
   } catch (error) {
     toast.error('Не удаось добавить комментарий');
     throw error;
