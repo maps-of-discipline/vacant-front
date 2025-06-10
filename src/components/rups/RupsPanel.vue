@@ -4,86 +4,157 @@
       <template #header>
         <div class="flex flex-row w-fit alighn-items-center gap-2">
           <span class="font-semibold">Учебный план</span>
-          <Help :message="studyHelpMessage" size="large" />
+          <Help
+            :message="studyHelpMessage"
+            size="large"
+          />
         </div>
       </template>
-      <TreeTable :value="getTableData" :pt="treeTablePT" size="small">
-        <Column field="title" header="Название" expander filter-mode="strict">
+      <TreeTable
+        :value="getTableData"
+        :pt="treeTablePT"
+        size="small"
+      >
+        <Column
+          field="title"
+          header="Название"
+          expander
+          filter-mode="strict"
+        >
           <template #body="slotProps">
             <div class="flex gap-2">
-              <Checkbox v-if="slotProps.node.child"
+              <Checkbox
+                v-if="slotProps.node.child"
                 v-model="choosen[slotProps.node.parent]['variants'][slotProps.node.data.title]"
-                :input-id="slotProps.node.data.key" binary
-                :disabled="isChecboxInactive(slotProps.node.parent, slotProps.node.data.title)" @update:model-value="
+                :input-id="slotProps.node.data.key"
+                binary
+                :disabled="isChecboxInactive(slotProps.node.parent, slotProps.node.data.title)"
+                @update:model-value="
                   onToggleSelection(slotProps.node.parent, slotProps.node.data.title)
-                  " />
-              <span :class="{
-                'text-color-secondary':
-                  isChecboxInactive(slotProps.node.parent, slotProps.node.data.title) &&
-                  slotProps.node.child,
-              }">
+                "
+              />
+              <span
+                :class="{
+                  'text-color-secondary':
+                    isChecboxInactive(slotProps.node.parent, slotProps.node.data.title) &&
+                    slotProps.node.child,
+                }"
+              >
                 {{ slotProps.node.data.title }}
               </span>
             </div>
           </template>
           <template #filter>
-            <InputText v-model="filters.title" type="text" placeholder="Название" />
+            <InputText
+              v-model="filters.title"
+              type="text"
+              class="w-full"
+              placeholder="Название"
+            />
           </template>
         </Column>
-        <Column v-if="controlState.mode == 'rup'" field="similarity" header="Схожесть">
+        <Column
+          v-if="controlState.mode == 'rup'"
+          field="similarity"
+          header="Схожесть"
+        >
           <template #body="slotProps">
             <span>{{ slotProps.node.data.similarity }}</span>
-            <span v-if="
-              slotProps.node.child &&
-              rupData.bestMatch[slotProps.node.data.title] &&
-              rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
-            " v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target" class="text-color-secondary">
+            <span
+              v-if="
+                slotProps.node.child &&
+                rupData.bestMatch[slotProps.node.data.title] &&
+                rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
+              "
+              v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target"
+              class="text-color-secondary"
+            >
               ({{ rupData.bestMatch[slotProps.node.data.title].similarity }})
             </span>
           </template>
         </Column>
-        <Column field="period" header="Семестр" />
-        <Column field="control" header="Контроль" filter-mode="lenient">
+        <Column
+          field="period"
+          header="Семестр"
+        >
           <template #filter>
-            <Select v-model="filters.control" show-clear :options="controlSelectOptions" />
+            <MultiSelect
+              v-model="filters.period"
+              :options="semestersFilterOptions"
+            />
           </template>
         </Column>
-        <Column field="zet" header="ЗЕТ" />
-        <Column field="amount" header="Объем" :pt="{
-          column: {
-            bodyCellContent: () => {
-              return {
-                class: 'text-center',
-              };
+
+        <Column
+          field="control"
+          header="Контроль"
+          filter-mode="lenient"
+        >
+          <template #filter>
+            <Select
+              v-model="filters.control"
+              show-clear
+              :options="controlSelectOptions"
+            />
+          </template>
+        </Column>
+        <Column
+          field="zet"
+          header="ЗЕТ"
+        />
+        <Column
+          field="amount"
+          header="Объем"
+          :pt="{
+            column: {
+              bodyCellContent: () => {
+                return {
+                  class: 'text-center',
+                };
+              },
             },
-          },
-        }" />
+          }"
+        />
       </TreeTable>
     </Panel>
-    <div class="flex flex-column gap-4" style="min-width: 500px">
-      <RupControlPanel v-model="controlState" :rup-data="rupData" />
-      <Panel>
-        <template #header>
-          <div class="flex flex-row w-fit alighn-items-center gap-2">
-            <span class="font-semibold">Дисциплины, выбранные для зачета</span>
-            <Help :message="choosedDiscipplinesHelpMessage" />
-          </div>
-        </template>
-        <DataTable v-if="choosedForDataTable.solved.length > 0" :value="choosedForDataTable.solved">
-          <Column field="id" header="" />
-          <Column field="title" header="" />
+    <div
+      class="flex flex-column gap-4"
+      style="min-width: 500px"
+    >
+      <RupControlPanel
+        v-model="controlState"
+        :rup-data="rupData"
+      />
+      <Panel header="Дисциплины, выбранные для зачета">
+        <DataTable
+          v-if="choosedForDataTable.solved.length > 0"
+          :value="choosedForDataTable.solved"
+        >
+          <Column
+            field="id"
+            class="p-1"
+            header=""
+          />
+          <Column
+            field="title"
+            header=""
+          />
         </DataTable>
       </Panel>
-      <Panel toggleable>
-        <template #header>
-          <div class="flex flex-row w-fit alighn-items-center gap-2">
-            <span class="font-semibold">Список расхождений при смене учебного плана</span>
-            <Help :message="rupHelpMsg" />
-          </div>
-        </template>
+      <Panel
+        header="Список расхождений при смене учебного плана"
+        toggleable
+      >
         <DataTable :value="choosedForDataTable.unsolved">
-          <Column field="id" header="" />
-          <Column field="title" header="" />
+          <Column
+            field="id"
+            class="p-1"
+            header=""
+          />
+          <Column
+            field="title"
+            header=""
+          />
         </DataTable>
       </Panel>
     </div>
@@ -92,7 +163,16 @@
 
 <script setup>
 import { defineProps, onMounted, reactive, computed, ref, watch } from 'vue';
-import { Panel, TreeTable, Column, InputText, Select, Checkbox, DataTable } from 'primevue';
+import {
+  Panel,
+  TreeTable,
+  Column,
+  InputText,
+  Select,
+  Checkbox,
+  DataTable,
+  MultiSelect,
+} from 'primevue';
 import MapsService from '../../services/mapsService';
 import RupService from '../../services/rupsService';
 import Help from '../UI/Help.vue';
@@ -115,6 +195,7 @@ const choosen = ref({});
 const filters = ref({
   title: null,
   control: null,
+  period: [],
 });
 
 const rupData = reactive({
@@ -151,6 +232,24 @@ const treeTablePT = {
     };
   },
 };
+
+
+const maxSem = ref(0);
+
+const semestersFilterOptions = computed(() => {
+  const maxSem = [...getTableDataRups.value].reduce((acc, el) => {
+    if (el.data.period > acc) {
+      return el.data.period;
+    } else return acc;
+  }, 0);
+  console.log(maxSem);
+  const res = [];
+  for (let i = 0; i < maxSem; i++) {
+    res.push(i + 1);
+  }
+
+  return res;
+});
 
 const onToggleSelection = async (parent, child) => {
   Object.entries(choosen.value[parent]['variants']).forEach(([c]) => {
@@ -307,7 +406,7 @@ const getTableDataRups = computed(() => {
             child.data.elective_group === null ||
             (child.data.elective_group !== null &&
               child.data.title ===
-              controlState.value.choosenElectives.source[child.data.elective_group])
+                controlState.value.choosenElectives.source[child.data.elective_group])
         );
       rups.push(dataEl);
     }
@@ -400,6 +499,9 @@ const getTableData = computed(() => {
     if (controlState.value.withLowCourse && dataEl.data.period > props.target.sem - 2) {
       continue;
     }
+    if (filters.value.period.length > 0 && filters.value.period.indexOf(dataEl.data.period) < 0) {
+      continue;
+    }
 
     if (
       filters.value.title &&
@@ -434,7 +536,6 @@ const fetchRupData = async () => {
       num: props.target.num,
       sem: props.target.sem,
     };
-    const data1 = await MapsService.getRups(source, target);
     const data = await RupService.getRups(source, target);
     rupData.source = data.source;
     rupData.target = data.target;
@@ -442,7 +543,6 @@ const fetchRupData = async () => {
     rupData.similar = data.similar;
     rupData.bestMatch = data.best_match;
     choosen.value = data.choosen;
-    console.log(choosen.value);
   } catch (err) {
     toast.error('Не удалось загрузить данные');
     console.error(err);

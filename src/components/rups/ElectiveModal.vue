@@ -1,8 +1,9 @@
 <template>
-  <div>
-    <div>
+  <div class="flex w-full">
+    <div class="flex w-full">
       <Button
         label="Выбор элективов"
+        class="flex w-full"
         @click="() => (isVisible = true)"
       />
     </div>

@@ -1,18 +1,49 @@
 <template>
-  <div v-if="authStore.isAuthenticated"
-    class="flex flex-row header-container justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font">
-    <Menubar class="flex-grow-1 border-0" breakpoint="1192px" :model="accessableItems">
+  <div
+    v-if="authStore.isAuthenticated"
+    class="flex flex-row header-container justify-content-start gap-4 align-items-center w-12 p-3 mb-4 shadow-2 surface-0 montserrat-font"
+  >
+    <Menubar
+      class="flex-grow-1 border-0"
+      breakpoint="1192px"
+      :model="accessableItems"
+    >
       <template #start>
-        <Image width="192" src="/logo-white.png" alt="logo" class="cursor-pointer"
-          :class="{ 'logo-light-mode': !isDarkMode }" @click="router.push('/')" />
+        <Image
+          width="192"
+          src="/logo-white.png"
+          alt="logo"
+          class="cursor-pointer"
+          :class="{ 'logo-light-mode': !isDarkMode }"
+          @click="router.push('/')"
+        />
       </template>
       <template #end>
         <div class="md:flex hidden align-items-center ml-auto">
           <span class="mr-2">Темная тема</span>
-          <ToggleSwitch v-model="isDarkMode" class="mr-3" :on-label="'🌙'" :off-label="'☀️'" />
-          <Button v-if="authStore.checkPermissions(['canUpdateTokens'])" icon="pi pi-sync" size="small" class="mr-2"
-            rounded aria-label="Filter" @click="onTokenRefresh()" />
-          <Button icon="pi pi-sign-out" size="small" class="mr-2" rounded aria-label="Filter" @click="onLogout()" />
+          <ToggleSwitch
+            v-model="isDarkMode"
+            class="mr-3"
+            :on-label="'🌙'"
+            :off-label="'☀️'"
+          />
+          <Button
+            v-if="authStore.checkPermissions(['canUpdateTokens'])"
+            icon="pi pi-sync"
+            size="small"
+            class="mr-2"
+            rounded
+            aria-label="Filter"
+            @click="onTokenRefresh()"
+          />
+          <Button
+            icon="pi pi-sign-out"
+            size="small"
+            class="mr-2"
+            rounded
+            aria-label="Filter"
+            @click="onLogout()"
+          />
         </div>
       </template>
     </Menubar>
@@ -47,7 +78,7 @@ const items = ref([
     command: () => {
       router.push({ name: 'Profile' });
     },
-    require: ["canViewProfile"],
+    require: ['canViewProfile'],
   },
   {
     label: 'Список заявлений',

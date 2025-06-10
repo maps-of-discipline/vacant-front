@@ -3,33 +3,78 @@
     <Panel header="Статус">
       <div class="flex flex-row align-items-center">
         <span class="mr-1">Текущий:</span>
-        <Skeleton v-if="!currentStatus" height="1rem" class="w-3" />
-        <Tag v-else :class="['status-label', AppService.getStatusClass(currentStatus.title)]"
-          :value="currentStatus.verbose_name" />
+        <Skeleton
+          v-if="!currentStatus"
+          height="1rem"
+          class="w-3"
+        />
+        <Tag
+          v-else
+          :class="['status-label', AppService.getStatusClass(currentStatus.title)]"
+          :value="currentStatus.verbose_name"
+        />
       </div>
       <Divider />
       <p>Поменять на:</p>
-      <div class="inline-flex flex-wrap" style="width: fit-content !important; max-width: max-content !important">
-        <Button v-for="(sts, index) in unchoosedStatuses" :key="index" size="small" :label="sts.verbose_name"
-          class="justify-content-start p-1 mr-2 mb-2" :class="[AppService.getStatusClass(sts.title)]"
-          @click="onStatusUpdate(sts.title)" />
+      <div
+        class="inline-flex flex-wrap"
+        style="width: fit-content !important; max-width: max-content !important"
+      >
+        <Button
+          v-for="(sts, index) in unchoosedStatuses"
+          :key="index"
+          size="small"
+          :label="sts.verbose_name"
+          class="justify-content-start p-1 mr-2 mb-2"
+          :class="[AppService.getStatusClass(sts.title)]"
+          @click="onStatusUpdate(sts.title)"
+        />
       </div>
-      <Dialog v-model:visible="isStatusDetailDialogVisible" header="Пожалуйста, выберете комментарий" :closable="false"
-        modal>
-        <div v-for="message in statusDetailMessages" :key="message.id">
+      <Dialog
+        v-model:visible="isStatusDetailDialogVisible"
+        header="Пожалуйста, выберете комментарий"
+        :closable="false"
+        modal
+      >
+        <div
+          v-for="message in statusDetailMessages"
+          :key="message.id"
+        >
           <div class="mb-3">
-            <RadioButton v-model="choosedMessage" :input-id="'message' + message.id" name="message" :value="message.id"
-              :disabled="customMessage.length > 0" class="mr-2" />
+            <RadioButton
+              v-model="choosedMessage"
+              :input-id="'message' + message.id"
+              name="message"
+              :value="message.id"
+              :disabled="customMessage.length > 0"
+              class="mr-2"
+            />
             <label :for="'message' + message.id">{{ message.title }}</label>
           </div>
         </div>
-        <Textarea v-model="customMessage" fluid placeholder="Другое" class="mb-3" />
+        <Textarea
+          v-model="customMessage"
+          fluid
+          placeholder="Другое"
+          class="mb-3"
+        />
         <div class="ml-auto w-fit">
-          <Button class="mr-2" label="Сохранить" icon="pi pi-check" size="small"
-            :severity="!isDialogSaveButtonActive ? 'primary' : 'secondary'" :disabled="isDialogSaveButtonActive"
-            @click="saveStatusWithMessage" />
-          <Button label="Отмена" icon="pi pi-times" severity="secondary" size="small"
-            @click="() => (isStatusDetailDialogVisible = false)" />
+          <Button
+            class="mr-2"
+            label="Сохранить"
+            icon="pi pi-check"
+            size="small"
+            :severity="!isDialogSaveButtonActive ? 'primary' : 'secondary'"
+            :disabled="isDialogSaveButtonActive"
+            @click="saveStatusWithMessage"
+          />
+          <Button
+            label="Отмена"
+            icon="pi pi-times"
+            severity="secondary"
+            size="small"
+            @click="() => (isStatusDetailDialogVisible = false)"
+          />
         </div>
       </Dialog>
     </Panel>
