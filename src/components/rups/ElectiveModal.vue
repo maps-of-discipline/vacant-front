@@ -1,47 +1,23 @@
 <template>
   <div class="flex w-full">
     <div class="flex w-full">
-      <Button
-        label="Выбор элективов"
-        class="flex w-full"
-        @click="() => (isVisible = true)"
-      />
+      <Button label="Выбор элективов" class="flex w-full" @click="() => (isVisible = true)" />
     </div>
-    <Dialog
-      v-model:visible="isVisible"
-      class="w-8"
-      modal
-      header="Выбор элективных дисциплин"
-    >
+    <Dialog v-model:visible="isVisible" class="w-8" modal header="Выбор элективных дисциплин">
       <Tabs :value="0">
         <TabList>
-          <Tab
-            v-for="(_, group, index) in tableData"
-            :key="index"
-            :value="index"
-          >
+          <Tab v-for="(_, group, index) in tableData" :key="index" :value="index">
             <span class="text-base">{{ group == 'source' ? 'Текущий УП' : 'Желаемый УП' }}</span>
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel
-            v-for="(items, group, index) in tableData"
-            :key="index"
-            :value="index"
-          >
-            <DataTable
-              :value="items"
-              row-group-mode="subheader"
-              group-rows-by="group_title"
-            >
+          <TabPanel v-for="(items, group, index) in tableData" :key="index" :value="index">
+            <DataTable :value="items" row-group-mode="subheader" group-rows-by="group_title">
               <Column>
                 <template #body="{ data }">
                   <div class="flex gap-3">
-                    <Checkbox
-                      v-model="choosenElectives[group][data.elective_group]"
-                      :value="data.title"
-                      :disabled="isCheckBoxInactive(group, data)"
-                    />
+                    <Checkbox v-model="choosenElectives[group][data.elective_group]" :value="data.title"
+                      :disabled="isCheckBoxInactive(group, data)" />
                     <span>{{ data.title }}</span>
                   </div>
                 </template>
@@ -115,11 +91,11 @@ watch(props.rupData, (data) => {
       });
   }
   tableData.value.source = tableData.value.source.sort(
-    (a, b) => a.elective_group >= b.elective_group
+    (a, b) => a.elective_group - b.elective_group
   );
 
   tableData.value.target = tableData.value.target.sort(
-    (a, b) => a.elective_group >= b.elective_group
+    (a, b) => a.elective_group - b.elective_group
   );
 });
 
