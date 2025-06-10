@@ -81,7 +81,7 @@ const routes = [
     name: 'Profile',
     component: Profile,
     meta: {
-      permissions: [],
+      permissions: ["canViewPofile"],
     },
   },
   {
