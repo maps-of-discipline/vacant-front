@@ -105,15 +105,7 @@
         <Column
           field="amount"
           header="Объем"
-          :pt="{
-            column: {
-              bodyCellContent: () => {
-                return {
-                  class: 'text-center',
-                };
-              },
-            },
-          }"
+          bodyClass='text-center'
         />
       </TreeTable>
     </Panel>

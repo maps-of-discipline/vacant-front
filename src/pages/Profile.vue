@@ -3,15 +3,10 @@
     <UserForm />
     <Panel
       v-if="authStore.checkPermissions(['canViewApplicationTypeChooseModel'])"
-      header="Тип Заявления (временно)"
-      class="flex flex-column border-2 border-red-100"
+      header="Тип Заявления (отладка)"
+      class="flex flex-column"
       toggleable
-      :class="{
-        'bg-red-100': !appStore.isDarkMode,
-        'bg-red-900 opacity-50': appStore.isDarkMode,
-      }"
     >
-      <p>Пока не будет готово авто-определение типа заявления</p>
       <div class="m-auto w-fit">
         <SelectButton
           v-model="applicationType"
@@ -23,12 +18,8 @@
     <Panel
       v-if="authStore.checkPermissions(['canViewJWTToken'])"
       header="JWT - токен"
-      class="flex flex-column border-2 border-red-100"
+      class="flex flex-column"
       toggleable
-      :class="{
-        'bg-red-100': !appStore.isDarkMode,
-        'bg-red-900 opacity-50': appStore.isDarkMode,
-      }"
     >
       <div class="flex">
         <Textarea
