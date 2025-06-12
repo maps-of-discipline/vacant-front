@@ -1,13 +1,8 @@
 <template>
   <div>
-    <Panel header="Комментарии для сотрудников">
-      <CommentWidget
-        v-model="comments"
-        :can-delete-comments="true"
-        :application-id="props.applicationId"
-        :can-create-stuff-comments="true"
-        :only-staff-comments="true"
-      />
+    <Panel header="Комментарии для внутреннего использования">
+      <CommentWidget v-model="comments" :can-delete-comments="true" :application-id="props.applicationId"
+        :can-create-stuff-comments="true" :only-staff-comments="true" />
     </Panel>
   </div>
 </template>
