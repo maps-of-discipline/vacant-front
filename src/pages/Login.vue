@@ -1,6 +1,7 @@
 <template>
   <div class="flex h-screen align-items-center justify-content-center surface-50">
     <Panel
+      v-if="isLoginShown"
       class="login-form w-full md:w-5 lg:w-3 border-round-2xl shadow-4 flex flex-column p-0 montserrat-font mx-3 md:mx-0"
     >
       <template #header>
@@ -47,7 +48,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../store/authStore.js';
 import { useAppStore } from '../store/appStore.js';
@@ -68,20 +69,26 @@ const defaultPages = {
   canViewOwnApplications: { name: 'SelfApplications' },
 };
 
-onBeforeMount(async () => {
-  const access = route.query.access;
-  const refresh = route.query.refresh;
-  if (access && refresh) await handleTokens(access, refresh);
+const isLoginShown = computed(() => {
+  return Object.keys(route.query).length == 0;
+});
 
+const redirect = () => {
   let selectedPage = null;
   for (const [permission, page] of Object.entries(defaultPages)) {
     if (!authStore.checkPermissions([permission])) continue;
     selectedPage = page;
     break;
   }
-
   if (selectedPage != null) router.push(selectedPage);
   else router.push({ name: 'Home' });
+};
+
+onBeforeMount(async () => {
+  const access = route.query.access;
+  const refresh = route.query.refresh;
+  if (access && refresh) await handleTokens(access, refresh);
+  redirect();
 });
 </script>
 

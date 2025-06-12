@@ -14,12 +14,9 @@ export default class DocumentService {
       },
     });
 
-    const allHeadersStr = response.request?.getAllResponseHeaders?.() || '';
-    console.log('Raw headers:', allHeadersStr);
 
     const contentDisposition = decodeURIComponent(response.headers['content-disposition']);
     let filename = 'transfer.pdf';
-    console.log(response.headers);
 
     if (contentDisposition) {
       const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);

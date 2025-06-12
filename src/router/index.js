@@ -35,7 +35,7 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: {
-      notForAuthenticated: true,
+      // notForAuthenticated: true,
     },
   },
   {
