@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Panel header="Комментарии">
+    <Panel header="Комментарии для сотрудников">
       <CommentWidget
         v-model="comments"
         :can-delete-comments="true"

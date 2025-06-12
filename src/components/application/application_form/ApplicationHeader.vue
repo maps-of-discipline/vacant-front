@@ -107,12 +107,26 @@
     header="Прошу изменить мне условия обучения в связи с: "
   >
     <div class="flex flex-column">
+      <div
+        v-for="(item, index) in changePuposeVariants"
+        :key="index"
+        class="flex align-items-center mb-3"
+      >
+        <RadioButton
+          v-if="props.editable"
+          v-model="modelValue.purpose"
+          :value="item"
+          class="m-2"
+        />
+        <span v-if="props.editable">{{ item }}</span>
+      </div>
       <Textarea
         id="purpose"
         v-model="modelValue.purpose"
         auto-resize
         class="w-full"
         rows="3"
+        placeholder="Другое"
         :class="{ 'p-invalid': showValidationErrors && purposeErrorMessage }"
         :disabled="!props.editable"
       />
@@ -160,6 +174,8 @@ import {
   Message,
 } from 'primevue';
 import { watch, onMounted, computed } from 'vue';
+
+const changePuposeVariants = ['личным желанием'];
 
 const props = defineProps({
   type: {

@@ -253,6 +253,10 @@ const props = defineProps({
   editable: {
     type: Boolean,
   },
+  staffMode: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const globalUniversityOptions = ref([]);
@@ -261,15 +265,20 @@ const emit = defineEmits(['update:isValid']);
 
 // Add the header based on type
 const getPanelHeader = computed(() => {
+  const firstPriorityHeader = props.staffMode ? 'Приоритет 1' : 'Желаемая программа обучения';
+  const secondPriorityHeader = props.staffMode
+    ? 'Приоритет 2'
+    : 'Альтернативная программа обучения';
+
   switch (props.type) {
     case 'before':
       return 'Ранее обучался';
     case 'current':
       return 'Текущая программа обучения';
     case 'first':
-      return 'Желаемая программа обучения';
+      return firstPriorityHeader;
     case 'second':
-      return 'Альтернативная программа обучения';
+      return secondPriorityHeader;
     default:
       return '';
   }

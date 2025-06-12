@@ -28,6 +28,7 @@
           :editable="props.editable"
           :select-options="options"
           :is-options-loading="isOptionsLoading"
+          :staff-mode="staffMode"
         />
 
         <ApplicationFooter
@@ -66,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits, reactive, onMounted } from 'vue';
+import { ref, computed, defineEmits, reactive, onMounted, watch } from 'vue';
 import { Panel, Button } from 'primevue';
 import Program from './application_form/Program.vue';
 import ApplicationHeader from './application_form/ApplicationHeader.vue';
@@ -96,6 +97,11 @@ const props = defineProps({
   editable: {
     type: Boolean,
     default: true,
+  },
+
+  staffMode: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -157,13 +163,11 @@ const programConfigs = computed(() => {
   return configs;
 });
 
-const isChangeToBudget = computed({
-  get: () => {
-    if (applicationType.value !== 'change') return false;
-    const currentBase = formData.programs[0].base;
-    const newBases = [formData.programs[1].base, formData.programs[2].base];
-    return newBases.includes('Бюджетная') && currentBase !== 'Бюджетная';
-  },
+const isChangeToBudget = computed(() => {
+  if (applicationType.value !== 'change') return false;
+  const currentBase = model.value.programs[0].base;
+  const newBases = [model.value.programs[1].base, model.value.programs[2].base];
+  return newBases.includes('Бюджетная') && currentBase !== 'Бюджетная';
 });
 
 const isFormValid = computed(() => {

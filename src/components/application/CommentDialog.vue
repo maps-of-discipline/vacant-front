@@ -1,12 +1,12 @@
 <template>
-  <Button
-    v-if="showButton && comments.length > 0"
-    size="small"
-    rounded
-    icon="pi pi-comment"
-    severity="secondary"
-    @click="() => (isVisible = true)"
-  />
+  <!-- <Button -->
+  <!--   v-if="showButton && comments.length > 0" -->
+  <!--   size="small" -->
+  <!--   rounded -->
+  <!--   icon="pi pi-comment" -->
+  <!--   severity="secondary" -->
+  <!--   @click="() => (isVisible = true)" -->
+  <!-- /> -->
   <div>
     <Dialog
       v-model:visible="isVisible"

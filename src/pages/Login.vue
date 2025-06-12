@@ -61,13 +61,27 @@ const appStore = useAppStore();
 
 async function handleTokens(access, refresh) {
   await authStore.setAuthData(access, refresh);
-  router.push({ name: 'Home' });
 }
+
+const defaultPages = {
+  canViewProcessApplication: { name: 'Applications' },
+  canViewOwnApplications: { name: 'SelfApplications' },
+};
 
 onBeforeMount(async () => {
   const access = route.query.access;
   const refresh = route.query.refresh;
   if (access && refresh) await handleTokens(access, refresh);
+
+  let selectedPage = null;
+  for (const [permission, page] of Object.entries(defaultPages)) {
+    if (!authStore.checkPermissions([permission])) continue;
+    selectedPage = page;
+    break;
+  }
+
+  if (selectedPage != null) router.push(selectedPage);
+  else router.push({ name: 'Home' });
 });
 </script>
 

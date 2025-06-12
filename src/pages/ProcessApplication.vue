@@ -4,6 +4,7 @@
       <div class="application-page flex flex-row gap-4">
         <CreateApplicationForm
           v-model="applicationData"
+          :staff-mode="true"
           :editable="false"
           @valid-submit="onValidSubmit"
         />

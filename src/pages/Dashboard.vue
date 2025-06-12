@@ -123,87 +123,6 @@
       </div>
 
       <!-- Recent applications table -->
-      <div class="col-12">
-        <Card>
-          <template #title>
-            <div class="flex justify-content-between align-items-center">
-              <span>Последние заявления</span>
-              <Button
-                label="Все заявления"
-                icon="pi pi-external-link"
-                link
-                @click="router.push({ name: 'Applications' })"
-              />
-            </div>
-          </template>
-          <template #content>
-            <DataTable
-              :value="recentApplications"
-              :row-hover="true"
-              :paginator="true"
-              :rows="5"
-              class="p-datatable-sm"
-              striped-rows
-            >
-              <Column
-                field="id"
-                header="ID"
-                :sortable="true"
-                style="width: 5rem"
-              />
-              <Column
-                field="fio"
-                header="ФИО"
-                :sortable="true"
-              >
-                <template #body="slotProps">
-                  {{ getShortFullName(slotProps.data.fio) }}
-                </template>
-              </Column>
-              <Column
-                field="type"
-                header="Тип заявления"
-                :sortable="true"
-              >
-                <template #body="slotProps">
-                  {{ getTypeTranslation(slotProps.data.type) }}
-                </template>
-              </Column>
-              <Column
-                field="date"
-                header="Дата подачи"
-                :sortable="true"
-              >
-                <template #body="slotProps">
-                  {{ formatDate(slotProps.data.date) }}
-                </template>
-              </Column>
-              <Column
-                field="status"
-                header="Статус"
-                :sortable="true"
-              >
-                <template #body="slotProps">
-                  <Tag
-                    :value="statusVerboseName(slotProps.data.status)"
-                    :class="['status-label', AppService.getStatusClass(slotProps.data.status)]"
-                  />
-                </template>
-              </Column>
-              <Column style="width: 5rem">
-                <template #body="slotProps">
-                  <Button
-                    icon="pi pi-eye"
-                    rounded
-                    text
-                    @click="viewApplication(slotProps.data)"
-                  />
-                </template>
-              </Column>
-            </DataTable>
-          </template>
-        </Card>
-      </div>
     </div>
   </div>
 </template>
@@ -211,9 +130,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { Card, DataTable, Column, Tag, Button } from 'primevue';
+import { Card } from 'primevue';
 import Chart from 'primevue/chart';
-import AppService from '../services/appService.js';
 import ApplicationService from '../services/applicationService.js';
 import StatusService from '../services/statusService.js';
 
@@ -297,11 +215,6 @@ const pieOptions = ref({
   maintainAspectRatio: false,
 });
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ru-RU');
-};
-
 const getTypeTranslation = (type) => {
   switch (type) {
     case 'reinstatement':
@@ -315,27 +228,6 @@ const getTypeTranslation = (type) => {
   }
 };
 
-const getShortFullName = (fullname) => {
-  if (!fullname) return '';
-  const parts = fullname.split(' ');
-  if (parts.length >= 3) {
-    return `${parts[0]} ${parts[1][0]}.${parts[2][0]}.`;
-  }
-  return fullname;
-};
-
-const statusVerboseName = (title) => {
-  if (!statuses.value[title]) return title;
-  return String(statuses.value[title].verbose_name);
-};
-
-const viewApplication = (application) => {
-  router.push({
-    name: 'Process application',
-    params: { id: application.id },
-    query: { type: application.type },
-  });
-};
 
 const fetchStatuses = async () => {
   const res = await StatusService.fetchAll();
