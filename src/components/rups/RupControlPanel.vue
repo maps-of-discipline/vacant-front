@@ -12,7 +12,8 @@
         <Button
           label="Скачать решение"
           class="w-full"
-          @click="handleSolutionDownload"
+          :loading="solutionFileHandler.isLoading.value"
+          @click="solutionFileHandler.downloadFile"
         />
         <ElectiveModal
           v-model="model.choosenElectives"
@@ -99,9 +100,9 @@ import { Checkbox, Panel, SelectButton, Slider, Button } from 'primevue';
 import { computed } from 'vue';
 import ElectiveModal from './ElectiveModal.vue';
 import Help from '../UI/Help.vue';
-import DocumentService from '../../services/documnet';
 import Toast from '../../tools/toast.js';
 import config from '../../config.js';
+import { useDownloadFile } from '../../composables/downloadFile.js';
 
 const toast = new Toast();
 const props = defineProps({
@@ -123,25 +124,9 @@ const props = defineProps({
   },
 });
 
-const handleSolutionDownload = async () => {
-  const application_id = 98;
-  const program_type = 'second';
-  const url = `${config.vacant_api_base}/documents/solution?application_id=${application_id}&program_type=${program_type}`;
-
-  try {
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'Решение по ЗВМ.docx');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error(err);
-    toast.error('Не удалось созхрать файл');
-  }
-};
+const url = `${config.vacant_api_base}/documents/solution?application_id=${98}&program_type=second`;
+const solutionFileHandler = useDownloadFile(url);
+console.log(solutionFileHandler);
 
 const emit = defineEmits(['update:modelValue']);
 
