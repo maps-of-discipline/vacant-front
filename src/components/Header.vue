@@ -7,6 +7,11 @@
       class="flex-grow-1 border-0"
       breakpoint="1192px"
       :model="accessableItems"
+      :pt="{
+        start: {
+          class: ['flex', 'w-full', 'md:w-fit'],
+        }
+      }"
     >
       <template #start>
         <Image
@@ -64,6 +69,14 @@ const appStore = useAppStore();
 const router = useRouter();
 
 const items = ref([
+  {
+    label: 'Статистика',
+    icon: 'pi pi-chart-line',
+    command: () => {
+      router.push({ name: 'Dashboard' });
+    },
+    require: ['canViewDashboard'],
+  },
   {
     label: 'Список поданных заявлений',
     icon: 'pi pi-file',

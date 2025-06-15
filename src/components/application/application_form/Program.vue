@@ -195,7 +195,7 @@
           option-label="title"
           option-value="value"
           :class="{ 'p-invalid': showValidationErrors && semNumErrorMessage }"
-          :disabled="!props.editable"
+          :disabled="!props.editable || filteredSemesterOptions.length == 0"
         />
         <Message
           v-if="showValidationErrors && semNumErrorMessage"
