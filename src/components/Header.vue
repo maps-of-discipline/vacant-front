@@ -10,7 +10,7 @@
       :pt="{
         start: {
           class: ['flex', 'w-full', 'md:w-fit'],
-        }
+        },
       }"
     >
       <template #start>

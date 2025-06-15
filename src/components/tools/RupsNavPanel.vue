@@ -3,8 +3,14 @@
     <Panel header="Расхождения при смене учебного плана">
       <Fluid>
         <div class="flex gap-2 w-full">
-          <Button label="Приоритет 1" @click="redirectToRups(1)" />
-          <Button label="Приоритет 2" @click="redirectToRups(2)" />
+          <Button
+            label="Приоритет 1"
+            @click="redirectToRups(1)"
+          />
+          <Button
+            label="Приоритет 2"
+            @click="redirectToRups(2)"
+          />
         </div>
       </Fluid>
     </Panel>

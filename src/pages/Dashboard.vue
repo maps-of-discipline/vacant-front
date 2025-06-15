@@ -228,7 +228,6 @@ const getTypeTranslation = (type) => {
   }
 };
 
-
 const fetchStatuses = async () => {
   const res = await StatusService.fetchAll();
   const mapper = res.reduce((acc, obj) => {

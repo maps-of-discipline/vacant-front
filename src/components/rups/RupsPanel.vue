@@ -63,8 +63,8 @@
             <span
               v-if="
                 slotProps.node.child &&
-                  rupData.bestMatch[slotProps.node.data.title] &&
-                  rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
+                rupData.bestMatch[slotProps.node.data.title] &&
+                rupData.bestMatch[slotProps.node.data.title].target != slotProps.node.parent
               "
               v-tooltip:left="rupData.bestMatch[slotProps.node.data.title].target"
               class="text-color-secondary"
@@ -105,7 +105,7 @@
         <Column
           field="amount"
           header="Объем"
-          bodyClass='text-center'
+          body-class="text-center"
         />
       </TreeTable>
     </Panel>

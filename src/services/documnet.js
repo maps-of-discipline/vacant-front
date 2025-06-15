@@ -14,7 +14,6 @@ export default class DocumentService {
       },
     });
 
-
     const contentDisposition = decodeURIComponent(response.headers['content-disposition']);
     let filename = 'transfer.pdf';
 
